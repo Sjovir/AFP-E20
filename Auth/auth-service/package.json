@@ -1,0 +1,26 @@
+{
+  "name": "auth-service",
+  "version": "1.0.0",
+  "description": "microservice",
+  "main": "src/index.ts",
+  "author": "Erik & Dennis",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "start": "tsnd --respawn src/index.ts"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^8.5.1",
+    "koa": "^2.13.0",
+    "koa-bodyparser": "^4.3.0",
+    "koa-json": "^2.0.2",
+    "koa-router": "^9.4.0",
+    "typescript": "^4.0.2"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.11.4",
+    "@types/koa-router": "^7.4.1",
+    "@types/node": "^14.6.3",
+    "ts-node-dev": "^1.0.0-pre.62"
+  }
+}
