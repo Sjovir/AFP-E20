@@ -2,6 +2,7 @@ import Router from 'koa-router';
 import { ParameterizedContext, Next } from 'koa';
 
 import { verify, signAccessToken, signRefreshToken } from '../utils/token';
+import { JsonWebTokenError } from 'jsonwebtoken';
 
 const router = new Router();
 
@@ -9,11 +10,6 @@ const router = new Router();
 async function isAuthenticated(ctx: ParameterizedContext, next: Next) {
     const { authorization } = ctx.headers;
     const split = authorization.split(" ");
-
-    console.log({
-        accessToken: await signAccessToken({ firstName: "Hello", lastName: "World" }),
-        refreshToken: await signRefreshToken({}),
-    })
 
     ctx.response.status = 400;
 
@@ -24,7 +20,7 @@ async function isAuthenticated(ctx: ParameterizedContext, next: Next) {
             ctx.response.status = 200;
             ctx.token = token;
 
-            await next()
+            await next();
         }
     }
 }
@@ -35,19 +31,19 @@ interface AuthBody {
 }
 
 router.post('/register', async (ctx, next) => {
-    const { username, password }: AuthBody = ctx.request.body
+    const { username, password }: AuthBody = ctx.request.body;
 
     if (username.startsWith("t")) {
-        ctx.response.status = 400
+        ctx.response.status = 400;
     } else {
-        ctx.response.status = 200
+        ctx.response.status = 200;
     }
 })
 
 router.post('/login', async (ctx, next) => {
-    const { username, password }: AuthBody = ctx.request.body
+    const { username, password }: AuthBody = ctx.request.body;
 
-    ctx.response.status = 400
+    ctx.response.status = 400;
 
     if (username === "dennis" || username === "erik") {
         if (password === "sdu" || password === "AFPE20") {
@@ -62,13 +58,16 @@ router.post('/login', async (ctx, next) => {
 })
 
 router.post('/refresh', isAuthenticated, async (ctx, next) => {
-    const { refreshToken } = ctx.request.body
+    const { refreshToken } = ctx.request.body;
 
-    // console.log(await verify(refreshToken))
-    console.log(ctx.token)
+    try {
+        verify(refreshToken);
 
-    ctx.body = {
-        accessToken: await signAccessToken({ firstName: "Hello", lastName: "World" })
+        ctx.body = {
+            accessToken: await signAccessToken({ firstName: "Hello", lastName: "World" })
+        }
+    } catch (err) {
+        throw err;
     }
 })
 
