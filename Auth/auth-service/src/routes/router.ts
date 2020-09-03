@@ -2,31 +2,45 @@ import Router from 'koa-router';
 
 const router = new Router();
 
-async function authenticate(ctx, next) {
-    if (ctx.headers.auth) {
-        await next();
-    } else {
-        ctx.response.status = 401;
-    }
+interface AuthBody {
+    username: string;
+    password: string;
 }
 
-router.post('/users', authenticate, (ctx, next) => {
-    ctx.body = {
-        test: 'Works?'
-    }
-})
+router.post('/register', (ctx, next) => {
+    const { username, password }: AuthBody = ctx.request.body
 
-router.post('/user/:id', (ctx, next) => {
-    ctx.body = {
-        id: ctx.params.id,
-        firstName: 'Hello',
-        lastName: 'World',
+    if (username.startsWith("t")) {
+        ctx.response.status = 400
+    } else {
+        ctx.response.status = 200
     }
 })
 
 router.post('/login', (ctx, next) => {
+    const { username, password }: AuthBody = ctx.request.body
+
+    ctx.response.status = 400
+
+    if (username === "dennis" || username === "erik") {
+        if (password === "sdu" || password === "AFPE20") {
+            ctx.response.status = 200
+
+            ctx.body = {
+                accessToken: "flksdjksljfklfjsdfjasdklfasdf",
+                refreshToken: "dasdkaodkasdsadawoidjdsofsd"
+            }
+        }
+    }
+})
+
+router.post('/refresh', (ctx, next) => {
+    const { refreshToken } = ctx.request.body
+
+    // if (refreshToken.isValid) {}
+
     ctx.body = {
-        test: 'Works?'
+        accessToken: "flksdjksljfklfjsdfjasdklfasdf"
     }
 })
 
