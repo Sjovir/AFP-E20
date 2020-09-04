@@ -8,11 +8,13 @@ const router = new Router();
 
 // TODO: allow typescript to see ctx.token 
 async function isAuthenticated(ctx: ParameterizedContext, next: Next) {
+    ctx.response.status = 401;
+
     const { authorization } = ctx.headers;
+
+    if (!authorization) return;
+
     const split = authorization.split(" ");
-
-    ctx.response.status = 400;
-
     if (split.length === 2 && split[0] === "Bearer") {
         const token = split[1];
 

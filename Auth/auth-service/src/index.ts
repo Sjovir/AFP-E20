@@ -11,4 +11,6 @@ const server = new Koa();
 server.use(bodyparser())
 server.use(router.routes())
 
-server.listen(3000);
+const app = server.listen(3000);
+
+export default app;
