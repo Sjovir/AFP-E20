@@ -1,15 +1,15 @@
-import Koa from "koa";
-import bodyparser from "koa-bodyparser";
-import dotenv from "dotenv";
+import Koa from 'koa';
+import bodyparser from 'koa-bodyparser';
+import dotenv from 'dotenv';
 
-import router from "./routes/router";
+import router from './routes/router';
 
-dotenv.config()
+dotenv.config();
 
 const server = new Koa();
 
-server.use(bodyparser())
-server.use(router.routes())
+server.use(bodyparser());
+server.use(router.routes());
 
 const app = server.listen(3000);
 
