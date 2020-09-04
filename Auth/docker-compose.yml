@@ -1,0 +1,20 @@
+version: '3'
+
+services: 
+    db:
+        build: ./auth-db
+        image: auth_database
+        container_name: AuthDatabase
+        environment: 
+            - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+            - MYSQL_USER=${DB_USER}
+            - MYSQL_PASSWORD=${DB_PASSWORD}
+            - MYSQL_DATABASE=${DB_DATABASE}
+    service:
+        build: ./auth-service
+        image: auth_service
+        container_name: AuthService
+        depends_on:
+            - db
+        ports:
+            - "7000:3000"
