@@ -1,0 +1,6 @@
+CREATE TABLE BostedUser (
+	id VARCHAR(36) PRIMARY KEY,
+	username VARCHAR(30) NOT NULL,
+	passphrase VARCHAR(50) NOT NULL
+);
+
