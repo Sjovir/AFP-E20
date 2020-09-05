@@ -64,18 +64,14 @@ router.post('/login', async (ctx, next) => {
 router.post('/refresh', isAuthenticated, async (ctx, next) => {
     const { refreshToken } = ctx.request.body;
 
-    try {
-        verify(refreshToken);
+    verify(refreshToken);
 
-        ctx.body = {
-            accessToken: await signAccessToken({
-                firstName: 'Hello',
-                lastName: 'World',
-            }),
-        };
-    } catch (err) {
-        throw err;
-    }
+    ctx.body = {
+        accessToken: await signAccessToken({
+            firstName: 'Hello',
+            lastName: 'World',
+        }),
+    };
 });
 
 export default router;

@@ -8,13 +8,13 @@ export const decode = async (token: string) => {
     return jwt.decode(token);
 };
 
-export const signAccessToken = async (payload: object) => {
+export const signAccessToken = async (payload: Record<string, unknown>) => {
     return jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: '5m',
     });
 };
 
-export const signRefreshToken = async (payload: object) => {
+export const signRefreshToken = async (payload: Record<string, unknown>) => {
     return jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: '9h',
     });
