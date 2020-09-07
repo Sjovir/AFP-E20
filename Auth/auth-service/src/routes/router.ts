@@ -1,6 +1,7 @@
 import Router from 'koa-router';
 import { ParameterizedContext, Next } from 'koa';
 
+import dbPool from '../database/connector';
 import { verify, signAccessToken, signRefreshToken } from '../utils/token';
 
 const router = new Router();
@@ -26,13 +27,37 @@ async function isAuthenticated(ctx: ParameterizedContext, next: Next) {
     }
 }
 
-interface AuthBody {
+interface RegisterBody {
+    firstName: string;
+    lastName: string;
+    cpr: string;
+    username: string;
+    password: string;
+}
+
+interface LoginBody {
+    firstName: string;
+    lastName: string;
+    cpr: string;
     username: string;
     password: string;
 }
 
 router.post('/register', async (ctx, _next) => {
-    const { username, password: _password }: AuthBody = ctx.request.body;
+    const {
+        firstName,
+        lastName,
+        cpr,
+        username,
+        password,
+    }: RegisterBody = ctx.request.body;
+
+    const t = await dbPool.query(
+        "INSERT INTO User VALUES (uuid(), ?, ?, ?, ?, ?);",
+        [firstName, lastName, cpr, username, password]
+    );
+
+    console.log(t);
 
     if (username.startsWith('t')) {
         ctx.response.status = 400;
@@ -42,7 +67,7 @@ router.post('/register', async (ctx, _next) => {
 });
 
 router.post('/login', async (ctx, _next) => {
-    const { username, password }: AuthBody = ctx.request.body;
+    const { username, password }: LoginBody = ctx.request.body;
 
     ctx.response.status = 400;
 
