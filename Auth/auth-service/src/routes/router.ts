@@ -32,7 +32,7 @@ interface AuthBody {
 }
 
 router.post('/register', async (ctx, _next) => {
-    const { username, password: _ }: AuthBody = ctx.request.body;
+    const { username, password: _password }: AuthBody = ctx.request.body;
 
     if (username.startsWith('t')) {
         ctx.response.status = 400;
