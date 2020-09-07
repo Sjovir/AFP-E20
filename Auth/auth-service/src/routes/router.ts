@@ -31,8 +31,8 @@ interface AuthBody {
     password: string;
 }
 
-router.post('/register', async (ctx, next) => {
-    const { username, password }: AuthBody = ctx.request.body;
+router.post('/register', async (ctx, _next) => {
+    const { username, password: _ }: AuthBody = ctx.request.body;
 
     if (username.startsWith('t')) {
         ctx.response.status = 400;
@@ -41,7 +41,7 @@ router.post('/register', async (ctx, next) => {
     }
 });
 
-router.post('/login', async (ctx, next) => {
+router.post('/login', async (ctx, _next) => {
     const { username, password }: AuthBody = ctx.request.body;
 
     ctx.response.status = 400;
@@ -61,7 +61,7 @@ router.post('/login', async (ctx, next) => {
     }
 });
 
-router.post('/refresh', isAuthenticated, async (ctx, next) => {
+router.post('/refresh', isAuthenticated, async (ctx, _next) => {
     const { refreshToken } = ctx.request.body;
 
     verify(refreshToken);
