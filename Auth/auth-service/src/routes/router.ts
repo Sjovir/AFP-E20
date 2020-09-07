@@ -2,11 +2,10 @@ import Router from 'koa-router';
 import { ParameterizedContext, Next } from 'koa';
 
 import { verify, signAccessToken, signRefreshToken } from '../utils/token';
-import { JsonWebTokenError } from 'jsonwebtoken';
 
 const router = new Router();
 
-// TODO: allow typescript to see ctx.token 
+// TODO: allow typescript to see ctx.token
 async function isAuthenticated(ctx: ParameterizedContext, next: Next) {
     ctx.response.status = 401;
 
@@ -14,8 +13,8 @@ async function isAuthenticated(ctx: ParameterizedContext, next: Next) {
 
     if (!authorization) return;
 
-    const split = authorization.split(" ");
-    if (split.length === 2 && split[0] === "Bearer") {
+    const split = authorization.split(' ');
+    if (split.length === 2 && split[0] === 'Bearer') {
         const token = split[1];
 
         if (verify(token)) {
@@ -32,45 +31,47 @@ interface AuthBody {
     password: string;
 }
 
-router.post('/register', async (ctx, next) => {
-    const { username, password }: AuthBody = ctx.request.body;
+router.post('/register', async (ctx, _next) => {
+    const { username, password: _password }: AuthBody = ctx.request.body;
 
-    if (username.startsWith("t")) {
+    if (username.startsWith('t')) {
         ctx.response.status = 400;
     } else {
         ctx.response.status = 200;
     }
-})
+});
 
-router.post('/login', async (ctx, next) => {
+router.post('/login', async (ctx, _next) => {
     const { username, password }: AuthBody = ctx.request.body;
 
     ctx.response.status = 400;
 
-    if (username === "dennis" || username === "erik") {
-        if (password === "sdu" || password === "AFPE20") {
-            ctx.response.status = 200
+    if (username === 'dennis' || username === 'erik') {
+        if (password === 'sdu' || password === 'AFPE20') {
+            ctx.response.status = 200;
 
             ctx.body = {
-                accessToken: await signAccessToken({ firstName: "Hello", lastName: "World" }),
+                accessToken: await signAccessToken({
+                    firstName: 'Hello',
+                    lastName: 'World',
+                }),
                 refreshToken: await signRefreshToken({}),
-            }
+            };
         }
     }
-})
+});
 
-router.post('/refresh', isAuthenticated, async (ctx, next) => {
+router.post('/refresh', isAuthenticated, async (ctx, _next) => {
     const { refreshToken } = ctx.request.body;
 
-    try {
-        verify(refreshToken);
+    verify(refreshToken);
 
-        ctx.body = {
-            accessToken: await signAccessToken({ firstName: "Hello", lastName: "World" })
-        }
-    } catch (err) {
-        throw err;
-    }
-})
+    ctx.body = {
+        accessToken: await signAccessToken({
+            firstName: 'Hello',
+            lastName: 'World',
+        }),
+    };
+});
 
 export default router;

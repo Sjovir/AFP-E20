@@ -1,8 +1,6 @@
-declare namespace NodeJS
-{
-    export interface ProcessEnv
-    {
-        NODE_ENV: "development" | "production";
+declare namespace NodeJS {
+    export interface ProcessEnv {
+        NODE_ENV: 'development' | 'production';
         JWT_SECRET: string;
         DB_ROOT_PASSWORD: string;
         DB_USER: string;
