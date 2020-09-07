@@ -1,6 +1,40 @@
-CREATE TABLE BostedUser (
-	id VARCHAR(36) PRIMARY KEY,
-	username VARCHAR(30) NOT NULL,
-	passphrase VARCHAR(50) NOT NULL
+CREATE TABLE User (
+	id VARCHAR(36) NOT NULL,
+	first_name VARCHAR(50) NOT NULL,
+	last_name VARCHAR(50) NOT NULL,
+	cpr VARCHAR(10) NOT NULL,
+	username VARCHAR(100) NOT NULL,
+	password_hash VARCHAR(128) NOT NULL,
+	PRIMARY KEY(id)
 );
 
+CREATE TABLE Role (
+	id VARCHAR(36) NOT NULL,
+	title VARCHAR(100) NOT NULL,
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE AccessRight (
+	id VARCHAR(36) NOT NULL,
+	name VARCHAR(100) NOT NULL,
+	code VARCHAR(64) NOT NULL,
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE UserRole (
+	id VARCHAR(36) NOT NULL,
+	user_id VARCHAR(36) NOT NULL,
+	role_id VARCHAR(36) NOT NULL,
+	PRIMARY KEY(id),
+	FOREIGN KEY (user_id) REFERENCES User(id),
+	FOREIGN KEY (role_id) REFERENCES Role(id)
+);
+
+CREATE TABLE RoleAccessRight (
+	id VARCHAR(36) NOT NULL,
+	role_id VARCHAR(36) NOT NULL,
+	access_right_id VARCHAR(36) NOT NULL,
+	PRIMARY KEY(id),
+	FOREIGN KEY (role_id) REFERENCES Role(id),
+	FOREIGN KEY (access_right_id) REFERENCES AccessRight(id)
+);
