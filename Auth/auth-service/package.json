@@ -13,14 +13,17 @@
         "eslint": "eslint src/**/*.ts"
     },
     "dependencies": {
+        "bcryptjs": "^2.4.3",
         "dotenv": "^8.2.0",
         "jsonwebtoken": "^8.5.1",
         "koa": "^2.13.0",
         "koa-bodyparser": "^4.3.0",
         "koa-router": "^9.4.0",
-        "mariadb": "^2.4.2"
+        "mariadb": "^2.4.2",
+        "sinon": "^9.0.3"
     },
     "devDependencies": {
+        "@types/bcryptjs": "^2.4.2",
         "@types/chai": "^4.2.12",
         "@types/jsonwebtoken": "^8.5.0",
         "@types/koa": "^2.11.4",
@@ -28,6 +31,7 @@
         "@types/koa-router": "^7.4.1",
         "@types/mocha": "^8.0.3",
         "@types/node": "^14.6.3",
+        "@types/sinon": "^9.0.5",
         "@typescript-eslint/eslint-plugin": "^4.0.1",
         "@typescript-eslint/parser": "^4.0.1",
         "chai": "^4.2.0",

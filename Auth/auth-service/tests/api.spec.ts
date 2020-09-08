@@ -1,86 +1,79 @@
 import 'mocha';
-import chai, { expect } from 'chai';
-import chaiHttp from 'chai-http';
-import app from '../src/index';
+import sinon from 'sinon';
 
-chai.use(chaiHttp);
-
-const requester = chai.request(app).keepOpen();
-
-after(() => {
-    requester.close();
-});
+import UserService from '../src/services/user-service';
 
 describe('API', function () {
-    describe('/POST Register', function () {
-        it('when username starts with t, it gives status 400', function (done) {
-            requester
-                .post('/register')
-                .send({ username: 't', password: 'sdu' })
-                .end((err, res) => {
-                    expect(res.status).equal(400);
+    describe('Register users', function () {
+        it('register a new user', function () {
+            const userService = new UserService();
 
-                    done();
-                });
+            // requester
+            //     .post('/api/register')
+            //     .send(testUser)
+            //     .end((err, res) => {
+            //         expect(res.status).equal(200);
+            //         done();
+            //     });
         });
 
-        it('credentials that not already exists', function (done) {
-            requester
-                .post('/register')
-                .send({ username: 'dennis', password: 'sdu' })
-                .end((err, res) => {
-                    expect(res.status).equal(200);
+        // it('register an already existing user', function (done) {
+        //     requester
+        //         .post('/api/register')
+        //         .send(testUser)
+        //         .end((err, res) => {
+        //             expect(res.status).equal(200);
 
-                    done();
-                });
-        });
+        //             done();
+        //         });
+        // });
     });
 
-    describe('/POST Login', function () {
-        it('should return false when not giving any information', function (done) {
-            requester.post('/login').end((err, res) => {
-                expect(res.status).equal(400);
+    // describe('POST Login', function () {
+    //     it('should return false when not giving any information', function (done) {
+    //         requester.post('/login').end((err, res) => {
+    //             expect(res.status).equal(400);
 
-                done();
-            });
-        });
+    //             done();
+    //         });
+    //     });
 
-        it('success at correct login information', function (done) {
-            requester
-                .post('/login')
-                .send({ username: 'dennis', password: 'sdu' })
-                .end((err, res) => {
-                    expect(res.status).equal(200);
-                    expect(res.body).to.have.property('accessToken');
-                    expect(res.body).to.have.property('refreshToken');
+    //     it('success at correct login information', function (done) {
+    //         requester
+    //             .post('/api/login')
+    //             .send({ username: 'dennis', password: 'sdu' })
+    //             .end((err, res) => {
+    //                 expect(res.status).equal(200);
+    //                 expect(res.body).to.have.property('accessToken');
+    //                 expect(res.body).to.have.property('refreshToken');
 
-                    done();
-                });
-        });
-    });
+    //                 done();
+    //             });
+    //     });
+    // });
 
-    describe('/POST Refresh', async function () {
-        it('Login and sends refresh token to get a new access token', async function () {
-            const login = await requester
-                .post('/login')
-                .send({ username: 'dennis', password: 'sdu' });
-            const { accessToken, refreshToken } = login.body;
+    // describe('POST Refresh', async function () {
+    //     it('Login and sends refresh token to get a new access token', async function () {
+    //         const login = await requester
+    //             .post('/api/login')
+    //             .send({ username: 'dennis', password: 'sdu' });
+    //         const { accessToken, refreshToken } = login.body;
 
-            const res = await requester
-                .post('/refresh')
-                .set('Authorization', `Bearer ${accessToken}`)
-                .send({ refreshToken });
+    //         const res = await requester
+    //             .post('/api/refresh')
+    //             .set('Authorization', `Bearer ${accessToken}`)
+    //             .send({ refreshToken });
 
-            expect(res.status).equal(200);
-            expect(res.body).to.have.property('accessToken');
-        });
+    //         expect(res.status).equal(200);
+    //         expect(res.body).to.have.property('accessToken');
+    //     });
 
-        it('No Authorization header when requesting ', async function () {
-            const res = await requester
-                .post('/refresh')
-                .send({ refreshToken: '' });
+    //     it('No Authorization header when requesting ', async function () {
+    //         const res = await requester
+    //             .post('/api/refresh')
+    //             .send({ refreshToken: '' });
 
-            expect(res.status).equal(401);
-        });
-    });
+    //         expect(res.status).equal(401);
+    //     });
+    // });
 });
