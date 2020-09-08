@@ -11,11 +11,7 @@ import {
 } from '../utils/token';
 
 class UserService {
-    private userDatabase: UserDatabase;
-
-    constructor() {
-        this.userDatabase = new UserDatabase();
-    }
+    constructor(private userDatabase: UserDatabase) {}
 
     async createUser(body: RegisterBody) {
         const password_hashed = bcrypt.hashSync(

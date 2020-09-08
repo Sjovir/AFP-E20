@@ -2,11 +2,14 @@ import 'mocha';
 import sinon from 'sinon';
 
 import UserService from '../src/services/user-service';
+import UserDatabase from '../src/database/user-database';
 
 describe('API', function () {
     describe('Register users', function () {
         it('register a new user', function () {
-            const userService = new UserService();
+            const sb = sinon.stub(UserDatabase.prototype, 'create');
+
+            // const userService = new UserService(database);
 
             // requester
             //     .post('/api/register')
