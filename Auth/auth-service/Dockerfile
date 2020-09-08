@@ -1,5 +1,7 @@
 # Base image
-FROM node:12.18.3-alpine3.12
+FROM node:12.18.3-alpine3.12 as builder
+
+WORKDIR /usr/app
 
 # The dependencies to the project
 COPY package.json .
@@ -23,4 +25,27 @@ RUN yarn
 
 COPY . .
 
+# RUN [ "yarn", "tsc" ]
+
+
+# Lint the code
+FROM node:12.18.3-alpine3.12 as linting
+WORKDIR /usr/app
+COPY --from=builder /usr/app/ .
+RUN [ "yarn", "eslint" ]
+
+
+# Test the code
+FROM node:12.18.3-alpine3.12 as test
+WORKDIR /usr/app
+COPY --from=builder /usr/app/ .
+RUN [ "yarn", "test" ]
+
+
+# Starts the server
+FROM node:12.18.3-alpine3.12 as serve
+WORKDIR /usr/app
+# ENV SERVER-FILE index.js
+# COPY --from=builder /usr/app/dist .
+COPY --from=builder /usr/app/ .
 CMD [ "yarn", "dev" ]
