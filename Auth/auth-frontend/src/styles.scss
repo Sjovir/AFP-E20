@@ -1,0 +1,24 @@
+@import '~bootstrap/scss/bootstrap';
+
+/* You can add global styles to this file, and also import other style files */
+$full-page-padding: 5rem;
+$shrunk-page-padding: 2rem;
+
+
+.navbar-nav {
+    padding: 0 $full-page-padding;
+}
+
+.content-page {
+    padding: 0 ($full-page-padding + 1);
+}
+
+@media only screen and (max-width: 992px) {
+    .navbar-nav {
+        padding: 0 $shrunk-page-padding;
+    }
+    
+    .content-page {
+        padding: 0 ($shrunk-page-padding + 1);
+    }
+}
