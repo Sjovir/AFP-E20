@@ -41,7 +41,7 @@ class UserService {
         return null;
     }
 
-    async refresh(accessToken: string, refreshToken: string) {
+    async refresh(accessToken: string, refreshToken: string): Promise<string> {
         let newAccessToken = null;
 
         // TODO: access token should be expired for refresh to function
@@ -53,6 +53,8 @@ class UserService {
                 accessTokenDecode = <Record<string, unknown>>(
                     decode(accessToken)
                 );
+            } else {
+                throw err;
             }
         }
 
