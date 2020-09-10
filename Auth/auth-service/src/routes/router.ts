@@ -1,77 +1,20 @@
 import Router from 'koa-router';
-import { ParameterizedContext, Next } from 'koa';
 
-import { verify, signAccessToken, signRefreshToken } from '../utils/token';
+import AuthController from '../controllers/auth-controller';
 
-const router = new Router();
+const router = new Router({ prefix: '/api' });
+const authController = new AuthController();
 
-// TODO: allow typescript to see ctx.token
-async function isAuthenticated(ctx: ParameterizedContext, next: Next) {
-    ctx.response.status = 401;
-
-    const { authorization } = ctx.headers;
-
-    if (!authorization) return;
-
-    const split = authorization.split(' ');
-    if (split.length === 2 && split[0] === 'Bearer') {
-        const token = split[1];
-
-        if (verify(token)) {
-            ctx.response.status = 200;
-            ctx.token = token;
-
-            await next();
-        }
-    }
-}
-
-interface AuthBody {
-    username: string;
-    password: string;
-}
-
-router.post('/register', async (ctx, _next) => {
-    const { username, password: _password }: AuthBody = ctx.request.body;
-
-    if (username.startsWith('t')) {
-        ctx.response.status = 400;
-    } else {
-        ctx.response.status = 200;
-    }
+router.post('/register', async (ctx, next) => {
+    await authController.postRegister(ctx, next);
 });
 
-router.post('/login', async (ctx, _next) => {
-    const { username, password }: AuthBody = ctx.request.body;
-
-    ctx.response.status = 400;
-
-    if (username === 'dennis' || username === 'erik') {
-        if (password === 'sdu' || password === 'AFPE20') {
-            ctx.response.status = 200;
-
-            ctx.body = {
-                accessToken: await signAccessToken({
-                    firstName: 'Hello',
-                    lastName: 'World',
-                }),
-                refreshToken: await signRefreshToken({}),
-            };
-        }
-    }
+router.post('/login', async (ctx, next) => {
+    await authController.postLogin(ctx, next);
 });
 
-router.post('/refresh', isAuthenticated, async (ctx, _next) => {
-    const { refreshToken } = ctx.request.body;
-
-    verify(refreshToken);
-
-    ctx.body = {
-        accessToken: await signAccessToken({
-            firstName: 'Hello',
-            lastName: 'World',
-        }),
-    };
+router.post('/refresh', async (ctx, next) => {
+    await authController.postRefresh(ctx, next);
 });
 
 export default router;
