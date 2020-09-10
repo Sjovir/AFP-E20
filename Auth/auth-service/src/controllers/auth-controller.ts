@@ -2,6 +2,7 @@ import { Next, Context } from 'koa';
 
 import UserService from '../services/user-service';
 import UserDatabase from '../database/user-database';
+import RoleDatabase from '../database/role-database';
 
 export interface RegisterBody {
     firstName: string;
@@ -21,7 +22,10 @@ class AuthController {
     private userService: UserService;
 
     constructor() {
-        this.userService = new UserService(new UserDatabase());
+        this.userService = new UserService(
+            new UserDatabase(),
+            new RoleDatabase()
+        );
     }
 
     async postRegister(ctx: Context, next: Next) {

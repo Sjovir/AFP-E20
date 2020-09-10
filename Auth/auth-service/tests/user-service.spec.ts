@@ -12,11 +12,13 @@ chai.use(chaiAsPromise);
 
 import UserService from '../src/services/user-service';
 import UserDatabase from '../src/database/user-database';
+import RoleDatabase from '../src/database/role-database';
 
 describe('UserService', function () {
     beforeEach(function () {
         this.userDB = new UserDatabase();
-        this.userSV = new UserService(this.userDB);
+        this.roleDB = new RoleDatabase();
+        this.userSV = new UserService(this.userDB, this.roleDB);
 
         this.testUser = {
             firstName: 'testFirst',

@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import { TokenExpiredError } from 'jsonwebtoken';
 
 import UserDatabase from '../database/user-database';
+import RoleDatabase from '../database/role-database';
 import { RegisterBody, LoginBody } from '../controllers/auth-controller';
 import {
     verify,
@@ -11,7 +12,10 @@ import {
 } from '../utils/token';
 
 class UserService {
-    constructor(private userDatabase: UserDatabase) {}
+    constructor(
+        private userDatabase: UserDatabase,
+        private roleDatabase: RoleDatabase
+    ) {}
 
     async createUser(body: RegisterBody) {
         const password_hashed = bcrypt.hashSync(
@@ -28,11 +32,16 @@ class UserService {
         const user = await this.userDatabase.find(body.username, body.cpr);
 
         if (user && bcrypt.compareSync(body.password, user.password_hash)) {
+            const accessRights = await this.roleDatabase.getAccessRights(
+                user.id
+            );
+
             return {
                 accessToken: signAccessToken({
                     firstName: user.first_name,
                     lastName: user.last_name,
                     username: user.username,
+                    permissions: accessRights,
                 }),
                 refreshToken: signRefreshToken({}),
             };
