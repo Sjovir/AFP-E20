@@ -49,24 +49,26 @@ class UserService {
         return null;
     }
 
-    async refresh(accessToken: string, refreshToken: string): Promise<string> {
+    async refresh(tokens: IRefresh): Promise<string> {
         let newAccessToken = null;
 
         // TODO: access token should be expired for refresh to function
         let accessTokenDecode: Record<string, unknown>;
         try {
-            accessTokenDecode = <Record<string, unknown>>verify(accessToken);
+            accessTokenDecode = <Record<string, unknown>>(
+                verify(tokens.accessToken)
+            );
         } catch (err) {
             if (err instanceof TokenExpiredError) {
                 accessTokenDecode = <Record<string, unknown>>(
-                    decode(accessToken)
+                    decode(tokens.accessToken)
                 );
             } else {
                 throw err;
             }
         }
 
-        verify(refreshToken);
+        verify(tokens.refreshToken);
 
         if (accessTokenDecode) {
             newAccessToken = signAccessToken({

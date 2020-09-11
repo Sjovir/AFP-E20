@@ -99,13 +99,10 @@ class AuthController {
             return;
         }
 
-        const { accessToken, refreshToken }: IRefresh = ctx.request.body;
+        const tokens: IRefresh = ctx.request.body;
 
         try {
-            const newAccessToken = await this.userService.refresh(
-                accessToken,
-                refreshToken
-            );
+            const newAccessToken = await this.userService.refresh(tokens);
 
             if (newAccessToken) {
                 ctx.response.status = 200;
