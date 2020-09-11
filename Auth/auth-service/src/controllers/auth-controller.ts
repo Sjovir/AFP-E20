@@ -4,19 +4,10 @@ import UserService from '../services/user-service';
 import UserDatabase from '../database/user-database';
 import RoleDatabase from '../database/role-database';
 
-export interface RegisterBody {
-    firstName: string;
-    lastName: string;
-    cpr: string;
-    username: string;
-    password: string;
-}
-
-export interface LoginBody {
-    cpr?: string;
-    username?: string;
-    password: string;
-}
+import ajv from '../schemas/schema-validator';
+import registerSchema from '../schemas/register-schema';
+import loginSchema from '../schemas/login-schema';
+import refreshSchema from '../schemas/refresh-schema';
 
 class AuthController {
     private userService: UserService;
@@ -29,7 +20,15 @@ class AuthController {
     }
 
     async postRegister(ctx: Context, next: Next) {
-        const body: RegisterBody = ctx.request.body;
+        const compiled = ajv.compile(registerSchema);
+        const valid = compiled(ctx.request.body);
+
+        if (!valid) {
+            ctx.response.body = compiled.errors;
+            return;
+        }
+
+        const body: IRegister = ctx.request.body;
 
         try {
             await this.userService.createUser(body);
@@ -55,7 +54,15 @@ class AuthController {
     }
 
     async postLogin(ctx: Context, next: Next) {
-        const { cpr, username }: LoginBody = ctx.request.body;
+        const compiled = ajv.compile(loginSchema);
+        const valid = compiled(ctx.request.body);
+
+        if (!valid) {
+            ctx.response.body = compiled.errors;
+            return;
+        }
+
+        const { cpr, username, password }: ILogin = ctx.request.body;
 
         ctx.response.status = 400;
 
@@ -68,7 +75,7 @@ class AuthController {
             return;
         }
 
-        const token = await this.userService.login(ctx.request.body);
+        const token = await this.userService.login(password, username, cpr);
 
         if (token) {
             ctx.response.body = token;
@@ -83,23 +90,38 @@ class AuthController {
         next();
     }
 
-    async postRefresh(ctx: Context, _next: Next) {
-        const { accessToken, refreshToken } = ctx.request.body;
+    async postRefresh(ctx: Context, next: Next) {
+        const compiled = ajv.compile(refreshSchema);
+        const valid = compiled(ctx.request.body);
 
-        const newAccessToken = await this.userService.refresh(
-            accessToken,
-            refreshToken
-        );
+        if (!valid) {
+            ctx.response.body = compiled.errors;
+            return;
+        }
 
-        if (newAccessToken) {
-            ctx.response.status = 200;
+        const { accessToken, refreshToken }: IRefresh = ctx.request.body;
 
-            ctx.response.body = {
-                accessToken: newAccessToken,
-            };
-        } else {
+        try {
+            const newAccessToken = await this.userService.refresh(
+                accessToken,
+                refreshToken
+            );
+
+            if (newAccessToken) {
+                ctx.response.status = 200;
+
+                ctx.response.body = {
+                    accessToken: newAccessToken,
+                };
+            } else {
+                ctx.response.status = 401;
+            }
+        } catch (err) {
+            ctx.response.body = err;
             ctx.response.status = 401;
         }
+
+        next();
     }
 }
 

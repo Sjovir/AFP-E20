@@ -1,8 +1,7 @@
 import dbPool from './connector';
-import { RegisterBody } from '../controllers/auth-controller';
 
 class UserDatabase {
-    async create(user: RegisterBody) {
+    async create(user: IRegister) {
         await dbPool.query('INSERT INTO User VALUES (uuid(), ?, ?, ?, ?, ?);', [
             user.firstName,
             user.lastName,

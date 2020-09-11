@@ -3,7 +3,6 @@ import { TokenExpiredError } from 'jsonwebtoken';
 
 import UserDatabase from '../database/user-database';
 import RoleDatabase from '../database/role-database';
-import { RegisterBody, LoginBody } from '../controllers/auth-controller';
 import {
     verify,
     signAccessToken,
@@ -17,7 +16,7 @@ class UserService {
         private roleDatabase: RoleDatabase
     ) {}
 
-    async createUser(body: RegisterBody) {
+    async createUser(body: IRegister) {
         const password_hashed = bcrypt.hashSync(
             body.password,
             bcrypt.genSaltSync(10)
@@ -28,10 +27,10 @@ class UserService {
         await this.userDatabase.create(body);
     }
 
-    async login(body: LoginBody) {
-        const user = await this.userDatabase.find(body.username, body.cpr);
+    async login(password: string, username?: string, cpr?: string) {
+        const user = await this.userDatabase.find(username, cpr);
 
-        if (user && bcrypt.compareSync(body.password, user.password_hash)) {
+        if (user && bcrypt.compareSync(password, user.password_hash)) {
             const accessRights = await this.roleDatabase.getAccessRights(
                 user.id
             );
