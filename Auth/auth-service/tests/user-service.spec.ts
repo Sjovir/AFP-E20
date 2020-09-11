@@ -57,6 +57,7 @@ describe('UserService', function () {
     describe('Login users', function () {
         beforeEach(function () {
             this.testUserDB = {
+                id: '10e3bd61-890e-4ef0-aeea-caaf77d80b18',
                 firstName: this.testUser.firstName,
                 lastName: this.testUser.lastName,
                 cpr: this.testUser.cpr,
@@ -66,43 +67,73 @@ describe('UserService', function () {
         });
 
         it('login with correct cpr credentials', async function () {
-            const sb = sinon.stub(this.userDB, 'find');
-            sb.withArgs(undefined, this.testUser.cpr).returns(
-                Promise.resolve(this.testUserDB)
-            );
+            const sbFind = sinon.stub(this.userDB, 'find');
+            sbFind
+                .withArgs(undefined, this.testUser.cpr)
+                .returns(Promise.resolve(this.testUserDB));
+
+            const sbAccessRights = sinon.stub(this.roleDB, 'getAccessRights');
+            sbAccessRights
+                .withArgs(this.testUserDB.id)
+                .returns(
+                    Promise.resolve([
+                        'basic-access:read',
+                        'medicine-info:write',
+                    ])
+                );
 
             const tokens = await this.userSV.login({
-                cpr: this.testUser.cpr,
                 password: this.testUser.password,
+                cpr: this.testUser.cpr,
             });
 
             chai.expect(tokens).to.have.property('accessToken');
             chai.expect(tokens).to.have.property('refreshToken');
 
-            sb.restore();
+            sbFind.restore();
         });
 
         it('login with incorrect cpr credentials', async function () {
-            const sb = sinon.stub(this.userDB, 'find');
-            sb.withArgs(undefined, this.testUser.cpr).returns(
-                Promise.resolve(this.testUserDB)
-            );
+            const sbFind = sinon.stub(this.userDB, 'find');
+            sbFind
+                .withArgs(undefined, this.testUser.cpr)
+                .returns(Promise.resolve(this.testUserDB));
+
+            const sbAccessRights = sinon.stub(this.roleDB, 'getAccessRights');
+            sbAccessRights
+                .withArgs(this.testUserDB.id)
+                .returns(
+                    Promise.resolve([
+                        'basic-access:read',
+                        'medicine-info:write',
+                    ])
+                );
 
             const tokens = await this.userSV.login({
-                cpr: this.testUser.cpr,
                 password: 'incorrectpassword',
+                cpr: this.testUser.cpr,
             });
 
             chai.expect(tokens).to.be.null;
 
-            sb.restore();
+            sbFind.restore();
         });
 
         it('login with correct username credentials', async function () {
-            const sb = sinon.stub(this.userDB, 'find');
-            sb.withArgs(this.testUser.username, undefined).returns(
-                Promise.resolve(this.testUserDB)
-            );
+            const sbFind = sinon.stub(this.userDB, 'find');
+            sbFind
+                .withArgs(this.testUser.username, undefined)
+                .returns(Promise.resolve(this.testUserDB));
+
+            const sbAccessRights = sinon.stub(this.roleDB, 'getAccessRights');
+            sbAccessRights
+                .withArgs(this.testUserDB.id)
+                .returns(
+                    Promise.resolve([
+                        'basic-access:read',
+                        'medicine-info:write',
+                    ])
+                );
 
             const tokens = await this.userSV.login({
                 username: this.testUser.username,
@@ -112,14 +143,25 @@ describe('UserService', function () {
             chai.expect(tokens).to.have.property('accessToken');
             chai.expect(tokens).to.have.property('refreshToken');
 
-            sb.restore();
+            sbFind.restore();
+            sbAccessRights.restore();
         });
 
         it('login with incorrect username credentials', async function () {
-            const sb = sinon.stub(this.userDB, 'find');
-            sb.withArgs(this.testUser.username, undefined).returns(
-                Promise.resolve(this.testUserDB)
-            );
+            const sbFind = sinon.stub(this.userDB, 'find');
+            sbFind
+                .withArgs(this.testUser.username, undefined)
+                .returns(Promise.resolve(this.testUserDB));
+
+            const sbAccessRights = sinon.stub(this.roleDB, 'getAccessRights');
+            sbAccessRights
+                .withArgs(this.testUserDB.id)
+                .returns(
+                    Promise.resolve([
+                        'basic-access:read',
+                        'medicine-info:write',
+                    ])
+                );
 
             const tokens = await this.userSV.login({
                 username: this.testUser.username,
@@ -128,7 +170,8 @@ describe('UserService', function () {
 
             chai.expect(tokens).to.be.null;
 
-            sb.restore();
+            sbFind.restore();
+            sbAccessRights.restore();
         });
     });
 
@@ -150,10 +193,10 @@ describe('UserService', function () {
                 expiresIn: '1h',
             });
 
-            const newAccessToken = await this.userSV.refresh(
+            const newAccessToken = await this.userSV.refresh({
                 accessToken,
-                refreshToken
-            );
+                refreshToken,
+            });
 
             chai.expect(() =>
                 jwt.verify(newAccessToken, process.env.JWT_SECRET)
@@ -178,7 +221,7 @@ describe('UserService', function () {
             });
 
             await chai
-                .expect(this.userSV.refresh(accessToken, refreshToken))
+                .expect(this.userSV.refresh({ accessToken, refreshToken }))
                 .to.be.eventually.rejectedWith(TokenExpiredError);
         });
 

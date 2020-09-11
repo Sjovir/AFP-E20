@@ -27,10 +27,10 @@ class UserService {
         await this.userDatabase.create(body);
     }
 
-    async login(password: string, username?: string, cpr?: string) {
-        const user = await this.userDatabase.find(username, cpr);
+    async login(info: ILogin): Promise<IRefresh | null> {
+        const user = await this.userDatabase.find(info.username, info.cpr);
 
-        if (user && bcrypt.compareSync(password, user.password_hash)) {
+        if (user && bcrypt.compareSync(info.password, user.password_hash)) {
             const accessRights = await this.roleDatabase.getAccessRights(
                 user.id
             );
