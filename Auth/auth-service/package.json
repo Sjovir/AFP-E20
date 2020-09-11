@@ -7,12 +7,13 @@
     "type": "module",
     "license": "MIT",
     "scripts": {
-        "dev": "NODE_ENV=development tsnd --respawn src/index.ts",
-        "prod": "NODE_ENV=production tsnd --respawn src/index.ts",
+        "dev": "NODE_ENV=development tsnd --respawn --files src/index.ts",
+        "prod": "NODE_ENV=production tsnd --respawn --files src/index.ts",
         "test": "mocha --exit -r ts-node/register tests/**/*.spec.ts",
         "eslint": "eslint src/**/*.ts"
     },
     "dependencies": {
+        "ajv": "^6.12.4",
         "bcryptjs": "^2.4.3",
         "dotenv": "^8.2.0",
         "jsonwebtoken": "^8.5.1",

@@ -1,4 +1,7 @@
 {
+    "files.exclude": {
+        "node_modules": true
+    },
     "[typescript]": {
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "esbenp.prettier-vscode",

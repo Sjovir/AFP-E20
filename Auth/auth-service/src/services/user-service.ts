@@ -3,7 +3,6 @@ import { TokenExpiredError } from 'jsonwebtoken';
 
 import UserDatabase from '../database/user-database';
 import RoleDatabase from '../database/role-database';
-import { RegisterBody, LoginBody } from '../controllers/auth-controller';
 import {
     verify,
     signAccessToken,
@@ -17,7 +16,7 @@ class UserService {
         private roleDatabase: RoleDatabase
     ) {}
 
-    async createUser(body: RegisterBody) {
+    async createUser(body: IRegister) {
         const password_hashed = bcrypt.hashSync(
             body.password,
             bcrypt.genSaltSync(10)
@@ -28,10 +27,10 @@ class UserService {
         await this.userDatabase.create(body);
     }
 
-    async login(body: LoginBody) {
-        const user = await this.userDatabase.find(body.username, body.cpr);
+    async login(info: ILogin): Promise<IRefresh | null> {
+        const user = await this.userDatabase.find(info.username, info.cpr);
 
-        if (user && bcrypt.compareSync(body.password, user.password_hash)) {
+        if (user && bcrypt.compareSync(info.password, user.password_hash)) {
             const accessRights = await this.roleDatabase.getAccessRights(
                 user.id
             );
@@ -50,24 +49,26 @@ class UserService {
         return null;
     }
 
-    async refresh(accessToken: string, refreshToken: string): Promise<string> {
+    async refresh(tokens: IRefresh): Promise<string> {
         let newAccessToken = null;
 
         // TODO: access token should be expired for refresh to function
         let accessTokenDecode: Record<string, unknown>;
         try {
-            accessTokenDecode = <Record<string, unknown>>verify(accessToken);
+            accessTokenDecode = <Record<string, unknown>>(
+                verify(tokens.accessToken)
+            );
         } catch (err) {
             if (err instanceof TokenExpiredError) {
                 accessTokenDecode = <Record<string, unknown>>(
-                    decode(accessToken)
+                    decode(tokens.accessToken)
                 );
             } else {
                 throw err;
             }
         }
 
-        verify(refreshToken);
+        verify(tokens.refreshToken);
 
         if (accessTokenDecode) {
             newAccessToken = signAccessToken({

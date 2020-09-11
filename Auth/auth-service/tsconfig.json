@@ -6,6 +6,9 @@
         "sourceMap": true,
         "esModuleInterop": true
     },
-    "include": ["src/**/*.ts"],
+    "ts-node": {
+        "files": true
+    },
+    "include": ["src/**/*.ts", "declariations/**.d.ts"],
     "exclude": ["node_modules", ".vscode"]
 }
