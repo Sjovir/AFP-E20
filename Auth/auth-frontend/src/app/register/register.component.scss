@@ -1,29 +1,47 @@
 .register-page {
-  width: 300px;
+  width: 500px;
   margin: 0 auto;
 
-  .form {
+  .container {
     display: flex;
     flex-direction: column;
-    padding: 8px;
+    padding: 16px;
 
-    .fields {
+    hr {
+      width: 100%;
+    }
+
+    form {
       display: flex;
       flex-direction: column;
 
-      input {
-        padding: 4px 0 4px 4px;
-        margin-bottom: 8px;
+      .fields {
+        display: flex;
+        flex-direction: column;
+
+        .field {
+          display: flex;
+          flex-direction: column;
+          margin-bottom: 8px;
+
+          input {
+            padding: 8px 0 8px 8px;
+          }
+
+          &:last-child {
+            margin-bottom: 16px;
+          }
+        }
       }
 
-      input:last-child {
-        margin-bottom: 16px;
+      button {
+        width: 100px;
+        align-self: flex-end;
+
+        &:disabled {
+          opacity: 0.2;
+        }
       }
     }
-  }
-
-  button {
-    width: 80px;
-    align-self: flex-end;
   }
 }

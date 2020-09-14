@@ -1,12 +1,83 @@
-<div class="register-page">
-  <div class="form">
-    <div class="fields">
-      <input type="text" id="email" placeholder="email" />
-      <input type="text" id="password" placeholder="password" />
-      <input type="text" id="cpr" placeholder="CPR" />
-      <input type="text" id="firstName" placeholder="first name" />
-      <input type="text" id="lastName" placeholder="last name" />
-    </div>
-    <button>Register</button>
+<div class="register-page mt-4">
+  <div class="container jumbotron submit-form text-center">
+    <p class="h1">Register</p>
+    <hr />
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="fields">
+        <div class="field">
+          <input
+            class="form-control"
+            type="text"
+            id="email"
+            formControlName="email"
+            placeholder="Email"
+          />
+          <small
+            *ngIf="emailControl.touched && emailControl.errors?.required"
+            class="form-text text-danger"
+            >Email is required.</small
+          >
+        </div>
+        <div class="field">
+          <input
+            class="form-control"
+            type="text"
+            id="password"
+            formControlName="password"
+            placeholder="Password"
+          />
+          <small
+            *ngIf="passwordControl.touched && passwordControl.errors?.required"
+            class="form-text text-danger"
+            >Password is required.</small
+          >
+        </div>
+        <div class="field">
+          <input
+            class="form-control"
+            type="text"
+            id="cpr"
+            formControlName="cpr"
+            placeholder="CPR"
+          />
+          <small
+            *ngIf="cprControl.touched && cprControl.errors?.required"
+            class="form-text text-danger"
+            >CPR is required.</small
+          >
+        </div>
+        <div class="field">
+          <input
+            class="form-control"
+            type="text"
+            id="firstName"
+            formControlName="firstName"
+            placeholder="First name"
+          />
+          <small
+            *ngIf="
+              firstNameControl.touched && firstNameControl.errors?.required
+            "
+            class="form-text text-danger"
+            >First name is required.</small
+          >
+        </div>
+        <div class="field">
+          <input
+            class="form-control"
+            type="text"
+            id="lastName"
+            formControlName="lastName"
+            placeholder="Last name"
+          />
+          <small
+            *ngIf="lastNameControl.touched && lastNameControl.errors?.required"
+            class="form-text text-danger"
+            >Last name is required.</small
+          >
+        </div>
+      </div>
+      <button class="btn btn-primary" type="submit">Register</button>
+    </form>
   </div>
 </div>
