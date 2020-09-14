@@ -14,12 +14,12 @@ export class AuthService {
     firstName?: string,
     lastName?: string
   ) {
-    const request = await axios.post('localhost:3000/api/register', {
+    const request = await axios.post('http://localhost:3000/api/register', {
       username: email,
       cpr,
       password,
     });
 
-    console.log(request);
+    return request.status === 200;
   }
 }
