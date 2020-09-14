@@ -1,24 +1,54 @@
-@import '~bootstrap/scss/bootstrap';
+/* Importing Bootstrap SCSS file. */
+@import "~bootstrap/scss/bootstrap";
 
 /* You can add global styles to this file, and also import other style files */
 $full-page-padding: 5rem;
 $shrunk-page-padding: 2rem;
+$field-margin: 2rem;
 
+html,
+body {
+  height: 100%;
+}
 
 .navbar-nav {
-    padding: 0 $full-page-padding;
+  padding: 0 $full-page-padding;
 }
 
 .content-page {
-    padding: 0 ($full-page-padding + 1);
+  display: flex;
+  padding: 0 ($full-page-padding + 1);
+  height: 100%;
+  vertical-align: middle;
+}
+
+.submit-form {
+  display: flex;
+  flex-direction: column;
+  width: 50vh;
+  // min-height: 50vh;
+  margin: auto auto;
 }
 
 @media only screen and (max-width: 992px) {
-    .navbar-nav {
-        padding: 0 $shrunk-page-padding;
-    }
-    
-    .content-page {
-        padding: 0 ($shrunk-page-padding + 1);
-    }
+  .navbar-nav {
+    padding: 0 $shrunk-page-padding;
+  }
+
+  .content-page {
+    padding: 0 ($shrunk-page-padding + 1);
+  }
+}
+
+hr {
+  margin: 0;
+}
+
+.field {
+  & > input:only-child {
+    margin-bottom: $field-margin;
+  }
+  & > small {
+    margin-bottom: $field-margin;
+  }
 }
