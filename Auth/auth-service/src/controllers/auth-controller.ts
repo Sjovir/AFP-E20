@@ -75,7 +75,7 @@ class AuthController {
             return;
         }
 
-        const token = await this.userService.login(password, username, cpr);
+        const token = await this.userService.login({ password, username, cpr });
 
         if (token) {
             ctx.response.body = token;
