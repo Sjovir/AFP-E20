@@ -13,6 +13,8 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent implements OnInit {
+  public onSubmitMessage: string;
+  public onSubmitStatus: number;
   public registerForm: FormGroup;
 
   constructor(
@@ -22,29 +24,49 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit(): void {
     this.registerForm = this.formBuiler.group({
-      email: ['', Validators.required],
-      password: ['', Validators.required],
-      cpr: ['', Validators.required],
-      firstName: [''],
-      lastName: [''],
+      username: ['', [Validators.required, Validators.minLength(4)]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      cpr: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(10),
+          Validators.maxLength(10),
+        ],
+      ],
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
     });
   }
 
   async onSubmit(): Promise<void> {
-    // [disabled]="!registerForm.valid"
-    console.log(this.registerForm);
+    const {
+      username,
+      password,
+      cpr,
+      firstName,
+      lastName,
+    } = this.registerForm.value;
 
-    const { email, password, cpr } = this.registerForm.value;
+    try {
+      await this.authService.register(
+        username,
+        password,
+        cpr,
+        firstName,
+        lastName
+      );
 
-    await this.authService.register(
-      'dennis@hotmail.com',
-      'fronttest',
-      '0011223344'
-    );
+      this.onSubmitMessage = `Account ${username} has been created.`;
+      this.onSubmitStatus = 0;
+    } catch (err) {
+      this.onSubmitMessage = err.message;
+      this.onSubmitStatus = 1;
+    }
   }
 
-  get emailControl(): AbstractControl {
-    return this.registerForm.get('email') as AbstractControl;
+  get usernameControl(): AbstractControl {
+    return this.registerForm.get('username') as AbstractControl;
   }
 
   get passwordControl(): AbstractControl {

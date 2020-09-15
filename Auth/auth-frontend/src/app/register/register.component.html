@@ -8,14 +8,14 @@
           <input
             class="form-control"
             type="text"
-            id="email"
-            formControlName="email"
-            placeholder="Email"
+            id="username"
+            formControlName="username"
+            placeholder="Username"
           />
           <small
-            *ngIf="emailControl.touched && emailControl.errors?.required"
+            *ngIf="usernameControl.touched && usernameControl.errors !== null"
             class="form-text text-danger"
-            >Email is required.</small
+            >Username must have at least 4 characters.</small
           >
         </div>
         <div class="field">
@@ -27,9 +27,9 @@
             placeholder="Password"
           />
           <small
-            *ngIf="passwordControl.touched && passwordControl.errors?.required"
+            *ngIf="passwordControl.touched && passwordControl.errors !== null"
             class="form-text text-danger"
-            >Password is required.</small
+            >Password must have at least 8 characters.</small
           >
         </div>
         <div class="field">
@@ -41,9 +41,9 @@
             placeholder="CPR"
           />
           <small
-            *ngIf="cprControl.touched && cprControl.errors?.required"
+            *ngIf="cprControl.touched && cprControl.errors !== null"
             class="form-text text-danger"
-            >CPR is required.</small
+            >CPR must be exactly 10 characters.</small
           >
         </div>
         <div class="field">
@@ -55,11 +55,9 @@
             placeholder="First name"
           />
           <small
-            *ngIf="
-              firstNameControl.touched && firstNameControl.errors?.required
-            "
+            *ngIf="firstNameControl.touched && firstNameControl.errors !== null"
             class="form-text text-danger"
-            >First name is required.</small
+            >First name must have at least 2 characters.</small
           >
         </div>
         <div class="field">
@@ -71,13 +69,28 @@
             placeholder="Last name"
           />
           <small
-            *ngIf="lastNameControl.touched && lastNameControl.errors?.required"
+            *ngIf="lastNameControl.touched && lastNameControl.errors !== null"
             class="form-text text-danger"
-            >Last name is required.</small
+            >Last name must have at least 2 characters.</small
           >
         </div>
       </div>
-      <button class="btn btn-primary" type="submit">Register</button>
+      <button
+        class="btn btn-primary"
+        type="submit"
+        [disabled]="!registerForm.valid"
+      >
+        Register
+      </button>
     </form>
+    <small
+      class="form-text text-danger"
+      *ngIf="onSubmitMessage"
+      [ngClass]="{
+        'text-danger': onSubmitStatus > 0,
+        'text-success': onSubmitStatus === 0
+      }"
+      >{{ onSubmitMessage }}</small
+    >
   </div>
 </div>
