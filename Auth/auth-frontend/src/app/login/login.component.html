@@ -1,5 +1,5 @@
 <div class="content-page">
-  <div class="jumbotron submit-form text-center">
+  <div class="container jumbotron submit-form text-center">
     <p class="h1">Login</p>
     <hr class="my-4" />
     <br />
@@ -44,7 +44,13 @@
         [ngbTooltip]="'There is one or more errors'"
         [placement]="'bottom'"
       >
-        <button class="btn btn-primary" type="submit">Login</button>
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!loginForm.valid"
+        >
+          Login
+        </button>
       </div>
     </form>
   </div>

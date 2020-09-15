@@ -13,6 +13,7 @@
         "eslint": "eslint src/**/*.ts"
     },
     "dependencies": {
+        "@koa/cors": "^3.1.0",
         "ajv": "^6.12.4",
         "bcryptjs": "^2.4.3",
         "dotenv": "^8.2.0",
@@ -31,6 +32,7 @@
         "@types/koa": "^2.11.4",
         "@types/koa-bodyparser": "^4.3.0",
         "@types/koa-router": "^7.4.1",
+        "@types/koa__cors": "^3.0.1",
         "@types/mocha": "^8.0.3",
         "@types/node": "^14.6.3",
         "@types/sinon": "^9.0.5",

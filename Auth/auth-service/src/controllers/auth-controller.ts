@@ -25,6 +25,7 @@ class AuthController {
 
         if (!valid) {
             ctx.response.body = compiled.errors;
+            ctx.response.status = 400;
             return;
         }
 
@@ -59,6 +60,7 @@ class AuthController {
 
         if (!valid) {
             ctx.response.body = compiled.errors;
+            ctx.response.status = 400;
             return;
         }
 
@@ -75,7 +77,7 @@ class AuthController {
             return;
         }
 
-        const token = await this.userService.login(password, username, cpr);
+        const token = await this.userService.login({ password, username, cpr });
 
         if (token) {
             ctx.response.body = token;
@@ -96,6 +98,7 @@ class AuthController {
 
         if (!valid) {
             ctx.response.body = compiled.errors;
+            ctx.response.status = 400;
             return;
         }
 

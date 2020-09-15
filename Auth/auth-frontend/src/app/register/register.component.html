@@ -1,3 +1,96 @@
-<div class="content-page">
-    <h1>Register</h1>
+<div class="register-page mt-4">
+  <div class="container jumbotron submit-form text-center">
+    <p class="h1">Register</p>
+    <hr />
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="fields">
+        <div class="field">
+          <input
+            class="form-control"
+            type="text"
+            id="username"
+            formControlName="username"
+            placeholder="Username"
+          />
+          <small
+            *ngIf="usernameControl.touched && usernameControl.errors !== null"
+            class="form-text text-danger"
+            >Username must have at least 4 characters.</small
+          >
+        </div>
+        <div class="field">
+          <input
+            class="form-control"
+            type="text"
+            id="password"
+            formControlName="password"
+            placeholder="Password"
+          />
+          <small
+            *ngIf="passwordControl.touched && passwordControl.errors !== null"
+            class="form-text text-danger"
+            >Password must have at least 8 characters.</small
+          >
+        </div>
+        <div class="field">
+          <input
+            class="form-control"
+            type="text"
+            id="cpr"
+            formControlName="cpr"
+            placeholder="CPR"
+          />
+          <small
+            *ngIf="cprControl.touched && cprControl.errors !== null"
+            class="form-text text-danger"
+            >CPR must be exactly 10 characters.</small
+          >
+        </div>
+        <div class="field">
+          <input
+            class="form-control"
+            type="text"
+            id="firstName"
+            formControlName="firstName"
+            placeholder="First name"
+          />
+          <small
+            *ngIf="firstNameControl.touched && firstNameControl.errors !== null"
+            class="form-text text-danger"
+            >First name must have at least 2 characters.</small
+          >
+        </div>
+        <div class="field">
+          <input
+            class="form-control"
+            type="text"
+            id="lastName"
+            formControlName="lastName"
+            placeholder="Last name"
+          />
+          <small
+            *ngIf="lastNameControl.touched && lastNameControl.errors !== null"
+            class="form-text text-danger"
+            >Last name must have at least 2 characters.</small
+          >
+        </div>
+      </div>
+      <button
+        class="btn btn-primary"
+        type="submit"
+        [disabled]="!registerForm.valid"
+      >
+        Register
+      </button>
+    </form>
+    <small
+      class="form-text text-danger"
+      *ngIf="onSubmitMessage"
+      [ngClass]="{
+        'text-danger': onSubmitStatus > 0,
+        'text-success': onSubmitStatus === 0
+      }"
+      >{{ onSubmitMessage }}</small
+    >
+  </div>
 </div>

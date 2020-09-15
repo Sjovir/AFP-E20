@@ -4,51 +4,29 @@
 /* You can add global styles to this file, and also import other style files */
 $full-page-padding: 5rem;
 $shrunk-page-padding: 2rem;
-$field-margin: 2rem;
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
 
 html,
 body {
   height: 100%;
+  overflow: hidden;
 }
 
 .navbar-nav {
-  padding: 0 $full-page-padding;
-}
-
-.content-page {
-  display: flex;
-  padding: 0 ($full-page-padding + 1);
-  height: 100%;
-  vertical-align: middle;
-}
-
-.submit-form {
-  display: flex;
-  flex-direction: column;
-  width: 50vh;
-  // min-height: 50vh;
-  margin: auto auto;
+  padding: 0 5rem;
 }
 
 @media only screen and (max-width: 992px) {
   .navbar-nav {
-    padding: 0 $shrunk-page-padding;
+    padding: 0 2rem;
   }
 
   .content-page {
-    padding: 0 ($shrunk-page-padding + 1);
-  }
-}
-
-hr {
-  margin: 0;
-}
-
-.field {
-  & > input:only-child {
-    margin-bottom: $field-margin;
-  }
-  & > small {
-    margin-bottom: $field-margin;
+    padding: 0 (2rem + 1);
   }
 }
