@@ -1,3 +1,51 @@
 <div class="content-page">
-    <h1>Login</h1>
+  <div class="jumbotron submit-form text-center">
+    <p class="h1">Login</p>
+    <hr class="my-4" />
+    <br />
+    <form [formGroup]="loginForm" (ngSubmit)="login()">
+      <div class="field">
+        <input
+          class="form-control text-center"
+          type="text"
+          placeholder="Username or CPR"
+          formControlName="username"
+        />
+        <small
+          *ngIf="usernameControl.touched && usernameControl.errors?.required"
+          class="form-text text-danger"
+          >Missing username or CPR</small
+        >
+      </div>
+      <div class="field">
+        <input
+          class="form-control text-center"
+          type="password"
+          placeholder="Password"
+          formControlName="password"
+        />
+        <small
+          *ngIf="passwordControl.touched && passwordControl.errors?.required"
+          class="form-text text-danger"
+          >Missing password</small
+        >
+        <small
+          *ngIf="
+            passwordControl.touched &&
+            !passwordControl.errors?.required &&
+            passwordControl.errors?.minlength !== null
+          "
+          class="form-text text-danger"
+          >Password must be at least 8 characters</small
+        >
+      </div>
+      <div
+        [disableTooltip]="!anyErrors"
+        [ngbTooltip]="'There is one or more errors'"
+        [placement]="'bottom'"
+      >
+        <button class="btn btn-primary" type="submit">Login</button>
+      </div>
+    </form>
+  </div>
 </div>
