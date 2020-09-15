@@ -29,7 +29,7 @@ export class AuthService {
         if (request.data.code === 'CPR_OR_USERNAME_IN_USE') {
           throw new Error('User already exists.');
         } else {
-          throw new Error('Server-side error. Contract staff!');
+          throw new Error('Server-side error. Contact staff!');
         }
       }
     }
