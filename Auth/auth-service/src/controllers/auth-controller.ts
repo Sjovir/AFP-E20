@@ -25,6 +25,7 @@ class AuthController {
 
         if (!valid) {
             ctx.response.body = compiled.errors;
+            ctx.response.status = 400;
             return;
         }
 
@@ -59,6 +60,7 @@ class AuthController {
 
         if (!valid) {
             ctx.response.body = compiled.errors;
+            ctx.response.status = 400;
             return;
         }
 
@@ -96,6 +98,7 @@ class AuthController {
 
         if (!valid) {
             ctx.response.body = compiled.errors;
+            ctx.response.status = 400;
             return;
         }
 
