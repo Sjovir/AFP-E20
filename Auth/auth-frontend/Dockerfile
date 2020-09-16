@@ -2,7 +2,6 @@
 ## STEP 1 Base image ##
 #######################
 FROM node:12.18.3-alpine3.12 as builder
-# FROM node:12.18.3-alpine3.12
 
 # Working directory in base container
 WORKDIR /app
@@ -10,9 +9,6 @@ WORKDIR /app
 # The dependencies to the project
 COPY package.json .
 COPY yarn.lock .
-
-# The version of YARN to install
-ENV YARN-VERSION 1.22.5
 
 # Add curl
 RUN apk --no-cache add curl
@@ -43,6 +39,3 @@ COPY --from=builder /app/nginx.conf /etc/nginx/nginx.conf
 
 # Copy app to nginx
 COPY --from=builder /app/dist/auth-frontend /usr/share/nginx/html
-
-# Run container in foreground to prevent docker from shutting it down immediately
-# CMD ["nginx", "-g", "daemon off;"]

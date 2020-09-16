@@ -7,9 +7,6 @@ WORKDIR /usr/app
 COPY package.json .
 COPY yarn.lock .
 
-# The version of YARN to install
-ENV YARN-VERSION 1.22.5
-
 # Add curl
 RUN apk --no-cache add curl
 

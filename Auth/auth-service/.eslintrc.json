@@ -11,13 +11,7 @@
     "rules": {
         "semi": "error",
         "@typescript-eslint/no-unused-vars": "off",
-        "@typescript-eslint/no-unused-vars-experimental": [
-            "error",
-            {
-                "argsIgnorePattern": "^_",
-                "varsIgnorePattern": "^_"
-            }
-        ],
+        "@typescript-eslint/no-unused-vars-experimental": "error",
         "@typescript-eslint/explicit-module-boundary-types": ["off"]
     }
 }
