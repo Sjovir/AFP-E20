@@ -13,7 +13,7 @@ const schema = {
         },
         username: {
             type: 'string',
-            minLength: 4,
+            minLength: 2,
         },
         password: {
             type: 'string',

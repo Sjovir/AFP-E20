@@ -53,5 +53,14 @@
         </button>
       </div>
     </form>
+    <small
+      class="form-text"
+      *ngIf="onLoginMessage"
+      [ngClass]="{
+        'text-danger': onLoginStatus > 0,
+        'text-success': onLoginStatus === 0
+      }"
+      >{{ onLoginMessage }}</small
+    >
   </div>
 </div>

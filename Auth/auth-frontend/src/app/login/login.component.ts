@@ -6,6 +6,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -14,22 +15,33 @@ import {
 })
 export class LoginComponent implements OnInit {
   public loginForm: FormGroup;
+  public onLoginMessage: string;
+  public onLoginStatus: number;
 
-  constructor(private formBuiler: FormBuilder) {}
+  constructor(
+    private formBuiler: FormBuilder,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.loginForm = this.formBuiler.group({
-      username: ['', Validators.required],
-      password: new FormControl('', [
-        Validators.required,
-        Validators.minLength(8),
-      ]),
+      username: ['', [Validators.required, Validators.minLength(2)]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
     });
   }
 
-  login(): void {
-    alert('Test');
-    //TODO: connect to backend endpoint
+  async login(): Promise<void> {
+    try {
+      await this.authService
+        .login(this.usernameControl.value, this.passwordControl.value)
+        .then((data: { accessToken: string; refreshToken: string }) => {
+          this.onLoginMessage = `Logged in to account ${this.usernameControl.value}. Redirecting in a moment...`;
+          this.onLoginStatus = 0;
+        });
+    } catch (err) {
+      this.onLoginMessage = err.message;
+      this.onLoginStatus = 1;
+    }
   }
 
   public get usernameControl(): AbstractControl {
@@ -37,7 +49,6 @@ export class LoginComponent implements OnInit {
   }
 
   public get passwordControl(): AbstractControl {
-    console.log(this.loginForm.get('password').errors);
     return this.loginForm.get('password') as AbstractControl;
   }
 
