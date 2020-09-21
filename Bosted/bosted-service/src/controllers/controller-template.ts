@@ -1,20 +1,21 @@
-import { Next, Context } from "koa";
+import { Next, Context } from 'koa';
 
 class ControllerTemplate {
-  constructor() {}
+    // constructor() {}
 
-  async post(ctx: Context, next: Next) {
-    // const compiled = ajv.compile(schema);
-    // const valid = compiled(ctx.request.body);
+    async post(ctx: Context, next: Next) {
+        ctx.response.body = 'POST Protocol received!';
+        // const compiled = ajv.compile(schema);
+        // const valid = compiled(ctx.request.body);
 
-    // if (!valid) {
-    //     ctx.response.body = compiled.errors;
-    //     ctx.response.status = 400;
-    //     return;
-    // }
+        // if (!valid) {
+        //     ctx.response.body = compiled.errors;
+        //     ctx.response.status = 400;
+        //     return;
+        // }
 
-    next();
-  }
+        next();
+    }
 }
 
 export default ControllerTemplate;

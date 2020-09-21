@@ -13,6 +13,6 @@ server.use(cors({ origin: 'http://localhost:4200' }));
 server.use(bodyparser());
 server.use(router.routes());
 
-const app = server.listen(3000);
+const app = server.listen(3010);
 
 export default app;
