@@ -1,11 +1,13 @@
 import Router from 'koa-router';
-import ControllerTemplate from '../controllers/controller-template';
+
+import citizenRouter from './citizen-router';
+import installationRouter from './installation-router';
 
 const router = new Router({ prefix: '/api' });
-const controller = new ControllerTemplate();
 
-router.post('/', async (ctx, next) => {
-    controller.post(ctx, next);
-});
+router.use(citizenRouter.routes(), citizenRouter.allowedMethods());
+router.use(installationRouter.routes(), installationRouter.allowedMethods());
+
+console.log(citizenRouter.prefix);
 
 export default router;

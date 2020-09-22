@@ -22,7 +22,7 @@ export default class InstallationModel {
         );
     }
 
-    async update(uuid: string, installation: Partial<IInstallation>) {
+    async update(uuid: string, installation: IInstallation) {
         return await pool.query(
             `
             UPDATE Installation
