@@ -17,8 +17,8 @@ export default class CitizenModel {
     async create(citizen: ICitizen) {
         return await pool.query(
             `
-            INSERT INTO Citizen (id, first_name, last_name, cpr)
-            VALUES (uuid(), ?, ?, ?);
+            INSERT INTO Citizen (first_name, last_name, cpr)
+            VALUES (?, ?, ?);
             `,
             [citizen.firstName, citizen.lastName, citizen.cpr]
         );
@@ -28,9 +28,7 @@ export default class CitizenModel {
         return await pool.query(
             `
             UPDATE Citizen
-            SET first_name = IF(first_name IS NULL, first_name, ?),
-            last_name = IF(last_name IS NULL, last_name, ?),
-            cpr = IF(cpr IS NULL, cpr, ?)
+            SET first_name = ?, last_name = ?, cpr = ?
             WHERE id = ?;
             `,
             [citizen.firstName, citizen.lastName, citizen.cpr, uuid]

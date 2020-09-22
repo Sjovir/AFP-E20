@@ -15,8 +15,8 @@ export default class InstallationModel {
     async create(installation: IInstallation) {
         return await pool.query(
             `
-            INSERT INTO Installation (id, name, address)
-            VALUES (uuid(), ?, ?);
+            INSERT INTO Installation (name, address)
+            VALUES (?, ?);
             `,
             [installation.name, installation.address]
         );
@@ -26,8 +26,7 @@ export default class InstallationModel {
         return await pool.query(
             `
             UPDATE Installation
-            SET name = IF(name IS NULL, name, ?),
-            address = IF(address IS NULL, address, ?)
+            SET name = ?, address = ?
             WHERE id = ?;
             `,
             [installation.name, installation.address, uuid]
@@ -40,12 +39,19 @@ export default class InstallationModel {
         ]);
     }
 
+    async getAllCitizens(installationUUID: string) {
+        return await pool.query(
+            'SELECT id, first_name, last_name FROM CitizenInstallation WHERE installation_id = ?;',
+            [installationUUID]
+        );
+    }
+
     async addCitizen(citizenUUID: string, installationUUID: string) {
         return await pool.query(
             `
-        INSERT INTO CitizenInstallation (id, citizen_id, installation_id)
-        VALUES (uuid(), ?, ?);
-        `,
+            INSERT INTO CitizenInstallation (citizen_id, installation_id)
+            VALUES (?, ?);
+            `,
             [citizenUUID, installationUUID]
         );
     }
@@ -54,7 +60,7 @@ export default class InstallationModel {
         return await pool.query(
             `
             DELETE FROM CitizenInstallation WHERE citizen_id = ? AND installation_id = ?;
-        `,
+            `,
             [citizenUUID, installationUUID]
         );
     }
@@ -63,7 +69,7 @@ export default class InstallationModel {
         return await pool.query(
             `
             DELETE FROM CitizenInstallation WHERE id = ?;
-        `,
+            `,
             [CitizenInstallationUUID]
         );
     }
