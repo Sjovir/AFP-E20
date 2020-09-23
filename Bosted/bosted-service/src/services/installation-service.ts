@@ -26,6 +26,10 @@ export default class InstallationService {
         await this.installationModel.delete(installationUUID);
     }
 
+    async getCitizens(installationUUID: string) {
+        return await this.installationModel.getCitizens(installationUUID);
+    }
+
     async addCitizen(citizenUUID: string, installationUUID: string) {
         await this.installationModel.addCitizen(citizenUUID, installationUUID);
     }

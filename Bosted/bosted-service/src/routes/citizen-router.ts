@@ -25,7 +25,7 @@ router.put('/:citizenUUID', async (ctx, next) => {
     await controller.update(ctx, next);
 });
 
-router.delete('/', async (ctx, next) => {
+router.delete('/:citizenUUID', async (ctx, next) => {
     await controller.delete(ctx, next);
 });
 

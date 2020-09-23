@@ -1,76 +1,154 @@
 import { Next, Context } from 'koa';
+
 import CitizenService from '../services/citizen-service';
+
+import ajv from '../schemas/schema-validator';
+import citizenSchema from '../schemas/citizen-schema';
+import { isUUID } from '../utils/uuid-util';
 
 export default class CitizenController {
     constructor(private citizenService: CitizenService) {}
 
-    async get(ctx: Context, next: Next) {
-        ctx.response.body = 'GET Citizen';
-        // const compiled = ajv.compile(schema);
-        // const valid = compiled(ctx.request.body);
-
-        // if (!valid) {
-        //     ctx.response.body = compiled.errors;
-        //     ctx.response.status = 400;
-        //     return;
-        // }
-
-        await next();
+    async getAll(ctx: Context, next: Next) {
+        try {
+            const allCitizens = await this.citizenService.getAllCitizens();
+            ctx.response.body = allCitizens;
+            await next();
+        } catch (err) {
+            ctx.response.body = 500;
+        }
     }
 
-    async getAll(ctx: Context, next: Next) {
-        ctx.response.body = 'GET All Citizens';
-        // const compiled = ajv.compile(schema);
-        // const valid = compiled(ctx.request.body);
+    async get(ctx: Context, next: Next) {
+        const id = ctx.params.citizenUUID;
 
-        // if (!valid) {
-        //     ctx.response.body = compiled.errors;
-        //     ctx.response.status = 400;
-        //     return;
-        // }
+        if (!isUUID(id)) {
+            ctx.response.status = 400;
+            ctx.response.body = {
+                errors: [
+                    {
+                        message: 'The inserted id is not an UUID.',
+                        code: 'INVALID_IDENTIFIER',
+                    },
+                ],
+            };
 
-        await next();
+            return;
+        }
+
+        try {
+            const citizen = await this.citizenService.getCitizen(id);
+            ctx.response.body = citizen;
+            await next();
+        } catch (err) {
+            ctx.response.body = 500;
+        }
     }
 
     async create(ctx: Context, next: Next) {
-        ctx.response.body = 'POST Create';
-        // const compiled = ajv.compile(schema);
-        // const valid = compiled(ctx.request.body);
+        const citizen: ICitizen = ctx.request.body;
 
-        // if (!valid) {
-        //     ctx.response.body = compiled.errors;
-        //     ctx.response.status = 400;
-        //     return;
-        // }
+        const compiled = ajv.compile(citizenSchema);
+        const valid = compiled(citizen);
 
-        await next();
+        if (!valid) {
+            ctx.response.body = compiled.errors;
+            ctx.response.status = 400;
+            return;
+        }
+
+        try {
+            await this.citizenService.createCitizen(citizen);
+            ctx.response.status = 201;
+            await next();
+        } catch (err) {
+            if (err.errno === 1062) {
+                ctx.response.body = {
+                    errors: [
+                        {
+                            message: 'Citizen exists already.',
+                            code: 'CITIZEN_EXISTS',
+                        },
+                    ],
+                };
+            } else {
+                ctx.response.status = 500;
+            }
+        }
     }
 
     async update(ctx: Context, next: Next) {
-        ctx.response.body = 'PUT Update';
-        // const compiled = ajv.compile(schema);
-        // const valid = compiled(ctx.request.body);
+        const id = ctx.params.citizenUUID;
 
-        // if (!valid) {
-        //     ctx.response.body = compiled.errors;
-        //     ctx.response.status = 400;
-        //     return;
-        // }
+        if (!isUUID(id)) {
+            ctx.response.status = 400;
+            ctx.response.body = {
+                errors: [
+                    {
+                        message: 'The inserted id is not an UUID.',
+                        code: 'INVALID_IDENTIFIER',
+                    },
+                ],
+            };
 
-        await next();
+            return;
+        }
+
+        const citizen: ICitizen = ctx.request.body;
+
+        const compiled = ajv.compile(citizenSchema);
+        const valid = compiled(citizen);
+
+        if (!valid) {
+            ctx.response.body = compiled.errors;
+            ctx.response.status = 400;
+            return;
+        }
+
+        try {
+            await this.citizenService.updateCitizen(id, citizen);
+            ctx.response.status = 201;
+            await next();
+        } catch (err) {
+            ctx.response.status = 500;
+        }
     }
 
     async delete(ctx: Context, next: Next) {
-        ctx.response.body = 'DELETE Citizen';
-        // const compiled = ajv.compile(schema);
-        // const valid = compiled(ctx.request.body);
+        const id = ctx.params.citizenUUID;
 
-        // if (!valid) {
-        //     ctx.response.body = compiled.errors;
-        //     ctx.response.status = 400;
-        //     return;
-        // }
+        if (!isUUID(id)) {
+            ctx.response.status = 400;
+            ctx.response.body = {
+                errors: [
+                    {
+                        message: 'The inserted id is not an UUID.',
+                        code: 'INVALID_IDENTIFIER',
+                    },
+                ],
+            };
 
-        await next();
+            return;
+        }
+
+        try {
+            await this.citizenService.deleteCitizen(id);
+            ctx.response.status = 200;
+
+            await next();
+        } catch (err) {
+            if (err.errno === 1451) {
+                ctx.response.body = {
+                    errors: [
+                        {
+                            message: 'Citizen is connected to installations.',
+                            code: 'CITIZEN_IS_CONNECTED',
+                        },
+                    ],
+                };
+            } else {
+                ctx.response.status = 500;
+            }
+        }
     }
 }
