@@ -3,20 +3,14 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MenuComponent } from './nav/menu/menu.component';
-import { TopBarComponent } from './nav/top-bar/top-bar.component';
+import { ComponentsModule } from './components/components.module';
+import { MenuComponent } from './components/nav/menu/menu.component';
+import { TopBarComponent } from './components/nav/top-bar/top-bar.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    MenuComponent,
-    TopBarComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule
-  ],
+  declarations: [AppComponent, MenuComponent, TopBarComponent],
+  imports: [BrowserModule, AppRoutingModule, ComponentsModule],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
