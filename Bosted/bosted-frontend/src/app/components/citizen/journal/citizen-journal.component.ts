@@ -4,11 +4,11 @@ import { Citizen } from 'src/app/models/citizen.model';
 import { CitizenService } from 'src/app/services/citizen.service';
 
 @Component({
-  selector: 'citizen-basic',
-  templateUrl: './basic.component.html',
-  styleUrls: ['./basic.component.scss'],
+  selector: 'citizen-journal',
+  templateUrl: './citizen-journal.component.html',
+  styleUrls: ['./citizen-journal.component.scss'],
 })
-export class BasicComponent implements OnInit {
+export class CitizenJournalComponent implements OnInit {
   public citizen: Citizen;
 
   constructor(
@@ -18,7 +18,7 @@ export class BasicComponent implements OnInit {
 
   ngOnInit(): void {
     this.activeRoute.params.subscribe((params) => {
-      const citizenId = params['id'];
+      const citizenId = this.activeRoute.parent.snapshot.params['id'];
       this.citizen = this.citizenService.getCitizen(citizenId);
     });
   }
