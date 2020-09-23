@@ -22,7 +22,7 @@ export default class InstallationModel {
         );
     }
 
-    async update(uuid: string, installation: Partial<IInstallation>) {
+    async update(uuid: string, installation: IInstallation) {
         return await pool.query(
             `
             UPDATE Installation
@@ -39,9 +39,13 @@ export default class InstallationModel {
         ]);
     }
 
-    async getAllCitizens(installationUUID: string) {
+    async getCitizens(installationUUID: string) {
         return await pool.query(
-            'SELECT id, first_name, last_name FROM CitizenInstallation WHERE installation_id = ?;',
+            `
+            SELECT Citizen.id, first_name, last_name, cpr FROM Citizen
+            INNER JOIN CitizenInstallation ON citizen_id = Citizen.id
+            WHERE installation_id = ?;
+            `,
             [installationUUID]
         );
     }

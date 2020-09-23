@@ -24,7 +24,7 @@ export default class CitizenModel {
         );
     }
 
-    async update(uuid: string, citizen: Partial<ICitizen>) {
+    async update(uuid: string, citizen: ICitizen) {
         return await pool.query(
             `
             UPDATE Citizen
