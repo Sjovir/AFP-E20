@@ -1,1 +1,20 @@
-<p>home works!</p>
+<div class="content-panel p-3">
+  <table class="table table-hover table-sm">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">First name</th>
+        <th scope="col">Last name</th>
+        <th scope="col">CPR</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let citizen of citizens">
+        <td>
+          <a [routerLink]="['/citizen', citizen.id]">{{ citizen.firstname }}</a>
+        </td>
+        <td>{{ citizen.lastname }}</td>
+        <td>{{ citizen.cpr }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
