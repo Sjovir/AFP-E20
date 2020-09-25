@@ -1,7 +1,7 @@
 #!/bin/bash
 
-IMAGE_NAME=bosted-dev-mdb-image
-CONTAINER_NAME=bosted-dev-mdb
+IMAGE_NAME=bosted-mdb-image
+CONTAINER_NAME=bosted-mdb
 CONTAINER_EXISTS=$(docker ps -aq -f name="${CONTAINER_NAME}")
 
 echo $CONTAINER_EXISTS

@@ -3,8 +3,8 @@ version: "3"
 services:
   database:
     build: ./bosted-database
-    image: bosted_database
-    container_name: BostedDatabase
+    image: bosted-mdb-image
+    container_name: bosted-mdb
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - MYSQL_USER=${DB_USER}
