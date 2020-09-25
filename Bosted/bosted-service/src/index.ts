@@ -12,6 +12,7 @@ const server = new Koa();
 server.use(cors({ origin: 'http://localhost:4200' }));
 server.use(bodyparser());
 server.use(router.routes());
+server.use(router.allowedMethods());
 
 const app = server.listen(3010);
 

@@ -1,0 +1,22 @@
+<div class="bg-secondary content-panel">
+  <div class="btn-group-vertical nav-menu" role="group" aria-label="nav">
+    <button
+      [routerLink]="['overview']"
+      queryParamsHandling="preserve"
+      class="btn btn-secondary"
+      [ngClass]="{ active: isActive('overview') }"
+      onclick="this.blur();"
+    >
+      Overblik
+    </button>
+    <button
+      [routerLink]="['journal']"
+      queryParamsHandling="preserve"
+      class="btn btn-secondary"
+      [ngClass]="{ active: isActive('journal') }"
+      onclick="this.blur();"
+    >
+      Journal
+    </button>
+  </div>
+</div>
