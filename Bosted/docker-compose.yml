@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  database:
+    build: ./bosted-database
+    image: bosted_database
+    container_name: BostedDatabase
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_PORT=${DB_PORT}
