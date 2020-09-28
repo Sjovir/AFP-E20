@@ -1,3 +1,16 @@
-<div class="content-panel p-3">
-  <p>Loading data for {{ citizen.firstname }} {{ citizen.lastname }}</p>
+<div class="content-panel px-4 py-2">
+  <p class="h1">Borger information</p>
+  <button class="btn btn-primary" (click)="editCitizen()">
+    Rediger borger
+  </button>
+  <div class="row pt-3">
+    <div class="col-3 title-column">
+      <p>Navn:</p>
+      <p>CPR:</p>
+    </div>
+    <div class="col-9">
+      <p>{{ citizen.firstname }} {{ citizen.lastname }}</p>
+      <p>{{ citizen.cpr }}</p>
+    </div>
+  </div>
 </div>

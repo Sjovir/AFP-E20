@@ -17,4 +17,9 @@ export class CitizenService {
 
     return citizens.find( (citizen: Citizen) => citizen.id === citizenId);
   }
+
+  public editCitizen(citizen: Citizen): void {
+    console.log('Edited Citizen:');
+    console.log(citizen);
+  }
 }

@@ -23,7 +23,7 @@ export class CitizenMenuComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  public isActive(page: string): boolean {
+  public isPageActive(page: string): boolean {
     return this.activePage === page;
   }
 }
