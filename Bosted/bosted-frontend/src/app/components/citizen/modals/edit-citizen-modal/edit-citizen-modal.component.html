@@ -1,0 +1,49 @@
+<div class="modal-header">
+  <p class="h3">Rediger borger</p>
+</div>
+<div class="modal-body">
+  <form [formGroup]="editCitizenForm">
+    <div class="form-group">
+      <label for="firstname">Fornavn:</label>
+      <input
+        type="text"
+        class="form-control"
+        id="firstname"
+        formControlName="firstname"
+      />
+      <small
+        *ngIf="firstnameControl.touched && firstnameControl.errors?.required"
+        class="form-text text-danger"
+        >Fornavn påkrævet</small
+      >
+    </div>
+    <div class="form-group">
+      <label for="lastname">Efternavn:</label>
+      <input
+        type="text"
+        class="form-control"
+        id="lastname"
+        formControlName="lastname"
+      />
+    </div>
+    <div class="form-group">
+      <label for="cpr">CPR:</label>
+      <input type="text" class="form-control" id="cpr" formControlName="cpr" />
+      <small
+        *ngIf="cprControl.touched && cprControl.errors?.required"
+        class="form-text text-danger"
+        >CPR påkrævet</small
+      >
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-outline-danger" (click)="dismiss()">Annuller</button>
+  <button
+    class="btn btn-success"
+    (click)="close()"
+    [disabled]="editCitizenForm.invalid"
+  >
+    Gem
+  </button>
+</div>

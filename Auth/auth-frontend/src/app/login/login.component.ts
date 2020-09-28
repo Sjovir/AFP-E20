@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
-  FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
@@ -19,12 +18,12 @@ export class LoginComponent implements OnInit {
   public onLoginStatus: number;
 
   constructor(
-    private formBuiler: FormBuilder,
+    private formBuilder: FormBuilder,
     private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    this.loginForm = this.formBuiler.group({
+    this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required, Validators.minLength(2)]],
       password: ['', [Validators.required, Validators.minLength(8)]],
     });
@@ -34,7 +33,7 @@ export class LoginComponent implements OnInit {
     try {
       await this.authService
         .login(this.usernameControl.value, this.passwordControl.value)
-        .then((data: { accessToken: string; refreshToken: string }) => {
+        .then((_data: { accessToken: string; refreshToken: string }) => {
           this.onLoginMessage = `Logged in to account ${this.usernameControl.value}. Redirecting in a moment...`;
           this.onLoginStatus = 0;
         });
