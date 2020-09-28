@@ -9,14 +9,19 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Citizen } from 'src/app/models/citizen.model';
 
 @Component({
-  selector: 'edit-citizen-modal',
-  templateUrl: './edit-citizen-modal.component.html',
-  styleUrls: ['./edit-citizen-modal.component.scss'],
+  selector: 'citizen-modal',
+  templateUrl: './citizen-modal.component.html',
+  styleUrls: ['./citizen-modal.component.scss'],
 })
-export class EditCitizenModalComponent implements OnInit {
-  @Input() citizen: Citizen;
+export class CitizenModalComponent implements OnInit {
+  @Input() modalType: 'create' | 'edit';
+  @Input() citizen?: Citizen;
 
   public editCitizenForm: FormGroup;
+  public titleByType = {
+    create: 'Opret borger',
+    edit: 'Rediger borger',
+  };
 
   constructor(
     private activeModal: NgbActiveModal,
@@ -25,12 +30,12 @@ export class EditCitizenModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.editCitizenForm = this.formBuilder.group({
-      firstname: ['', Validators.required],
-      lastname: [''],
-      cpr: ['', Validators.required],
+      firstname: ['', [Validators.required, Validators.minLength(2)]],
+      lastname: ['', Validators.minLength(2)],
+      cpr: ['', [Validators.required, Validators.pattern('^\\d{10}$')]],
     });
 
-    this.editCitizenForm.patchValue(this.citizen);
+    if (this.citizen) this.editCitizenForm.patchValue(this.citizen);
   }
 
   public dismiss() {

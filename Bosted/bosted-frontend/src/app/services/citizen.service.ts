@@ -22,4 +22,9 @@ export class CitizenService {
     console.log('Edited Citizen:');
     console.log(citizen);
   }
+
+  public createCitizen(citizen: Citizen): void {
+    console.log('Created Citizen:');
+    console.log(citizen);
+  }
 }
