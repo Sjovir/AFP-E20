@@ -20,6 +20,7 @@
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^9.4.0",
     "mariadb": "^2.4.2",
+    "node-rdkafka": "^2.9.1",
     "sinon": "^9.0.3"
   },
   "devDependencies": {

@@ -13,6 +13,7 @@ export default class CitizenController {
         try {
             const allCitizens = await this.citizenService.getAllCitizens();
             ctx.response.body = allCitizens;
+
             await next();
         } catch (err) {
             ctx.response.body = 500;
