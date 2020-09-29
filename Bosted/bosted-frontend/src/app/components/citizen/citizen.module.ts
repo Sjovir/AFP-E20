@@ -6,7 +6,7 @@ import { CitizenOverviewComponent } from './citizen-overview/citizen-overview.co
 import { CitizenContainerComponent } from './container/citizen-container.component';
 import { CitizenJournalComponent } from './journal/citizen-journal.component';
 import { CitizenMenuComponent } from './menu/citizen-menu.component';
-import { EditCitizenModalComponent } from './modals/edit-citizen-modal/edit-citizen-modal.component';
+import { CitizenModalComponent } from './modals/citizen-modal/citizen-modal.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +14,7 @@ import { EditCitizenModalComponent } from './modals/edit-citizen-modal/edit-citi
     CitizenContainerComponent,
     CitizenMenuComponent,
     CitizenOverviewComponent,
-    EditCitizenModalComponent,
+    CitizenModalComponent,
   ],
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
 })

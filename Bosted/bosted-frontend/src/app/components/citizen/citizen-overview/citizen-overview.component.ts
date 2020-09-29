@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Citizen } from 'src/app/models/citizen.model';
 import { CitizenService } from 'src/app/services/citizen.service';
-import { EditCitizenModalComponent } from '../modals/edit-citizen-modal/edit-citizen-modal.component';
+import { CitizenModalComponent } from '../modals/citizen-modal/citizen-modal.component';
 
 @Component({
   selector: 'citizen-overview',
@@ -27,9 +27,10 @@ export class CitizenOverviewComponent implements OnInit {
   }
 
   public editCitizen(): void {
-    const modalReference = this.modalService.open(EditCitizenModalComponent);
+    const modalReference = this.modalService.open(CitizenModalComponent);
 
     modalReference.componentInstance.citizen = this.citizen;
+    modalReference.componentInstance.modalType = 'edit';
 
     modalReference.result.then(
       (result) => {
