@@ -16,4 +16,18 @@ server.use(router.allowedMethods());
 
 const app = server.listen(3010);
 
+app.on('listening', () => {
+    // producer.connect();
+    // consumer.connect();
+});
+
+app.on('close', () => {
+    // producer.disconnect();
+    // consumer.disconnect();
+});
+
+process.on('SIGINT', function () {
+    app.close();
+});
+
 export default app;
