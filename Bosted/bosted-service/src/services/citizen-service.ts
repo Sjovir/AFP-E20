@@ -4,9 +4,7 @@ import CitizenRepository from '../database/citizen-repository';
 
 @Service()
 export default class CitizenService {
-    constructor(private citizenRepository: CitizenRepository) {
-        console.log(citizenRepository);
-    }
+    constructor(private citizenRepository: CitizenRepository) {}
 
     async getCitizen(citizenUUID: string) {
         return this.citizenRepository.get(citizenUUID);
