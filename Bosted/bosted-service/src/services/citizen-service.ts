@@ -1,30 +1,33 @@
-import CitizenModel from '../database/citizen-model';
+import { Service } from 'typedi';
 
+import CitizenRepository from '../database/citizen-repository';
+
+@Service()
 export default class CitizenService {
-    constructor(private citizenModel: CitizenModel) {}
+    constructor(private citizenRepository: CitizenRepository) {}
 
     async getCitizen(citizenUUID: string) {
-        return this.citizenModel.get(citizenUUID);
+        return this.citizenRepository.get(citizenUUID);
     }
 
     async getAllCitizens() {
-        return this.citizenModel.getAll();
+        return this.citizenRepository.getAll();
     }
 
     async createCitizen(citizen: ICitizen) {
-        const uuid_query_result = await this.citizenModel.getNewUuid();
+        const uuid_query_result = await this.citizenRepository.getNewUuid();
         const uuid: string = uuid_query_result[0]['UUID()'];
         
-        await this.citizenModel.create(citizen, uuid);
+        await this.citizenRepository.create(citizen, uuid);
         
         return uuid;
     }
 
     async updateCitizen(citizenUUID: string, citizen: ICitizen) {
-        await this.citizenModel.update(citizenUUID, citizen);
+        await this.citizenRepository.update(citizenUUID, citizen);
     }
 
     async deleteCitizen(citizenUUID: string) {
-        await this.citizenModel.delete(citizenUUID);
+        await this.citizenRepository.delete(citizenUUID);
     }
 }

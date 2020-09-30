@@ -1,11 +1,12 @@
 import { Next, Context } from 'koa';
-
-import CitizenService from '../services/citizen-service';
+import { Service } from 'typedi';
 
 import ajv from '../schemas/schema-validator';
-import citizenSchema from '../schemas/citizen-schema';
 import { isUUID } from '../utils/uuid-util';
+import CitizenService from '../services/citizen-service';
+import citizenSchema from '../schemas/citizen-schema';
 
+@Service()
 export default class CitizenController {
     constructor(private citizenService: CitizenService) {}
 
@@ -13,6 +14,7 @@ export default class CitizenController {
         try {
             const allCitizens = await this.citizenService.getAllCitizens();
             ctx.response.body = allCitizens;
+
             await next();
         } catch (err) {
             ctx.response.body = 500;

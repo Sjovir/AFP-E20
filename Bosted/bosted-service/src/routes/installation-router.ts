@@ -1,13 +1,10 @@
 import Router from 'koa-router';
+import Container from 'typedi';
 
 import InstallationController from '../controllers/installation-controller';
-import InstallationService from '../services/installation-service';
-import InstallationModel from '../database/installation-model';
 
 const router = new Router({ prefix: '/installations' });
-const controller = new InstallationController(
-    new InstallationService(new InstallationModel())
-);
+const controller = Container.get(InstallationController);
 
 router.get('/', async (ctx, next) => {
     await controller.getAll(ctx, next);

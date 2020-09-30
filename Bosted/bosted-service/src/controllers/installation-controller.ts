@@ -1,10 +1,12 @@
 import { Next, Context } from 'koa';
+import { Service } from 'typedi';
 
-import InstallationService from '../services/installation-service';
-import { isUUID } from '../utils/uuid-util';
 import ajv from '../schemas/schema-validator';
+import { isUUID } from '../utils/uuid-util';
+import InstallationService from '../services/installation-service';
 import installationSchema from '../schemas/installation-schema';
 
+@Service()
 export default class InstallationController {
     constructor(private installationService: InstallationService) {}
 
