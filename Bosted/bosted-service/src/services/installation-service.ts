@@ -1,47 +1,56 @@
-import InstallationModel from '../database/installation-model';
+import { Service } from 'typedi';
 
+import InstallationRepository from '../database/installation-repository';
+
+@Service()
 export default class InstallationService {
-    constructor(private installationModel: InstallationModel) {}
+    constructor(private installationRepository: InstallationRepository) {}
 
     async getInstallation(installationUUID: string) {
-        return this.installationModel.get(installationUUID);
+        return this.installationRepository.get(installationUUID);
     }
 
     async getAllInstallations() {
-        return this.installationModel.getAll();
+        return this.installationRepository.getAll();
     }
 
     async createInstallation(installation: IInstallation) {
-        await this.installationModel.create(installation);
+        await this.installationRepository.create(installation);
     }
 
     async updateInstallation(
         installationUUID: string,
         installation: IInstallation
     ) {
-        await this.installationModel.update(installationUUID, installation);
+        await this.installationRepository.update(
+            installationUUID,
+            installation
+        );
     }
 
     async deleteInstallation(installationUUID: string) {
-        await this.installationModel.delete(installationUUID);
+        await this.installationRepository.delete(installationUUID);
     }
 
     async getCitizens(installationUUID: string) {
-        return await this.installationModel.getCitizens(installationUUID);
+        return await this.installationRepository.getCitizens(installationUUID);
     }
 
     async addCitizen(citizenUUID: string, installationUUID: string) {
-        await this.installationModel.addCitizen(citizenUUID, installationUUID);
+        await this.installationRepository.addCitizen(
+            citizenUUID,
+            installationUUID
+        );
     }
 
     async removeCitizen(citizenUUID: string, installationUUID: string) {
-        await this.installationModel.removeCitizen(
+        await this.installationRepository.removeCitizen(
             citizenUUID,
             installationUUID
         );
     }
 
     async removeCitizenById(relationshipUUID: string) {
-        await this.installationModel.removeCitizenById(relationshipUUID);
+        await this.installationRepository.removeCitizenById(relationshipUUID);
     }
 }

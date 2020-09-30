@@ -1,19 +1,24 @@
-import pool from './connector';
+import { Service } from 'typedi';
 
-export default class InstallationModel {
+import client from '../database/mariadb-client';
+
+@Service()
+export default class InstallationRepository {
     async get(uuid: string) {
-        return await pool.query(
+        return await client.query(
             'SELECT id, name, address FROM Installation WHERE id = ?;',
             [uuid]
         );
     }
 
     async getAll() {
-        return await pool.query('SELECT id, name, address FROM Installation;');
+        return await client.query(
+            'SELECT id, name, address FROM Installation;'
+        );
     }
 
     async create(installation: IInstallation) {
-        return await pool.query(
+        return await client.query(
             `
             INSERT INTO Installation (name, address)
             VALUES (?, ?);
@@ -23,7 +28,7 @@ export default class InstallationModel {
     }
 
     async update(uuid: string, installation: IInstallation) {
-        return await pool.query(
+        return await client.query(
             `
             UPDATE Installation
             SET name = ?, address = ?
@@ -34,13 +39,13 @@ export default class InstallationModel {
     }
 
     async delete(uuid: string) {
-        return await pool.query('DELETE FROM Installation WHERE id = ?;', [
+        return await client.query('DELETE FROM Installation WHERE id = ?;', [
             uuid,
         ]);
     }
 
     async getCitizens(installationUUID: string) {
-        return await pool.query(
+        return await client.query(
             `
             SELECT Citizen.id, first_name, last_name, cpr FROM Citizen
             INNER JOIN CitizenInstallation ON citizen_id = Citizen.id
@@ -51,7 +56,7 @@ export default class InstallationModel {
     }
 
     async addCitizen(citizenUUID: string, installationUUID: string) {
-        return await pool.query(
+        return await client.query(
             `
             INSERT INTO CitizenInstallation (citizen_id, installation_id)
             VALUES (?, ?);
@@ -61,7 +66,7 @@ export default class InstallationModel {
     }
 
     async removeCitizen(citizenUUID: string, installationUUID: string) {
-        return await pool.query(
+        return await client.query(
             `
             DELETE FROM CitizenInstallation WHERE citizen_id = ? AND installation_id = ?;
             `,
@@ -70,7 +75,7 @@ export default class InstallationModel {
     }
 
     async removeCitizenById(CitizenInstallationUUID: string) {
-        return await pool.query(
+        return await client.query(
             `
             DELETE FROM CitizenInstallation WHERE id = ?;
             `,

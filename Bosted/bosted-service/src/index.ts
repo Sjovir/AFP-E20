@@ -1,10 +1,10 @@
+import 'reflect-metadata';
 import dotenv from 'dotenv';
-dotenv.config();
-
 import Koa from 'koa';
 import cors from '@koa/cors';
 import bodyparser from 'koa-bodyparser';
 
+dotenv.config();
 import router from './routes/router';
 
 const server = new Koa();
