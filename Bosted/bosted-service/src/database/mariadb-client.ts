@@ -1,6 +1,6 @@
 import mariadb from 'mariadb';
 
-const pool = mariadb.createPool({
+const client = mariadb.createPool({
     host: process.env.DB_HOST,
     database: process.env.DB_DATABASE,
     user: process.env.DB_USER,
@@ -9,4 +9,4 @@ const pool = mariadb.createPool({
     connectionLimit: 5,
 });
 
-export default pool;
+export default client;

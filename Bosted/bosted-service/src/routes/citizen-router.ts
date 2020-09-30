@@ -1,13 +1,10 @@
+import { Container } from 'typedi';
 import Router from 'koa-router';
 
 import CitizenController from '../controllers/citizen-controller';
-import CitizenService from '../services/citizen-service';
-import CitizenModel from '../database/citizen-model';
 
 const router = new Router({ prefix: '/citizens' });
-const controller = new CitizenController(
-    new CitizenService(new CitizenModel())
-);
+const controller = Container.get(CitizenController);
 
 router.get('/', async (ctx, next) => {
     await controller.getAll(ctx, next);

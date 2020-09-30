@@ -1,21 +1,24 @@
-import pool from './connector';
+import { Service } from 'typedi';
 
-export default class CitizenModel {
+import client from '../database/mariadb-client';
+
+@Service()
+export default class CitizenRepository {
     async get(uuid: string) {
-        return await pool.query(
+        return await client.query(
             'SELECT id, first_name, last_name, cpr FROM Citizen WHERE id = ?;',
             [uuid]
         );
     }
 
     async getAll() {
-        return await pool.query(
+        return await client.query(
             'SELECT id, first_name, last_name, cpr FROM Citizen;'
         );
     }
 
     async create(citizen: ICitizen) {
-        return await pool.query(
+        return await client.query(
             `
             INSERT INTO Citizen (first_name, last_name, cpr)
             VALUES (?, ?, ?);
@@ -25,7 +28,7 @@ export default class CitizenModel {
     }
 
     async update(uuid: string, citizen: ICitizen) {
-        return await pool.query(
+        return await client.query(
             `
             UPDATE Citizen
             SET first_name = ?, last_name = ?, cpr = ?
@@ -36,6 +39,6 @@ export default class CitizenModel {
     }
 
     async delete(uuid: string) {
-        return await pool.query('DELETE FROM Citizen WHERE id = ?;', [uuid]);
+        return await client.query('DELETE FROM Citizen WHERE id = ?;', [uuid]);
     }
 }
