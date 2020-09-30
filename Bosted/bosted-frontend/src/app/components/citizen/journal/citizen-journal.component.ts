@@ -10,6 +10,7 @@ import { CitizenService } from 'src/app/services/citizen.service';
 })
 export class CitizenJournalComponent implements OnInit {
   public citizen: Citizen;
+  public loading: boolean = true;
 
   constructor(
     private activeRoute: ActivatedRoute,
@@ -19,7 +20,10 @@ export class CitizenJournalComponent implements OnInit {
   ngOnInit(): void {
     this.activeRoute.params.subscribe((params) => {
       const citizenId = this.activeRoute.parent.snapshot.params['id'];
-      this.citizen = this.citizenService.getCitizen(citizenId);
+      this.citizenService.get(citizenId).subscribe((citizen: Citizen) => {
+        this.citizen = citizen;
+        this.loading = false;
+      });
     });
   }
 }

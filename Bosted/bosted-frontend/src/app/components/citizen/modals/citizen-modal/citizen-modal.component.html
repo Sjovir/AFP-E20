@@ -4,34 +4,39 @@
 <div class="modal-body">
   <form [formGroup]="editCitizenForm">
     <div class="form-group">
-      <label for="firstname">Fornavn:</label>
+      <label for="firstName">Fornavn:</label>
       <input
         type="text"
         class="form-control"
-        id="firstname"
-        formControlName="firstname"
+        id="firstName"
+        formControlName="firstName"
       />
       <small
-        *ngIf="firstnameControl.touched && firstnameControl.errors?.required"
+        *ngIf="firstNameControl.touched && firstNameControl.errors?.required"
         class="form-text text-danger"
         >Fornavn påkrævet
       </small>
       <small
-        *ngIf="firstnameControl.touched && firstnameControl.errors?.minlength"
+        *ngIf="firstNameControl.touched && firstNameControl.errors?.minlength"
         class="form-text text-danger"
         >Fornavn skal være på mindst 2 bogstaver
       </small>
     </div>
     <div class="form-group">
-      <label for="lastname">Efternavn:</label>
+      <label for="lastName">Efternavn:</label>
       <input
         type="text"
         class="form-control"
-        id="lastname"
-        formControlName="lastname"
+        id="lastName"
+        formControlName="lastName"
       />
       <small
-        *ngIf="lastnameControl.touched && lastnameControl.errors?.minlength"
+        *ngIf="lastNameControl.touched && lastNameControl.errors?.required"
+        class="form-text text-danger"
+        >Efternavn påkrævet
+      </small>
+      <small
+        *ngIf="lastNameControl.touched && lastNameControl.errors?.minlength"
         class="form-text text-danger"
         >Efternavn skal være på mindst 2 bogstaver
       </small>

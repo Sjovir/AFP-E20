@@ -1,10 +1,25 @@
 version: "3"
 
 services:
+  service:
+    build: ./bosted-service
+    image: bosted_service
+    container_name: BostedService
+    environment:
+      - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_HOST=database
+      - YARN-VERSION=${YARN_VERSION}
+    ports:
+      - "3010:3010"
+    depends_on:
+      - database
   database:
     build: ./bosted-database
-    image: bosted-mdb-image
-    container_name: bosted-mdb
+    image: bosted_database
+    container_name: BostedDatabase
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - MYSQL_USER=${DB_USER}

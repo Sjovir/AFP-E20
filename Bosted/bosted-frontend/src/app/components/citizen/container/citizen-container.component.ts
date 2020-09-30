@@ -19,7 +19,9 @@ export class CitizenContainerComponent implements OnInit {
   ngOnInit(): void {
     this.activeRoute.params.subscribe((params) => {
       const citizenId = params['id'];
-      this.citizen = this.citizenService.getCitizen(citizenId);
+      this.citizenService.get(citizenId).subscribe((citizen: Citizen) => {
+        this.citizen = citizen;
+      });
     });
   }
 }

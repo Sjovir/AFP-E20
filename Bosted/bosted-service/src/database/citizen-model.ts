@@ -3,7 +3,7 @@ import pool from './connector';
 export default class CitizenModel {
     async get(uuid: string) {
         return await pool.query(
-            'SELECT id, first_name, last_name, cpr FROM Citizen WHERE id = ?;',
+            'SELECT id, first_name as firstName, last_name as lastName, cpr FROM Citizen WHERE id = ?;',
             [uuid]
         );
     }
@@ -14,13 +14,13 @@ export default class CitizenModel {
         );
     }
 
-    async create(citizen: ICitizen) {
+    async create(citizen: ICitizen, uuid: string) {
         return await pool.query(
             `
-            INSERT INTO Citizen (first_name, last_name, cpr)
-            VALUES (?, ?, ?);
+            INSERT INTO Citizen (id, first_name, last_name, cpr)
+            VALUES (?, ?, ?, ?);
             `,
-            [citizen.firstName, citizen.lastName, citizen.cpr]
+            [uuid, citizen.firstName, citizen.lastName, citizen.cpr]
         );
     }
 
@@ -37,5 +37,9 @@ export default class CitizenModel {
 
     async delete(uuid: string) {
         return await pool.query('DELETE FROM Citizen WHERE id = ?;', [uuid]);
+    }
+
+    async getNewUuid() {
+        return await pool.query(`SELECT UUID()`);
     }
 }

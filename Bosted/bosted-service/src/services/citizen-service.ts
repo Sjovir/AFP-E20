@@ -12,7 +12,12 @@ export default class CitizenService {
     }
 
     async createCitizen(citizen: ICitizen) {
-        await this.citizenModel.create(citizen);
+        const uuid_query_result = await this.citizenModel.getNewUuid();
+        const uuid: string = uuid_query_result[0]['UUID()'];
+        
+        await this.citizenModel.create(citizen, uuid);
+        
+        return uuid;
     }
 
     async updateCitizen(citizenUUID: string, citizen: ICitizen) {

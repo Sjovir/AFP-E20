@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Citizen } from 'src/app/models/citizen.model';
+import { Installation } from 'src/app/models/installation.model';
 import { CitizenService } from 'src/app/services/citizen.service';
 import { InstallationService } from 'src/app/services/installation.service';
 import { CitizenModalComponent } from '../citizen/modals/citizen-modal/citizen-modal.component';
+import { InstallationModalComponent } from '../installation/modals/installation-modal/installation-modal.component';
 
 @Component({
   selector: 'components-home',
@@ -11,16 +14,33 @@ import { CitizenModalComponent } from '../citizen/modals/citizen-modal/citizen-m
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
+  public installation: Installation;
   public citizens: Citizen[];
 
   constructor(
+    private activeRoute: ActivatedRoute,
     private citizenService: CitizenService,
     private installationService: InstallationService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.citizens = this.installationService.getCitizensOnInstallation('uuid');
+    this.activeRoute.params.subscribe((params) => {
+      const installationId: string = params['installationId'];
+      if (!installationId || installationId === 'null') {
+        return;
+      }
+
+      this.installationService
+        .get(installationId)
+        .subscribe((installation: Installation) => {
+          this.installation = installation;
+          this.updateCitizenTable();
+        }, () => {
+          this.router.navigate(['installation']);
+        });
+    });
   }
 
   public createCitizen() {
@@ -31,9 +51,41 @@ export class HomeComponent implements OnInit {
     modalReference.result.then(
       (result) => {
         const citizen: Citizen = result;
-        this.citizenService.createCitizen(citizen);
+        this.citizenService.createCitizen(citizen).subscribe((result) => {
+          const citizenId: string = result.citizenId;
+          this.installationService
+            .addCitizen(citizenId, this.installation.id)
+            .subscribe(() => {
+              this.updateCitizenTable();
+            });
+        });
       },
       () => {}
     );
+  }
+
+  public chooseInstallation() {
+    const modalReference = this.modalService.open(InstallationModalComponent);
+
+    modalReference.componentInstance.installation = this.installation;
+
+    modalReference.result.then(
+      (installation: Installation) => {
+        if (!this.installation || this.installation.id !== installation.id) {
+          this.router.navigate(['/installation', installation.id]);
+        }
+      },
+      () => {}
+    );
+  }
+
+  private updateCitizenTable() {
+    if (this.installation) {
+      this.installationService
+        .getCitizensOnInstallation(this.installation.id)
+        .subscribe((citizens: Citizen[]) => {
+          this.citizens = citizens;
+        });
+    }
   }
 }

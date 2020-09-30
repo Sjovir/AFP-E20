@@ -30,8 +30,8 @@ export class CitizenModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.editCitizenForm = this.formBuilder.group({
-      firstname: ['', [Validators.required, Validators.minLength(2)]],
-      lastname: ['', Validators.minLength(2)],
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
       cpr: ['', [Validators.required, Validators.pattern('^\\d{10}$')]],
     });
 
@@ -46,12 +46,12 @@ export class CitizenModalComponent implements OnInit {
     this.activeModal.close(this.editCitizenForm.value);
   }
 
-  public get firstnameControl(): AbstractControl {
-    return this.editCitizenForm.get('firstname');
+  public get firstNameControl(): AbstractControl {
+    return this.editCitizenForm.get('firstName');
   }
 
-  public get lastnameControl(): AbstractControl {
-    return this.editCitizenForm.get('lastname');
+  public get lastNameControl(): AbstractControl {
+    return this.editCitizenForm.get('lastName');
   }
 
   public get cprControl(): AbstractControl {

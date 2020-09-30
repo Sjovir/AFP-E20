@@ -40,7 +40,11 @@ export default class InstallationController {
                 id
             );
 
-            ctx.response.body = installation;
+            if (installation && installation.length > 0) {
+                ctx.response.body = installation[0];
+            } else {
+                ctx.response.body = '';
+            }
             await next();
         } catch (err) {
             ctx.response.body = 500;
@@ -62,6 +66,7 @@ export default class InstallationController {
         try {
             await this.installationService.createInstallation(installation);
             ctx.response.status = 201;
+            ctx.response.body = '';
             await next();
         } catch (err) {
             // console.log(err);
@@ -100,6 +105,7 @@ export default class InstallationController {
         try {
             await this.installationService.updateInstallation(id, installation);
             ctx.response.status = 201;
+            ctx.response.body = '';
             await next();
         } catch (err) {
             ctx.response.status = 500;
@@ -126,6 +132,7 @@ export default class InstallationController {
         try {
             await this.installationService.deleteInstallation(id);
             ctx.response.status = 200;
+            ctx.response.body = '';
 
             await next();
         } catch (err) {
@@ -197,6 +204,8 @@ export default class InstallationController {
             );
 
             ctx.response.status = 201;
+            ctx.response.body = '';
+
             await next();
         } catch (err) {
             if (err.errno === 1062) {
@@ -238,6 +247,8 @@ export default class InstallationController {
             );
 
             ctx.response.status = 201;
+            ctx.response.body = '';
+            
             await next();
         } catch (err) {
             ctx.response.status = 500;

@@ -19,6 +19,12 @@ const schema = {
             maxLength: 10,
             pattern: '^[0-9]+$',
         },
+        id: {
+            type: 'string',
+            minLength: 36,
+            maxLength: 36,
+            pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+        }
     },
     additionalProperties: false,
 };
