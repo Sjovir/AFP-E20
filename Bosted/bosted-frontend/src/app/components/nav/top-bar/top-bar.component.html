@@ -1,5 +1,9 @@
 <nav class="navbar navbar-light bg-info top-bar">
-  <a class="navbar-brand" [routerLink]="''">Hjem</a>
+  <a
+    class="navbar-brand"
+    [routerLink]="['installation', installationId]"
+    >Hjem</a
+  >
   <ul class="nav navbar-nav ml-auto">
     <li class="nav-item dropdown">
       <a
@@ -18,7 +22,7 @@
         aria-labelledby="navbarDropdown"
         style="position: absolute"
       >
-        <a class="dropdown-item" [routerLink]="''"> Log ud </a>
+        <a class="dropdown-item" [routerLink]="['installation', installationId]"> Log ud </a>
       </div>
     </li>
   </ul>

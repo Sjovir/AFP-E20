@@ -17,6 +17,14 @@ RUN curl -fSLO --compressed "https://yarnpkg.com/downloads/$YARN_VERSION/yarn-v$
     && ln -snf /opt/yarn-v$YARN_VERSION/bin/yarnpkg /usr/local/bin/yarnpkg \
     && rm yarn-v$YARN_VERSION.tar.gz
 
+# For kafka package
+RUN apk --no-cache add \
+      g++ \
+      make \
+      python3
+
+RUN apk add --no-cache --virtual .build-deps gcc zlib-dev libc-dev bsd-compat-headers py-setuptools bash
+
 # Install YARN dependencies. Use --only=production when in production
 RUN yarn
 

@@ -47,7 +47,7 @@ export default class InstallationRepository {
     async getCitizens(installationUUID: string) {
         return await client.query(
             `
-            SELECT Citizen.id, first_name, last_name, cpr FROM Citizen
+            SELECT Citizen.id, first_name as firstName, last_name as lastName, cpr FROM Citizen
             INNER JOIN CitizenInstallation ON citizen_id = Citizen.id
             WHERE installation_id = ?;
             `,

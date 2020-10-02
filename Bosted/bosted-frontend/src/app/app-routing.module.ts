@@ -6,9 +6,11 @@ import { CitizenJournalComponent } from './components/citizen/journal/citizen-jo
 import { HomeComponent } from './components/home/home.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', redirectTo: 'installation/null', pathMatch: 'full' },
+  { path: 'installation', redirectTo: 'installation/null', pathMatch: 'full' },
+  { path: 'installation/:installationId', component: HomeComponent },
   {
-    path: 'citizen/:id',
+    path: 'installation/:installationId/citizen/:id',
     component: CitizenContainerComponent,
     children: [
       {

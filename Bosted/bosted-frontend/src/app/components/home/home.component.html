@@ -1,8 +1,24 @@
 <div class="content-panel p-3">
-  <button class="btn btn-primary mb-3" (click)="createCitizen()">
-    Opret borger
-  </button>
-  <table class="table table-hover table-sm">
+  <div class="top-bar">
+    <button class="btn btn-primary" (click)="chooseInstallation()">
+      Vælg installation
+    </button>
+    <span
+      [disableTooltip]="installation"
+      [ngbTooltip]="'Der er ikke valgt en installation'"
+      [placement]="'bottom'"
+    >
+      <button
+        class="btn btn-primary ml-3"
+        (click)="createCitizen()"
+        [disabled]="!installation"
+      >
+        Opret borger
+      </button>
+    </span>
+    <span *ngIf="installation" class="ml-3 h4">{{ installation.name }}</span>
+  </div>
+  <table *ngIf="installation" class="table table-hover table-sm">
     <thead class="thead-light">
       <tr>
         <th scope="col">First name</th>
@@ -10,14 +26,19 @@
         <th scope="col">CPR</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody *ngIf="citizens?.length > 0; else noCitizens">
       <tr *ngFor="let citizen of citizens">
         <td>
-          <a [routerLink]="['/citizen', citizen.id]">{{ citizen.firstname }}</a>
+          <a [routerLink]="['citizen', citizen.id]">{{ citizen.firstName }}</a>
         </td>
-        <td>{{ citizen.lastname }}</td>
+        <td>{{ citizen.lastName }}</td>
         <td>{{ citizen.cpr }}</td>
       </tr>
     </tbody>
+    <ng-template #noCitizens>
+      <tr>
+        <td colspan="3">Der er ingen borgere på denne installation</td>
+      </tr>
+    </ng-template>
   </table>
 </div>

@@ -12,6 +12,7 @@ import { CitizenModalComponent } from '../modals/citizen-modal/citizen-modal.com
 })
 export class CitizenOverviewComponent implements OnInit {
   public citizen: Citizen;
+  public loading: boolean = true;
 
   constructor(
     private activeRoute: ActivatedRoute,
@@ -22,7 +23,10 @@ export class CitizenOverviewComponent implements OnInit {
   ngOnInit(): void {
     this.activeRoute.params.subscribe((params) => {
       const citizenId = this.activeRoute.parent.snapshot.params['id'];
-      this.citizen = this.citizenService.getCitizen(citizenId);
+      this.citizenService.get(citizenId).subscribe((citizen: Citizen) => {
+        this.citizen = citizen;
+        this.loading = false;
+      });
     });
   }
 
@@ -35,7 +39,7 @@ export class CitizenOverviewComponent implements OnInit {
     modalReference.result.then(
       (result) => {
         this.updateCitizen(result);
-        this.citizenService.editCitizen(this.citizen);
+        this.citizenService.editCitizen(this.citizen).subscribe(() => {});
       },
       () => {}
     );

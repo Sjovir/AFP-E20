@@ -40,7 +40,12 @@ export default class CitizenController {
 
         try {
             const citizen = await this.citizenService.getCitizen(id);
-            ctx.response.body = citizen;
+            if (citizen && citizen.length > 0) {
+                ctx.response.body = citizen[0];
+            } else {
+                ctx.response.body = '';
+            }
+
             await next();
         } catch (err) {
             ctx.response.body = 500;
@@ -60,8 +65,10 @@ export default class CitizenController {
         }
 
         try {
-            await this.citizenService.createCitizen(citizen);
+            const citizenId = await this.citizenService.createCitizen(citizen);
             ctx.response.status = 201;
+            ctx.response.body = { citizenId };
+
             await next();
         } catch (err) {
             if (err.errno === 1062) {
@@ -110,6 +117,8 @@ export default class CitizenController {
         try {
             await this.citizenService.updateCitizen(id, citizen);
             ctx.response.status = 201;
+            ctx.response.body = '';
+
             await next();
         } catch (err) {
             ctx.response.status = 500;
@@ -136,6 +145,7 @@ export default class CitizenController {
         try {
             await this.citizenService.deleteCitizen(id);
             ctx.response.status = 200;
+            ctx.response.body = '';
 
             await next();
         } catch (err) {
