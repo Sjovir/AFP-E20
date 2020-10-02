@@ -6,20 +6,13 @@ import { LazyElementsModule } from '@angular-extensions/elements';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CitizenModule } from './components/citizen/citizen.module';
 import { ComponentsModule } from './components/components.module';
-import { InstallationModule } from './components/installation/installation.module';
 import { DigitOnlyDirective } from './directives/digit-only.directive';
-import { LoginWrapperComponent } from './webcomponents/login-wrapper/login-wrapper.component';
-import { TopBarComponent } from './components/nav/top-bar/top-bar.component';
+import { LoginWrapperModule } from './webcomponents/login-wrapper/login-wrapper.module';
+import { RegisterWrapperModule } from './webcomponents/register-wrapper/register-wrapper.module';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    TopBarComponent,
-    DigitOnlyDirective,
-    LoginWrapperComponent,
-  ],
+  declarations: [AppComponent, DigitOnlyDirective],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -27,6 +20,8 @@ import { TopBarComponent } from './components/nav/top-bar/top-bar.component';
     HttpClientModule,
     NgbModule,
     LazyElementsModule,
+    LoginWrapperModule,
+    RegisterWrapperModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

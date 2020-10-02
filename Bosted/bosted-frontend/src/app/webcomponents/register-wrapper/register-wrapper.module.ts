@@ -2,12 +2,12 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LazyElementsModule } from '@angular-extensions/elements';
 
-import { LoginWrapperComponent } from './login-wrapper.component';
+import { RegisterWrapperComponent } from './register-wrapper.component';
 
 @NgModule({
-  declarations: [LoginWrapperComponent],
+  declarations: [RegisterWrapperComponent],
   imports: [CommonModule, LazyElementsModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  exports: [LoginWrapperComponent],
+  exports: [RegisterWrapperComponent],
 })
-export class LoginWrapperModule {}
+export class RegisterWrapperModule {}

@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --port 4000",
     "build": "ng build --prod --single-bundle --output-hashing none --vendor-chunk false",
-    "buildrun": "yarn build && lite-server --baseDir=dist/auth-frontend ",
+    "buildrun": "yarn build && yarn runbuild",
+    "runbuild": "lite-server -c bs-config.json",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
