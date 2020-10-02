@@ -38,4 +38,4 @@ FROM nginx:1.19.2-alpine
 COPY --from=builder /app/nginx.conf /etc/nginx/nginx.conf
 
 # Copy app to nginx
-COPY --from=builder /app/dist/auth-frontend /usr/share/nginx/html
+COPY --from=builder /app/dist/bosted-frontend /usr/share/nginx/html
