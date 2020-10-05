@@ -14,7 +14,7 @@ server.use(bodyparser());
 server.use(router.routes());
 server.use(router.allowedMethods());
 
-const app = server.listen(3100);
+const app = server.listen(6100);
 
 app.on('listening', () => {
   // producer.connect();
