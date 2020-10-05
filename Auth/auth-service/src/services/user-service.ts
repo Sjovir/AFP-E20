@@ -1,8 +1,9 @@
 import bcrypt from 'bcryptjs';
 import { TokenExpiredError } from 'jsonwebtoken';
+import { Service } from 'typedi';
 
-import UserDatabase from '../database/user-database';
-import RoleDatabase from '../database/role-database';
+import UserDatabase from '../database/user-repository';
+import RoleDatabase from '../database/role-repository';
 import {
     verify,
     signAccessToken,
@@ -10,7 +11,8 @@ import {
     decode,
 } from '../utils/token';
 
-class UserService {
+@Service()
+export default class UserService {
     constructor(
         private userDatabase: UserDatabase,
         private roleDatabase: RoleDatabase
@@ -81,5 +83,3 @@ class UserService {
         return newAccessToken;
     }
 }
-
-export default UserService;

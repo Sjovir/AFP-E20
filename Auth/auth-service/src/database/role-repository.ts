@@ -1,6 +1,6 @@
-import dbPool from './connector';
+import dbPool from './mariadb-client';
 
-class RoleDatabase {
+class RoleRepository {
     async getRoles(userId: string) {
         const query = await dbPool.query(
             'SELECT * FROM Role where user_id = ?;',
@@ -23,4 +23,4 @@ class RoleDatabase {
     }
 }
 
-export default RoleDatabase;
+export default RoleRepository;

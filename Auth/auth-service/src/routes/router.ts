@@ -1,9 +1,13 @@
 import Router from 'koa-router';
+import { Container } from 'typedi';
 
+import installationRouter from './installation-router';
 import AuthController from '../controllers/auth-controller';
 
+const authController = Container.get(AuthController);
+
 const router = new Router({ prefix: '/api' });
-const authController = new AuthController();
+router.use(installationRouter.routes(), installationRouter.allowedMethods());
 
 router.post('/register', async (ctx, next) => {
     await authController.postRegister(ctx, next);

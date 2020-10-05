@@ -1,6 +1,6 @@
-import dbPool from './connector';
+import dbPool from './mariadb-client';
 
-class UserDatabase {
+class UserRepository {
     async create(user: IRegister) {
         await dbPool.query('INSERT INTO User VALUES (uuid(), ?, ?, ?, ?, ?);', [
             user.firstName,
@@ -21,4 +21,4 @@ class UserDatabase {
     }
 }
 
-export default UserDatabase;
+export default UserRepository;
