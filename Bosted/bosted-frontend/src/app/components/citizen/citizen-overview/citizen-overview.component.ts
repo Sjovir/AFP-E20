@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Citizen } from 'src/app/models/citizen.model';
 import { CitizenService } from 'src/app/services/citizen.service';
+import { SseService } from 'src/app/services/sse.service';
 import { CitizenModalComponent } from '../modals/citizen-modal/citizen-modal.component';
 
 @Component({
@@ -17,7 +18,8 @@ export class CitizenOverviewComponent implements OnInit {
   constructor(
     private activeRoute: ActivatedRoute,
     private citizenService: CitizenService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private sseService: SseService
   ) {}
 
   ngOnInit(): void {
@@ -26,6 +28,12 @@ export class CitizenOverviewComponent implements OnInit {
       this.citizenService.get(citizenId).subscribe((citizen: Citizen) => {
         this.citizen = citizen;
         this.loading = false;
+
+        this.sseService.getCitizenEvents(this.citizen.id).subscribe((data) => {
+          console.log(data);
+        }, (error) => {
+          console.log(error);
+        });
       });
     });
   }

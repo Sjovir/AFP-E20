@@ -5,16 +5,19 @@ import { Citizen } from '../models/citizen.model';
 import { Installation } from '../models/installation.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class InstallationService {
-
   readonly BASE_URL: string = 'http://localhost:3010/api/installations';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  public getCitizensOnInstallation(installationId: string): Observable<Citizen[]> {
-    return this.http.get<Citizen[]>(`${this.BASE_URL}/${installationId}/citizens`);
+  public getCitizensOnInstallation(
+    installationId: string
+  ): Observable<Citizen[]> {
+    return this.http.get<Citizen[]>(
+      `${this.BASE_URL}/${installationId}/citizens`
+    );
   }
 
   public get(installationId: String): Observable<Installation> {
@@ -30,6 +33,9 @@ export class InstallationService {
   }
 
   public addCitizen(citizenId: string, installationId: string) {
-    return this.http.post<any>(`${this.BASE_URL}/${installationId}/citizens/${citizenId}`, {});
+    return this.http.post<any>(
+      `${this.BASE_URL}/${installationId}/citizens/${citizenId}`,
+      {}
+    );
   }
 }

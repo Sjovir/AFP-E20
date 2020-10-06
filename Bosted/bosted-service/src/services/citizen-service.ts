@@ -1,10 +1,14 @@
 import { Service } from 'typedi';
 
 import CitizenRepository from '../database/citizen-repository';
+import SseService from './sse-service';
 
 @Service()
 export default class CitizenService {
-    constructor(private citizenRepository: CitizenRepository) {}
+    constructor(
+        private citizenRepository: CitizenRepository, 
+        private sseService: SseService
+    ) {}
 
     async getCitizen(citizenUUID: string) {
         return this.citizenRepository.get(citizenUUID);
@@ -22,9 +26,12 @@ export default class CitizenService {
         
         return uuid;
     }
-
+    
     async updateCitizen(citizenUUID: string, citizen: ICitizen) {
         await this.citizenRepository.update(citizenUUID, citizen);
+        this.sseService.emitCitizenEvent('update', {
+            id: citizenUUID, data: citizen
+        });
     }
 
     async deleteCitizen(citizenUUID: string) {
