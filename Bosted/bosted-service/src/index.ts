@@ -9,25 +9,25 @@ import router from './routes/router';
 
 const server = new Koa();
 
-server.use(cors({ origin: 'http://localhost:4200' }));
+server.use(cors({ origin: '*' }));
 server.use(bodyparser());
 server.use(router.routes());
 server.use(router.allowedMethods());
 
-const app = server.listen(3010);
+const app = server.listen(6100);
 
 app.on('listening', () => {
-    // producer.connect();
-    // consumer.connect();
+  // producer.connect();
+  // consumer.connect();
 });
 
 app.on('close', () => {
-    // producer.disconnect();
-    // consumer.disconnect();
+  // producer.disconnect();
+  // consumer.disconnect();
 });
 
 process.on('SIGINT', function () {
-    app.close();
+  app.close();
 });
 
 export default app;

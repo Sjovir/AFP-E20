@@ -36,6 +36,9 @@ export class LoginComponent implements OnInit {
         .then((_data: { accessToken: string; refreshToken: string }) => {
           this.onLoginMessage = `Logged in to account ${this.usernameControl.value}. Redirecting in a moment...`;
           this.onLoginStatus = 0;
+
+          localStorage.setItem('access-token', _data.accessToken);
+          localStorage.setItem('refresh-token', _data.refreshToken);
         });
     } catch (err) {
       this.onLoginMessage = err.message;

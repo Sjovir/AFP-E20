@@ -3,8 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
+    "start": "ng serve --port 7000",
+    "build": "ng build --prod --single-bundle --output-hashing none --vendor-chunk false",
+    "buildrun": "yarn build && yarn runbuild",
+    "runbuild": "lite-server -c bs-config.json",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -15,6 +17,7 @@
     "@angular/common": "~10.1.0",
     "@angular/compiler": "~10.1.0",
     "@angular/core": "~10.1.0",
+    "@angular/elements": "10.1.1",
     "@angular/forms": "~10.1.0",
     "@angular/localize": "~10.1.0",
     "@angular/platform-browser": "~10.1.0",
@@ -24,6 +27,9 @@
     "@ng-bootstrap/ng-bootstrap": "^7.0.0",
     "axios": "^0.20.0",
     "bootstrap": "4.5.2",
+    "document-register-element": "^1.7.2",
+    "lite-server": "^2.5.4",
+    "ngx-build-plus": "^10.1.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"
