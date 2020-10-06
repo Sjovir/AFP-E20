@@ -4,12 +4,11 @@ import { createCustomElement } from '@angular/elements';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
-
-const local = true;
 
 @NgModule({
   declarations: [AppComponent, LoginComponent, RegisterComponent],
@@ -21,7 +20,7 @@ const local = true;
     NgbModule,
   ],
   providers: [],
-  bootstrap: [local ? AppComponent : []],
+  bootstrap: [environment.local ? AppComponent : []],
 })
 export class AppModule {
   constructor(private injector: Injector) {
