@@ -1,5 +1,5 @@
 {
-  "port": 6000,
+  "port": 7000,
   "files": ["./src/**/*.{html,htm,css,js}"],
   "server": { "baseDir": "./dist/auth-frontend" }
 }
