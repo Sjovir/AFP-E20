@@ -1,6 +1,16 @@
 version: "3"
 
 services:
+  frontend:
+    build: ./bosted-frontend
+    image: bosted_frontend
+    container_name: BostedFrontend
+    ports:
+      - "4200:80"
+      - "3010:3010"
+    depends_on: 
+      - service
+      - database
   service:
     build: ./bosted-service
     image: bosted_service
@@ -12,8 +22,6 @@ services:
       - DB_DATABASE=${DB_DATABASE}
       - DB_HOST=database
       - YARN-VERSION=${YARN_VERSION}
-    ports:
-      - "3010:3010"
     depends_on:
       - database
   database:
