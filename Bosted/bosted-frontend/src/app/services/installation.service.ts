@@ -9,7 +9,7 @@ import { Installation } from '../models/installation.model';
 })
 export class InstallationService {
 
-  readonly BASE_URL: string = 'http://localhost:3010/api/installations';
+  readonly BASE_URL: string = 'http://localhost:7100/api/installations';
 
   constructor(private http: HttpClient) { }
 
