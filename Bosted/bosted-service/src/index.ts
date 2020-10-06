@@ -9,7 +9,7 @@ import router from './routes/router';
 
 const server = new Koa();
 
-server.use(cors({ origin: 'http://localhost:4100' }));
+server.use(cors({ origin: '*' }));
 server.use(bodyparser());
 server.use(router.routes());
 server.use(router.allowedMethods());
