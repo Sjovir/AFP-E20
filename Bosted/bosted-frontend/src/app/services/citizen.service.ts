@@ -7,7 +7,7 @@ import { Citizen } from '../models/citizen.model';
   providedIn: 'root',
 })
 export class CitizenService {
-  readonly BASE_URL: string = 'http://localhost:3010/api/citizens';
+  readonly BASE_URL: string = 'http://localhost:7100/api/citizens';
 
   constructor(private http: HttpClient) {}
 

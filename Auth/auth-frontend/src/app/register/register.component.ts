@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  FormGroup,
-  FormBuilder,
-  Validators,
   AbstractControl,
+  FormBuilder,
+  FormGroup,
+  Validators
 } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 
@@ -48,21 +48,24 @@ export class RegisterComponent implements OnInit {
       lastName,
     } = this.registerForm.value;
 
-    try {
-      await this.authService.register(
-        username,
-        password,
-        cpr,
-        firstName,
-        lastName
+    this.authService
+      .register(username, password, cpr, firstName, lastName)
+      .subscribe(
+        (response) => {
+          this.onSubmitMessage = `Account ${response.username} has been created.`;
+          this.onSubmitStatus = 0;
+        },
+        (error) => {
+          const errorCode: string = error.error.code;
+          if (errorCode === 'CPR_OR_USERNAME_IN_USE') {
+            this.onSubmitMessage =
+              'User with that CPR or username already exists';
+          } else {
+            this.onSubmitMessage = 'Invalid server-side error. Contact staff!';
+          }
+          this.onSubmitStatus = 1;
+        }
       );
-
-      this.onSubmitMessage = `Account ${username} has been created.`;
-      this.onSubmitStatus = 0;
-    } catch (err) {
-      this.onSubmitMessage = err.message;
-      this.onSubmitStatus = 1;
-    }
   }
 
   get usernameControl(): AbstractControl {

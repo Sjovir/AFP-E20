@@ -3,7 +3,7 @@ import {
   AbstractControl,
   FormBuilder,
   FormGroup,
-  Validators,
+  Validators
 } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 
@@ -30,20 +30,28 @@ export class LoginComponent implements OnInit {
   }
 
   async login(): Promise<void> {
-    try {
-      await this.authService
-        .login(this.usernameControl.value, this.passwordControl.value)
-        .then((_data: { accessToken: string; refreshToken: string }) => {
+    this.authService
+      .login(this.usernameControl.value, this.passwordControl.value)
+      .subscribe(
+        (response) => {
           this.onLoginMessage = `Logged in to account ${this.usernameControl.value}. Redirecting in a moment...`;
           this.onLoginStatus = 0;
 
-          localStorage.setItem('access-token', _data.accessToken);
-          localStorage.setItem('refresh-token', _data.refreshToken);
-        });
-    } catch (err) {
-      this.onLoginMessage = err.message;
-      this.onLoginStatus = 1;
-    }
+          localStorage.setItem('access-token', response.accessToken);
+          localStorage.setItem('refresh-token', response.refreshToken);
+        },
+        (error) => {
+          const errorCode: string = error.error.code;
+          if (errorCode === 'CPR_XOR_USERNAME_LOGIN') {
+            this.onLoginMessage = 'Server-side error. Contact staff!';
+          } else if (errorCode === 'ACCOUNT_NOT_EXISTS') {
+            this.onLoginMessage = 'Account with given credentials do not exist';
+          } else {
+            this.onLoginMessage = 'Invalid error. Contact staff!';
+          }
+          this.onLoginStatus = 1;
+        }
+      );
   }
 
   public get usernameControl(): AbstractControl {

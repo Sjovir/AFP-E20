@@ -3,10 +3,11 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --port 7000",
+    "start": "ng serve --port 8000",
     "build": "ng build --prod --single-bundle --output-hashing none --vendor-chunk false",
     "buildrun": "yarn build && yarn runbuild",
     "runbuild": "lite-server -c bs-config.json",
+    "dockerbuild": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -25,7 +26,6 @@
     "@angular/router": "~10.1.0",
     "@koa/cors": "^3.1.0",
     "@ng-bootstrap/ng-bootstrap": "^7.0.0",
-    "axios": "^0.20.0",
     "bootstrap": "4.5.2",
     "document-register-element": "^1.7.2",
     "lite-server": "^2.5.4",

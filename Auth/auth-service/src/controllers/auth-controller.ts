@@ -35,6 +35,7 @@ class AuthController {
             await this.userService.createUser(body);
 
             ctx.response.status = 200;
+            ctx.response.body = { username: body.username };
         } catch (err) {
             ctx.response.status = 400;
 
