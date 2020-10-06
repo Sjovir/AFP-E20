@@ -1,66 +1,95 @@
 <div class="content-page">
-  <div class="container jumbotron submit-form text-center">
-    <p class="h1">Login</p>
-    <hr class="my-4" />
-    <br />
-    <form [formGroup]="loginForm" (ngSubmit)="login()">
-      <div class="field">
-        <input
-          class="form-control text-center"
-          type="text"
-          placeholder="Username or CPR"
-          formControlName="username"
-        />
-        <small
-          *ngIf="usernameControl.touched && usernameControl.errors?.required"
-          class="form-text text-danger"
-          >Missing username or CPR</small
+  <div class="container jumbotron text-center">
+    <div *ngIf="state === 'LOGIN'">
+      <p class="h1">Log ind</p>
+      <hr class="my-4" />
+      <br />
+      <form [formGroup]="loginForm" (ngSubmit)="login()">
+        <div class="field">
+          <input
+            class="form-control text-center"
+            type="text"
+            placeholder="Username or CPR"
+            formControlName="username"
+          />
+          <small
+            *ngIf="usernameControl.touched && usernameControl.errors?.required"
+            class="form-text text-danger"
+            >Mangler brugernavn eller CPR</small
+          >
+        </div>
+        <div class="field">
+          <input
+            class="form-control text-center"
+            type="password"
+            placeholder="Password"
+            formControlName="password"
+          />
+          <small
+            *ngIf="passwordControl.touched && passwordControl.errors?.required"
+            class="form-text text-danger"
+            >Mangler kodeord</small
+          >
+          <small
+            *ngIf="
+              passwordControl.touched &&
+              !passwordControl.errors?.required &&
+              passwordControl.errors?.minlength !== null
+            "
+            class="form-text text-danger"
+            >Kodeordet skal mindst indeholde 8 tegn</small
+          >
+        </div>
+        <div
+          [disableTooltip]="loginForm.valid"
+          [ngbTooltip]="'Der er mindst 1 fejl'"
+          [placement]="'bottom'"
         >
-      </div>
-      <div class="field">
-        <input
-          class="form-control text-center"
-          type="password"
-          placeholder="Password"
-          formControlName="password"
-        />
-        <small
-          *ngIf="passwordControl.touched && passwordControl.errors?.required"
-          class="form-text text-danger"
-          >Missing password</small
-        >
-        <small
-          *ngIf="
-            passwordControl.touched &&
-            !passwordControl.errors?.required &&
-            passwordControl.errors?.minlength !== null
-          "
-          class="form-text text-danger"
-          >Password must be at least 8 characters</small
-        >
-      </div>
-      <div
-        [disableTooltip]="!anyErrors"
-        [ngbTooltip]="'There is one or more errors'"
-        [placement]="'bottom'"
+          <button
+            class="btn btn-primary"
+            type="submit"
+            [disabled]="!loginForm.valid"
+          >
+            Log ind
+          </button>
+        </div>
+      </form>
+      <small
+        class="form-text"
+        *ngIf="onLoginMessage"
+        [ngClass]="{
+          'text-danger': onLoginStatus > 0,
+          'text-success': onLoginStatus === 0
+        }"
+        >{{ onLoginMessage }}</small
       >
-        <button
-          class="btn btn-primary"
-          type="submit"
-          [disabled]="!loginForm.valid"
-        >
-          Login
-        </button>
-      </div>
-    </form>
-    <small
-      class="form-text"
-      *ngIf="onLoginMessage"
-      [ngClass]="{
-        'text-danger': onLoginStatus > 0,
-        'text-success': onLoginStatus === 0
-      }"
-      >{{ onLoginMessage }}</small
-    >
+    </div>
+    <div *ngIf="state === 'SELECT'">
+      <p class="h1">Vælg installation</p>
+      <hr class="my-4" />
+      <table class="table table-hover table-sm">
+        <thead class="thead-light">
+          <tr>
+            <th scope="col">Navn</th>
+            <th scope="col">Adresse</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let installation of userInstallations">
+            <td>{{ installation.name }}</td>
+            <td>{{ installation.address }}</td>
+            <td>
+              <button
+                class="btn btn-success"
+                (click)="chooseInstallation(installation.id)"
+              >
+                Vælg
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
