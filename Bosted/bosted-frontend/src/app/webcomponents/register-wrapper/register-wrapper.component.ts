@@ -6,7 +6,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: [],
 })
 export class RegisterWrapperComponent implements OnInit {
-  link: string = 'http://localhost:4000/main.js';
+  link: string = 'http://localhost:7000/main.js';
 
   @Input() dataToChild: string;
   @Output() dataFromChild = new EventEmitter<string>();
