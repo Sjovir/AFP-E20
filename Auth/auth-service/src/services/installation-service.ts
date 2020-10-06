@@ -31,26 +31,4 @@ export default class InstallationService {
     async deleteInstallation(installationUUID: string) {
         await this.installationRepository.delete(installationUUID);
     }
-
-    async getCitizens(installationUUID: string) {
-        return await this.installationRepository.getCitizens(installationUUID);
-    }
-
-    async addCitizen(citizenUUID: string, installationUUID: string) {
-        await this.installationRepository.addCitizen(
-            citizenUUID,
-            installationUUID
-        );
-    }
-
-    async removeCitizen(citizenUUID: string, installationUUID: string) {
-        await this.installationRepository.removeCitizen(
-            citizenUUID,
-            installationUUID
-        );
-    }
-
-    async removeCitizenById(relationshipUUID: string) {
-        await this.installationRepository.removeCitizenById(relationshipUUID);
-    }
 }

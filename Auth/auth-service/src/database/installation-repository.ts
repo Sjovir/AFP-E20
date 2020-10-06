@@ -17,12 +17,13 @@ export default class InstallationRepository {
         );
     }
 
+    async getAllByUserId(userId: string) {
+        return await client.query('', [userId]);
+    }
+
     async create(installation: IInstallation) {
         return await client.query(
-            `
-            INSERT INTO Installation (name, address)
-            VALUES (?, ?);
-            `,
+            `INSERT INTO Installation (name, address) VALUES (?, ?);`,
             [installation.name, installation.address]
         );
     }
@@ -42,44 +43,5 @@ export default class InstallationRepository {
         return await client.query('DELETE FROM Installation WHERE id = ?;', [
             uuid,
         ]);
-    }
-
-    async getCitizens(installationUUID: string) {
-        return await client.query(
-            `
-            SELECT Citizen.id, first_name as firstName, last_name as lastName, cpr FROM Citizen
-            INNER JOIN CitizenInstallation ON citizen_id = Citizen.id
-            WHERE installation_id = ?;
-            `,
-            [installationUUID]
-        );
-    }
-
-    async addCitizen(citizenUUID: string, installationUUID: string) {
-        return await client.query(
-            `
-            INSERT INTO CitizenInstallation (citizen_id, installation_id)
-            VALUES (?, ?);
-            `,
-            [citizenUUID, installationUUID]
-        );
-    }
-
-    async removeCitizen(citizenUUID: string, installationUUID: string) {
-        return await client.query(
-            `
-            DELETE FROM CitizenInstallation WHERE citizen_id = ? AND installation_id = ?;
-            `,
-            [citizenUUID, installationUUID]
-        );
-    }
-
-    async removeCitizenById(CitizenInstallationUUID: string) {
-        return await client.query(
-            `
-            DELETE FROM CitizenInstallation WHERE id = ?;
-            `,
-            [CitizenInstallationUUID]
-        );
     }
 }

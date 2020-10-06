@@ -33,7 +33,7 @@ export default class UserService {
         const user = await this.userDatabase.find(info.username, info.cpr);
 
         if (user && bcrypt.compareSync(info.password, user.password_hash)) {
-            const accessRights = await this.roleDatabase.getAccessRights(
+            const accessRights = await this.roleDatabase.getAccessRightsByUserId(
                 user.id
             );
 
