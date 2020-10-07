@@ -1,4 +1,4 @@
-<nav class="navbar navbar-light bg-info top-bar">
+<nav *ngIf="show" class="navbar navbar-light bg-info top-bar">
   <a
     class="navbar-brand"
     [routerLink]="['installation', installationId]"
