@@ -3,8 +3,8 @@ import Container from 'typedi';
 
 import InstallationController from '../controllers/installation-controller';
 
-const router = new Router({ prefix: '/installations' });
 const controller = Container.get(InstallationController);
+const router = new Router({ prefix: '/installations' });
 
 router.get('/', async (ctx, next) => {
     await controller.getAll(ctx, next);
@@ -26,16 +26,52 @@ router.delete('/', async (ctx, next) => {
     await controller.delete(ctx, next);
 });
 
-router.get('/:installationUUID/citizens', async (ctx, next) => {
-    await controller.getCitizens(ctx, next);
+/* USERS */
+
+router.get('/:installationUUID/users', async (ctx, next) => {
+    await controller.getAllUsersFromInstallation(ctx, next);
 });
 
-router.post('/:installationUUID/citizens/:citizenUUID', async (ctx, next) => {
-    await controller.addCitizen(ctx, next);
+router.post('/:installationUUID/users/:userUUID', async (ctx, next) => {
+    await controller.addUserToInstallation(ctx, next);
 });
 
-router.delete('/:installationUUID/citizens/:citizenUUID', async (ctx, next) => {
-    await controller.removeCitizen(ctx, next);
+router.delete('/:installationUUID/users/:userUUID', async (ctx, next) => {
+    await controller.removeUserFromInstallation(ctx, next);
+});
+
+/* USER ROLES */
+
+router.get('/:installationUUID/users/:userUUID/roles', async (ctx, next) => {
+    await controller.getUserRolesFromInstallation(ctx, next);
+});
+
+router.post(
+    '/:installationUUID/users/:userUUID/roles/:roleUUID',
+    async (ctx, next) => {
+        await controller.addUserRolesToInstallation(ctx, next);
+    }
+);
+
+router.delete(
+    '/:installationUUID/users/:userUUID/roles/:roleUUID',
+    async (ctx, next) => {
+        await controller.removeUserRolesFromInstallation(ctx, next);
+    }
+);
+
+/* ROLES */
+
+router.get('/:installationUUID/roles', async (ctx, next) => {
+    await controller.getAllRolesFromInstallation(ctx, next);
+});
+
+router.post('/:installationUUID/roles/', async (ctx, next) => {
+    await controller.addRoleToInstallation(ctx, next);
+});
+
+router.delete('/:installationUUID/roles/:roleUUID', async (ctx, next) => {
+    await controller.removeRoleFromInstallation(ctx, next);
 });
 
 export default router;

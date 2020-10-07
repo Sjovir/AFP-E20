@@ -28,14 +28,13 @@ CREATE TABLE AccessRight (
 	PRIMARY KEY(id)
 );
 
-CREATE TABLE User_Installation (
+CREATE TABLE Role_AccessRight (
 	id VARCHAR(36) NOT NULL DEFAULT uuid(),
-	user_id VARCHAR(36) NOT NULL,
-	installation_id VARCHAR(36) NOT NULL,
+	role_id VARCHAR(36) NOT NULL,
+	access_right_id VARCHAR(36) NOT NULL,
 	PRIMARY KEY(id),
-	FOREIGN KEY (user_id) REFERENCES User(id),
-	FOREIGN KEY (installation_id) REFERENCES Installation(id),
-	CONSTRAINT row_unique UNIQUE (user_id, installation_id)
+	FOREIGN KEY (role_id) REFERENCES Role(id),
+	FOREIGN KEY (access_right_id) REFERENCES AccessRight(id)
 );
 
 CREATE TABLE Installation_Role (
@@ -48,11 +47,22 @@ CREATE TABLE Installation_Role (
 	CONSTRAINT row_unique UNIQUE (installation_id, role_id)
 );
 
-CREATE TABLE Role_AccessRight (
+CREATE TABLE Installation_User (
 	id VARCHAR(36) NOT NULL DEFAULT uuid(),
-	role_id VARCHAR(36) NOT NULL,
-	access_right_id VARCHAR(36) NOT NULL,
+	installation_id VARCHAR(36) NOT NULL,
+	user_id VARCHAR(36) NOT NULL,
 	PRIMARY KEY(id),
-	FOREIGN KEY (role_id) REFERENCES Role(id),
-	FOREIGN KEY (access_right_id) REFERENCES AccessRight(id)
+	FOREIGN KEY (installation_id) REFERENCES Installation(id),
+	FOREIGN KEY (user_id) REFERENCES User(id),
+	CONSTRAINT row_unique UNIQUE (installation_id, user_id)
+);
+
+CREATE TABLE Installation_User_Role (
+	id VARCHAR(36) NOT NULL DEFAULT uuid(),
+	installation_user_id VARCHAR(36) NOT NULL,
+	installation_role_id VARCHAR(36) NOT NULL,
+	PRIMARY KEY(id),
+	FOREIGN KEY (installation_user_id) REFERENCES Installation_User(id),
+	FOREIGN KEY (installation_role_id) REFERENCES Installation_Role(id),
+	CONSTRAINT row_unique UNIQUE (installation_user_id, installation_role_id)
 );
