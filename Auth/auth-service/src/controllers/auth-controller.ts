@@ -1,23 +1,16 @@
 import { Next, Context } from 'koa';
+import { Service } from 'typedi';
 
 import UserService from '../services/user-service';
-import UserDatabase from '../database/user-database';
-import RoleDatabase from '../database/role-database';
 
 import ajv from '../schemas/schema-validator';
 import registerSchema from '../schemas/register-schema';
 import loginSchema from '../schemas/login-schema';
 import refreshSchema from '../schemas/refresh-schema';
 
-class AuthController {
-    private userService: UserService;
-
-    constructor() {
-        this.userService = new UserService(
-            new UserDatabase(),
-            new RoleDatabase()
-        );
-    }
+@Service()
+export default class AuthController {
+    constructor(private userService: UserService) {}
 
     async postRegister(ctx: Context, next: Next) {
         const compiled = ajv.compile(registerSchema);
@@ -125,5 +118,3 @@ class AuthController {
         next();
     }
 }
-
-export default AuthController;

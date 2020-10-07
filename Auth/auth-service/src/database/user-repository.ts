@@ -1,6 +1,8 @@
-import dbPool from './connector';
+import dbPool from './mariadb-client';
+import { Service } from 'typedi';
 
-class UserDatabase {
+@Service()
+class UserRepository {
     async create(user: IRegister) {
         await dbPool.query('INSERT INTO User VALUES (uuid(), ?, ?, ?, ?, ?);', [
             user.firstName,
@@ -21,4 +23,4 @@ class UserDatabase {
     }
 }
 
-export default UserDatabase;
+export default UserRepository;

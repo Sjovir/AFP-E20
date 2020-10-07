@@ -5,3 +5,8 @@ interface IUser {
     username: string;
     password_hash: string;
 }
+
+interface IInstallation {
+    name: string;
+    address: string;
+}

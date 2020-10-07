@@ -1,8 +1,9 @@
 import bcrypt from 'bcryptjs';
 import { TokenExpiredError } from 'jsonwebtoken';
+import { Service } from 'typedi';
 
-import UserDatabase from '../database/user-database';
-import RoleDatabase from '../database/role-database';
+import UserRepository from '../database/user-repository';
+import RoleRepository from '../database/role-repository';
 import {
     verify,
     signAccessToken,
@@ -10,10 +11,11 @@ import {
     decode,
 } from '../utils/token';
 
-class UserService {
+@Service()
+export default class UserService {
     constructor(
-        private userDatabase: UserDatabase,
-        private roleDatabase: RoleDatabase
+        private userRepository: UserRepository,
+        private roleRepository: RoleRepository
     ) {}
 
     async createUser(body: IRegister) {
@@ -24,14 +26,14 @@ class UserService {
 
         body.password = password_hashed;
 
-        await this.userDatabase.create(body);
+        await this.userRepository.create(body);
     }
 
     async login(info: ILogin): Promise<IRefresh | null> {
-        const user = await this.userDatabase.find(info.username, info.cpr);
+        const user = await this.userRepository.find(info.username, info.cpr);
 
         if (user && bcrypt.compareSync(info.password, user.password_hash)) {
-            const accessRights = await this.roleDatabase.getAccessRights(
+            const accessRights = await this.roleRepository.getAccessRightsByUserId(
                 user.id
             );
 
@@ -81,5 +83,3 @@ class UserService {
         return newAccessToken;
     }
 }
-
-export default UserService;
