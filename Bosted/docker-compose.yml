@@ -6,8 +6,8 @@ services:
     image: bosted_frontend
     container_name: BostedFrontend
     ports:
-      - "4200:80"
-      - "3010:3010"
+      - "8100:80"
+      - "7100:7100"
     depends_on: 
       - service
       - database

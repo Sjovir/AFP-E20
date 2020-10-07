@@ -27,7 +27,7 @@ RUN yarn
 COPY . .
 
 # Build the application
-RUN yarn run build --prod
+RUN yarn run dockerbuild
 
 #############################
 ## STEP 2 Production image ##

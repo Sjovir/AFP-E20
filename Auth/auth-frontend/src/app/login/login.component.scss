@@ -1,19 +1,17 @@
 .content-page {
   height: 100%;
-  padding-top: 64px;
-  // display: flex;
-  // align-items: center;
-  // padding-bottom: 32px;
+  display: flex;
+  align-items: center;
 
   hr {
     margin: 0;
   }
 
   .container {
-    width: 400px;
+    max-width: 500px;
     display: flex;
     flex-direction: column;
-    vertical-align: middle;
+    margin-bottom: 0;
     padding: 16px;
   }
 
@@ -22,10 +20,5 @@
     & > small {
       margin-bottom: 16px;
     }
-  }
-
-  .submit-form {
-    display: flex;
-    flex-direction: column;
   }
 }
