@@ -10,6 +10,11 @@ import { ComponentsModule } from './components/components.module';
 import { DigitOnlyDirective } from './directives/digit-only.directive';
 import { LoginWrapperModule } from './webcomponents/login-wrapper/login-wrapper.module';
 import { RegisterWrapperModule } from './webcomponents/register-wrapper/register-wrapper.module';
+import { JwtModule } from "@auth0/angular-jwt";
+
+export function tokenGetter() {
+  return localStorage.getItem("access-token");
+}
 
 @NgModule({
   declarations: [AppComponent, DigitOnlyDirective],
@@ -22,6 +27,12 @@ import { RegisterWrapperModule } from './webcomponents/register-wrapper/register
     LazyElementsModule,
     LoginWrapperModule,
     RegisterWrapperModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        allowedDomains: ["localhost:7000", "localhost:7100", "localhost:8000", "localhost:8100"]
+      },
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent],

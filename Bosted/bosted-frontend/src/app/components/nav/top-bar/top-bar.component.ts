@@ -7,12 +7,21 @@ import { NavigationEnd, Router } from '@angular/router';
   styleUrls: ['./top-bar.component.scss'],
 })
 export class TopBarComponent implements OnInit {
+  public show: boolean = false;
+
   public installationId: string;
   
   constructor(private router: Router) {
     router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         const url: string = event.urlAfterRedirects;
+        
+        if (!url.match(/^\/installation\//)) {
+          this.show = false;
+          return
+        }
+        this.show = true;
+
         const urlFragments = url.split('/');
 
         const installationIndex = urlFragments.indexOf('installation');

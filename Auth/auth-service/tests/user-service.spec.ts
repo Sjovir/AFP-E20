@@ -1,23 +1,22 @@
-import 'mocha';
+import bcrypt from 'bcryptjs';
 import chai from 'chai';
 import chaiAsPromise from 'chai-as-promised';
-import sinon from 'sinon';
-import bcrypt from 'bcryptjs';
-import jwt, { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
+import 'mocha';
+import sinon from 'sinon';
+import RoleRepository from '../src/database/role-repository';
+import UserRepository from '../src/database/user-repository';
+import UserService from '../src/services/user-service';
 
 dotenv.config();
 
 chai.use(chaiAsPromise);
 
-import UserService from '../src/services/user-service';
-import UserDatabase from '../src/database/user-database';
-import RoleDatabase from '../src/database/role-database';
-
 describe('UserService', function () {
     beforeEach(function () {
-        this.userDB = new UserDatabase();
-        this.roleDB = new RoleDatabase();
+        this.userDB = new UserRepository();
+        this.roleDB = new RoleRepository();
         this.userSV = new UserService(this.userDB, this.roleDB);
 
         this.testUser = {
@@ -72,7 +71,10 @@ describe('UserService', function () {
                 .withArgs(undefined, this.testUser.cpr)
                 .returns(Promise.resolve(this.testUserDB));
 
-            const sbAccessRights = sinon.stub(this.roleDB, 'getAccessRights');
+            const sbAccessRights = sinon.stub(
+                this.roleDB,
+                'getAccessRightsByUserId'
+            );
             sbAccessRights
                 .withArgs(this.testUserDB.id)
                 .returns(
@@ -99,7 +101,10 @@ describe('UserService', function () {
                 .withArgs(undefined, this.testUser.cpr)
                 .returns(Promise.resolve(this.testUserDB));
 
-            const sbAccessRights = sinon.stub(this.roleDB, 'getAccessRights');
+            const sbAccessRights = sinon.stub(
+                this.roleDB,
+                'getAccessRightsByUserId'
+            );
             sbAccessRights
                 .withArgs(this.testUserDB.id)
                 .returns(
@@ -125,7 +130,10 @@ describe('UserService', function () {
                 .withArgs(this.testUser.username, undefined)
                 .returns(Promise.resolve(this.testUserDB));
 
-            const sbAccessRights = sinon.stub(this.roleDB, 'getAccessRights');
+            const sbAccessRights = sinon.stub(
+                this.roleDB,
+                'getAccessRightsByUserId'
+            );
             sbAccessRights
                 .withArgs(this.testUserDB.id)
                 .returns(
@@ -153,7 +161,10 @@ describe('UserService', function () {
                 .withArgs(this.testUser.username, undefined)
                 .returns(Promise.resolve(this.testUserDB));
 
-            const sbAccessRights = sinon.stub(this.roleDB, 'getAccessRights');
+            const sbAccessRights = sinon.stub(
+                this.roleDB,
+                'getAccessRightsByUserId'
+            );
             sbAccessRights
                 .withArgs(this.testUserDB.id)
                 .returns(
@@ -177,26 +188,35 @@ describe('UserService', function () {
 
     describe('Refresh tokens', async function () {
         it('An expired access token gives a new one that is verfied', async function () {
-            const accessToken = jwt.sign(
+            const testUserId = '10e3bd61-890e-4ef0-aeea-caaf77d80b18';
+
+            const refreshToken = jwt.sign(
                 {
-                    firstName: this.testUser.firstName,
-                    lastName: this.testUser.lastName,
-                    username: this.testUser.username,
+                    id: testUserId,
                 },
                 process.env.JWT_SECRET,
                 {
-                    expiresIn: '-1s',
+                    expiresIn: '1h',
                 }
             );
 
-            const refreshToken = jwt.sign({}, process.env.JWT_SECRET, {
-                expiresIn: '1h',
-            });
+            const sbGet = sinon.stub(this.userDB, 'get');
+            sbGet.withArgs(testUserId).returns(Promise.resolve(this.testUser));
 
-            const newAccessToken = await this.userSV.refresh({
-                accessToken,
-                refreshToken,
-            });
+            const sbAccessRights = sinon.stub(
+                this.roleDB,
+                'getAccessRightsByUserId'
+            );
+            sbAccessRights
+                .withArgs(testUserId)
+                .returns(
+                    Promise.resolve([
+                        'basic-access:read',
+                        'medicine-info:write',
+                    ])
+                );
+
+            const newAccessToken = await this.userSV.refresh({ refreshToken });
 
             chai.expect(() =>
                 jwt.verify(newAccessToken, process.env.JWT_SECRET)

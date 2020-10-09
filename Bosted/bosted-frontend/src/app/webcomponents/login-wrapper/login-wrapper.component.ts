@@ -8,7 +8,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: [],
 })
 export class LoginWrapperComponent implements OnInit {
-  link: string = 'http://localhost:7000/main.js';
+  link: string = 'http://localhost:8000/main.js';
 
   @Input() dataToChild: string;
   @Output() dataFromChild = new EventEmitter<string>();
