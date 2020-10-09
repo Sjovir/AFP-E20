@@ -1,0 +1,498 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "AFP-E20 Auth",
+    "description": "This is a sample server Petstore server.  You can find out more about     Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).      For this sample, you can use the api key `special-key` to test the authorization     filters.",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "apiteam@swagger.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Auth methods"
+    },
+    {
+      "name": "installation",
+      "description": "Operations on installations"
+    },
+    {
+      "name": "installation | user",
+      "description": "Operations about user"
+    },
+    {
+      "name": "installation | role",
+      "description": "Operations about user"
+    }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "create a new user",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request. Schema invalid or CPR/Username exists."
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "login with a user",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request. Schema invalid or CPR/Username exists."
+          }
+        }
+      }
+    },
+    "/refresh": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "refresh access token when expired",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request. Schema invalid or CPR/Username exists."
+          }
+        }
+      }
+    },
+    "/installations": {
+      "get": {
+        "tags": [
+          "installation"
+        ],
+        "summary": "get all installations",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "installation"
+        ],
+        "summary": "create new installation",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/installations/{installationUUID}": {
+      "get": {
+        "tags": [
+          "installation"
+        ],
+        "summary": "get an installation",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "installationUUID",
+            "in": "path",
+            "description": "ID of installation",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "installation"
+        ],
+        "summary": "delete an installation",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "installationUUID",
+            "in": "path",
+            "description": "ID of installation",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    },
+    "/installations/{installationUUID}/users": {
+      "get": {
+        "tags": [
+          "installation | user"
+        ],
+        "summary": "get all users on an installation",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "installationUUID",
+            "in": "path",
+            "description": "ID of installation",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    },
+    "/installations/{installationUUID}/users/{userUUID}": {
+      "post": {
+        "tags": [
+          "installation | user"
+        ],
+        "summary": "add the user to an installation",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "installationUUID",
+            "in": "path",
+            "description": "ID of installation",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "userUUID",
+            "in": "path",
+            "description": "ID of installation",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "installation | user"
+        ],
+        "summary": "delete the user from an installation",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "installationUUID",
+            "in": "path",
+            "description": "ID of installation",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "userUUID",
+            "in": "path",
+            "description": "ID of installation",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    },
+    "/installations/{installationUUID}/users/{userUUID}/roles": {
+      "get": {
+        "tags": [
+          "installation | user"
+        ],
+        "summary": "get all roles assigned to a user on an installation",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "installationUUID",
+            "in": "path",
+            "description": "ID of installation",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "userUUID",
+            "in": "path",
+            "description": "ID of installation",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "installation | user"
+        ],
+        "summary": "add the role to a user for an installation",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "installationUUID",
+            "in": "path",
+            "description": "ID of installation",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "userUUID",
+            "in": "path",
+            "description": "ID of installation",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    },
+    "/installations/{installationUUID}/users/{userUUID}/roles/{roleUUID}": {
+      "delete": {
+        "tags": [
+          "installation | user"
+        ],
+        "summary": "delete a role on a user for an installation",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "installationUUID",
+            "in": "path",
+            "description": "ID of installation",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "userUUID",
+            "in": "path",
+            "description": "ID of installation",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "roleUUID",
+            "in": "path",
+            "description": "ID of installation",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    },
+    "/installations/{installationUUID}/roles/": {
+      "get": {
+        "tags": [
+          "installation | role"
+        ],
+        "summary": "delete a role on a user for an installation",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "installationUUID",
+            "in": "path",
+            "description": "ID of installation",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "installation | role"
+        ],
+        "summary": "delete a role on a user for an installation",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "installationUUID",
+            "in": "path",
+            "description": "ID of installation",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    },
+    "/installations/{installationUUID}/roles/{roleUUID}": {
+      "delete": {
+        "tags": [
+          "installation | role"
+        ],
+        "summary": "delete a role on a user for an installation",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "installationUUID",
+            "in": "path",
+            "description": "ID of installation",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "roleUUID",
+            "in": "path",
+            "description": "ID of installation",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Installation": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "format": "text",
+            "minLength": 2
+          },
+          "address": {
+            "type": "string",
+            "format": "text",
+            "minLength": 2
+          }
+        },
+        "xml": {
+          "name": "Installation"
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "cpr": {
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "User"
+        }
+      }
+    }
+  }
+}
