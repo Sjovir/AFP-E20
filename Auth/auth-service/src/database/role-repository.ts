@@ -14,10 +14,11 @@ class RoleRepository {
         return query.map((data: { code: string }) => data.code);
     }
 
+    // TODO: fix this
     async getAccessRightsByUserId(userUUID: string) {
         const query = await client.query(
             `SELECT AccessRight.code FROM User
-            INNER JOIN UserRole ON User.id = UserRole.user_id
+            INNER JOIN Installation_User_Role ON User.id = Installation_User_Role.user_id
             INNER JOIN RoleAccessRight ON UserRole.role_id = RoleAccessRight.role_id
             INNER JOIN AccessRight ON RoleAccessRight.access_right_id = AccessRight.id WHERE User.id = ?;`,
             [userUUID]
