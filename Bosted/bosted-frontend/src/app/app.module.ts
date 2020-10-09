@@ -29,7 +29,8 @@ export function tokenGetter() {
     RegisterWrapperModule,
     JwtModule.forRoot({
       config: {
-        tokenGetter: tokenGetter
+        tokenGetter: tokenGetter,
+        allowedDomains: ["localhost:7000", "localhost:7100", "localhost:8000", "localhost:8100"]
       },
     }),
   ],

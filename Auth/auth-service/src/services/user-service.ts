@@ -1,14 +1,12 @@
 import bcrypt from 'bcryptjs';
-import { TokenExpiredError } from 'jsonwebtoken';
 import { Service } from 'typedi';
-
-import UserRepository from '../database/user-repository';
 import RoleRepository from '../database/role-repository';
+import UserRepository from '../database/user-repository';
 import {
-    verify,
+    decode,
     signAccessToken,
     signRefreshToken,
-    decode,
+    verify,
 } from '../utils/token';
 
 @Service()
@@ -44,7 +42,7 @@ export default class UserService {
                     username: user.username,
                     permissions: accessRights,
                 }),
-                refreshToken: signRefreshToken({}),
+                refreshToken: signRefreshToken({ id: user.id }),
             };
         }
 
@@ -52,31 +50,28 @@ export default class UserService {
     }
 
     async refresh(tokens: IRefresh): Promise<string> {
-        let newAccessToken = null;
-
-        // TODO: access token should be expired for refresh to function
-        let accessTokenDecode: Record<string, unknown>;
-        try {
-            accessTokenDecode = <Record<string, unknown>>(
-                verify(tokens.accessToken)
-            );
-        } catch (err) {
-            if (err instanceof TokenExpiredError) {
-                accessTokenDecode = <Record<string, unknown>>(
-                    decode(tokens.accessToken)
-                );
-            } else {
-                throw err;
-            }
-        }
-
         verify(tokens.refreshToken);
 
-        if (accessTokenDecode) {
+        const refreshTokenDecode = <Record<string, unknown>>(
+            decode(tokens.refreshToken)
+        );
+
+        let newAccessToken = null;
+
+        if (refreshTokenDecode) {
+            const user = await this.userRepository.get(
+                <string>refreshTokenDecode.id
+            );
+
+            const accessRights = await this.roleRepository.getAccessRightsByUserId(
+                <string>refreshTokenDecode.id
+            );
+
             newAccessToken = signAccessToken({
-                firstName: accessTokenDecode.firstName,
-                lastName: accessTokenDecode.lastName,
-                username: accessTokenDecode.username,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                username: user.username,
+                permissions: accessRights,
             });
         }
 

@@ -1,5 +1,5 @@
-import dbPool from './mariadb-client';
 import { Service } from 'typedi';
+import dbPool from './mariadb-client';
 
 @Service()
 class UserRepository {
@@ -17,6 +17,15 @@ class UserRepository {
         const userQuery = await dbPool.query(
             'SELECT * FROM User where cpr = ? OR username = ?;',
             [cpr || '', username || '']
+        );
+
+        return userQuery.length > 0 ? userQuery[0] : null;
+    }
+
+    async get(userUUID: string) {
+        const userQuery = await dbPool.query(
+            'SELECT * FROM User where id = ?',
+            [userUUID]
         );
 
         return userQuery.length > 0 ? userQuery[0] : null;

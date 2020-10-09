@@ -15,7 +15,6 @@ export class TopBarComponent implements OnInit {
     router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         const url: string = event.urlAfterRedirects;
-        console.log(url);
         
         if (!url.match(/^\/installation\//)) {
           this.show = false;

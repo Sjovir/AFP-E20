@@ -7,6 +7,7 @@ import {
   UrlTree,
 } from '@angular/router';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 
 @Injectable({
@@ -23,10 +24,15 @@ export class AuthGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    if (!this.authService.isAuthenticated()) {
-      this.router.navigate(['login']);
-      return false;
-    }
-    return true;
+    return this.authService.isAuthenticated().pipe(
+      map((isAuthenticated) => {
+        if (isAuthenticated) {
+          return true;
+        } else {
+          this.router.navigate(['login']);
+          return false;
+        }
+      })
+    );
   }
 }
