@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Installation } from '../models/installation.model';
-import { JavaWebToken } from '../models/java-web-token.model';
+import { JavaWebTokens } from '../models/java-web-token.model';
 
 @Injectable({
   providedIn: 'root',
@@ -12,29 +12,19 @@ export class InstallationService {
 
   constructor(private http: HttpClient) {}
 
-  public getInstallationsForUser(userId: string): Observable<Installation[]> {
-    const installations: Installation[] = [
-      { id: '1', name: 'Odense', address: 'OdenseVej 105, 5230 Odense M' },
-      { id: '2', name: 'Århus', address: 'Århusvej 507, 8000 Århus C' },
-      {
-        id: '3',
-        name: 'Køb En Havn',
-        address: 'Fjernvej 101, 1000 København V',
-      },
-    ];
-
-    return of(installations);
+  public getInstallationsOnUser(userId: string): Observable<Installation[]> {
+    return this.http.get<Installation[]>(`${this.BASE_URL}/users/${userId}`);
   }
 
-  public selectInstallation(
-    installationId: string,
-    userId: string
-  ): Observable<JavaWebToken> {
-    const jwt: JavaWebToken = {
-      accessToken: 'aLongString',
-      refreshToken: 'aVeryLongString',
+  public selectInstallation(installationId: string): Observable<JavaWebTokens> {
+    const tokens: JavaWebTokens = {
+      accessToken: localStorage.getItem('access-token'),
+      refreshToken: localStorage.getItem('refresh-token'),
     };
 
-    return of(jwt);
+    return this.http.post<JavaWebTokens>(`${this.BASE_URL}/select`, {
+      installationId,
+      tokens,
+    });
   }
 }

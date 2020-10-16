@@ -1,5 +1,4 @@
 import { Service } from 'typedi';
-
 import InstallationRepository from '../database/installation-repository';
 import RoleRepository from '../database/role-repository';
 
@@ -16,6 +15,10 @@ export default class InstallationService {
 
     async getAllInstallations() {
         return this.installationRepository.getAll();
+    }
+
+    async getInstallationsOnUser(userUUID: string) {
+        return this.installationRepository.getOnUser(userUUID);
     }
 
     async createInstallation(installation: IInstallation) {

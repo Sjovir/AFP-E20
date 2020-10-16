@@ -3,7 +3,7 @@ import {
   AbstractControl,
   FormBuilder,
   FormGroup,
-  Validators
+  Validators,
 } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 
@@ -18,8 +18,8 @@ export class RegisterComponent implements OnInit {
   public registerForm: FormGroup;
 
   constructor(
-    private formBuiler: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
+    private formBuiler: FormBuilder
   ) {}
 
   ngOnInit(): void {

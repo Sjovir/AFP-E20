@@ -1,18 +1,6 @@
 version: "3"
 
 services:
-  frontend:
-    build: ./auth-frontend
-    image: auth_frontend
-    container_name: AuthFrontend
-    environment:
-      - YARN-VERSION=${YARN_VERSION}
-    depends_on:
-      - service
-      - db
-    ports:
-      - "8000:80"
-      - "7000:7000"
   service:
     build: ./auth-service
     image: auth_service
@@ -24,6 +12,8 @@ services:
       - DB_DATABASE=${DB_DATABASE}
       - DB_HOST=db
       - YARN-VERSION=${YARN_VERSION}
+    ports:
+      - "7000:7000"
     depends_on:
       - db
   db:

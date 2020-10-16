@@ -1,6 +1,5 @@
 import Router from 'koa-router';
 import Container from 'typedi';
-
 import InstallationController from '../controllers/installation-controller';
 import { isAuthenticated } from '../utils/permission-util';
 
@@ -14,6 +13,14 @@ router.get('/', isAuthenticated, async (ctx, next) => {
 
 router.get('/:installationUUID', async (ctx, next) => {
     await controller.get(ctx, next);
+});
+
+router.get('/users/:userUUID', async (ctx, next) => {
+    await controller.getInstallationsOnUser(ctx, next);
+});
+
+router.post('/select', async (ctx, next) => {
+    await controller.select(ctx, next);
 });
 
 router.post('/', async (ctx, next) => {

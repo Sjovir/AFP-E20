@@ -1,7 +1,5 @@
-<nav class="navbar navbar-light bg-info top-bar">
-  <a
-    class="navbar-brand"
-    [routerLink]="['installation', installationId]"
+<nav *ngIf="show" class="navbar navbar-light bg-info top-bar">
+  <a class="navbar-brand" [routerLink]="['installation', installationId]"
     >Hjem</a
   >
   <ul class="nav navbar-nav ml-auto">
@@ -22,7 +20,7 @@
         aria-labelledby="navbarDropdown"
         style="position: absolute"
       >
-        <a class="dropdown-item" [routerLink]="['installation', installationId]"> Log ud </a>
+        <a class="dropdown-item" (click)="logout()"> Log ud </a>
       </div>
     </li>
   </ul>
