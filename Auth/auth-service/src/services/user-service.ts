@@ -27,32 +27,27 @@ export default class UserService {
         await this.userRepository.create(body);
     }
 
-    async login(info: ILogin): Promise<IRefresh | null> {
+    async login(info: ILogin): Promise<ITokens | null> {
         const user = await this.userRepository.find(info.username, info.cpr);
 
         if (user && bcrypt.compareSync(info.password, user.password_hash)) {
-            const accessRights = await this.roleRepository.getAccessRightsByUserId(
-                user.id
-            );
-
             return {
                 accessToken: signAccessToken({
-                    firstName: user.first_name,
-                    lastName: user.last_name,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
                     username: user.username,
-                    permissions: accessRights,
                 }),
-                refreshToken: signRefreshToken({ id: user.id }),
+                refreshToken: signRefreshToken({ userId: user.id }),
             };
         }
 
         return null;
     }
 
-    async refresh(tokens: IRefresh): Promise<string> {
+    async refresh(tokens: IRefresh): Promise<string | null> {
         verify(tokens.refreshToken);
 
-        const refreshTokenDecode = <Record<string, unknown>>(
+        const refreshTokenDecode = <IDecodedRefreshToken>(
             decode(tokens.refreshToken)
         );
 
@@ -60,11 +55,12 @@ export default class UserService {
 
         if (refreshTokenDecode) {
             const user = await this.userRepository.get(
-                <string>refreshTokenDecode.id
+                refreshTokenDecode.userId
             );
 
-            const accessRights = await this.roleRepository.getAccessRightsByUserId(
-                <string>refreshTokenDecode.id
+            const accessRights = await this.roleRepository.getAccessRightsByUsername(
+                refreshTokenDecode.installationId,
+                user.username
             );
 
             newAccessToken = signAccessToken({
@@ -76,5 +72,44 @@ export default class UserService {
         }
 
         return newAccessToken;
+    }
+
+    async updateTokensWithInstallation(
+        tokens: ITokens,
+        installationUUID: string
+    ): Promise<ITokens> {
+        verify(tokens.accessToken);
+        verify(tokens.refreshToken);
+
+        const accessTokenDecode = <IDecodedAccessToken>(
+            decode(tokens.accessToken)
+        );
+
+        const accessRights = await this.roleRepository.getAccessRightsByUsername(
+            installationUUID,
+            accessTokenDecode.username
+        );
+
+        const newAccessToken = signAccessToken({
+            firstname: accessTokenDecode.firstName,
+            lastname: accessTokenDecode.lastName,
+            username: accessTokenDecode.username,
+            permissions: accessRights,
+        });
+
+        const refreshTokenDecode = <IDecodedRefreshToken>(
+            decode(tokens.refreshToken)
+        );
+
+        const newRefreshToken = signRefreshToken({
+            userId: refreshTokenDecode.userId,
+            installationId: installationUUID,
+        });
+
+        return { accessToken: newAccessToken, refreshToken: newRefreshToken };
+    }
+
+    async getOnUsername(username: string): Promise<IUser> {
+        return this.userRepository.find(username, '');
     }
 }

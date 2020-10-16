@@ -1,0 +1,29 @@
+<div class="content-page">
+  <div class="container jumbotron text-center">
+    <p class="h1">Vælg installation</p>
+    <hr class="my-4" />
+    <table class="table table-hover table-sm">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">Navn</th>
+          <th scope="col">Adresse</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let installation of userInstallations">
+          <td>{{ installation.name }}</td>
+          <td>{{ installation.address }}</td>
+          <td>
+            <button
+              class="btn btn-success"
+              (click)="chooseInstallation(installation.id)"
+            >
+              Vælg
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

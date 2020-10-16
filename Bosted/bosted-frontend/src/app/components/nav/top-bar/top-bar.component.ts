@@ -10,15 +10,15 @@ export class TopBarComponent implements OnInit {
   public show: boolean = false;
 
   public installationId: string;
-  
+
   constructor(private router: Router) {
     router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         const url: string = event.urlAfterRedirects;
-        
+
         if (!url.match(/^\/installation\//)) {
           this.show = false;
-          return
+          return;
         }
         this.show = true;
 
@@ -33,4 +33,9 @@ export class TopBarComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  public logout() {
+    localStorage.clear();
+    window.location.reload();
+  }
 }

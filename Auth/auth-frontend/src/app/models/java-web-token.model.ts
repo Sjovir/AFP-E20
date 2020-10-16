@@ -1,4 +1,4 @@
-export class JavaWebToken {
-  accessToken: string
-  refreshToken: string
+export class JavaWebTokens {
+  accessToken: string;
+  refreshToken: string;
 }

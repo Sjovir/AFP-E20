@@ -7,16 +7,31 @@ import { HomeComponent } from './components/home/home.component';
 import { AuthGuard } from './guards/auth.guard';
 import { LoginWrapperComponent } from './webcomponents/login-wrapper/login-wrapper.component';
 import { RegisterWrapperComponent } from './webcomponents/register-wrapper/register-wrapper.component';
+import { SelectInstallationWrapperComponent } from './webcomponents/select-installation-wrapper/select-installation-wrapper.component';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'installation/null',
+    redirectTo: 'select-installation',
     pathMatch: 'full',
   },
   { path: 'login', component: LoginWrapperComponent },
   { path: 'register', component: RegisterWrapperComponent },
-  { path: 'installation', redirectTo: 'installation/null', pathMatch: 'full' },
+  {
+    path: 'select-installation',
+    component: SelectInstallationWrapperComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'installation',
+    redirectTo: 'select-installation',
+    pathMatch: 'full',
+  },
+  {
+    path: 'installation/null',
+    redirectTo: 'select-installation',
+    pathMatch: 'full',
+  },
   {
     path: 'installation/:installationId',
     component: HomeComponent,
