@@ -6,7 +6,6 @@ import { Installation } from 'src/app/models/installation.model';
 import { CitizenService } from 'src/app/services/citizen.service';
 import { InstallationService } from 'src/app/services/installation.service';
 import { CitizenModalComponent } from '../citizen/modals/citizen-modal/citizen-modal.component';
-import { InstallationModalComponent } from '../installation/modals/installation-modal/installation-modal.component';
 
 @Component({
   selector: 'components-home',
@@ -32,14 +31,15 @@ export class HomeComponent implements OnInit {
         return;
       }
 
-      this.installationService
-        .get(installationId)
-        .subscribe((installation: Installation) => {
+      this.installationService.get(installationId).subscribe(
+        (installation: Installation) => {
           this.installation = installation;
           this.updateCitizenTable();
-        }, () => {
+        },
+        () => {
           this.router.navigate(['installation']);
-        });
+        }
+      );
     });
   }
 
@@ -59,21 +59,6 @@ export class HomeComponent implements OnInit {
               this.updateCitizenTable();
             });
         });
-      },
-      () => {}
-    );
-  }
-
-  public chooseInstallation() {
-    const modalReference = this.modalService.open(InstallationModalComponent);
-
-    modalReference.componentInstance.installation = this.installation;
-
-    modalReference.result.then(
-      (installation: Installation) => {
-        if (!this.installation || this.installation.id !== installation.id) {
-          this.router.navigate(['/installation', installation.id]);
-        }
       },
       () => {}
     );
