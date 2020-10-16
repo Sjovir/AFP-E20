@@ -14,13 +14,20 @@ class RoleRepository {
         return query.map((data: { code: string }) => data.code);
     }
 
-    async getAccessRightsByUserId(userUUID: string) {
+    async getAccessRightsByUsername(
+        installationUUID: string,
+        username: string
+    ): Promise<string[]> {
         const query = await client.query(
             `SELECT AccessRight.code FROM User
-            INNER JOIN UserRole ON User.id = UserRole.user_id
-            INNER JOIN RoleAccessRight ON UserRole.role_id = RoleAccessRight.role_id
-            INNER JOIN AccessRight ON RoleAccessRight.access_right_id = AccessRight.id WHERE User.id = ?;`,
-            [userUUID]
+            INNER JOIN Installation_User ON User.id = Installation_User.user_id
+            INNER JOIN Installation_User_Role ON Installation_User.id = Installation_User_Role.installation_user_id
+            INNER JOIN Installation_Role ON Installation_User_Role.installation_role_id = Installation_Role.id
+            INNER JOIN Role ON Installation_Role.role_id = Role.id
+            INNER JOIN Role_AccessRight ON Role.id = Role_AccessRight.role_id
+            INNER JOIN AccessRight ON Role_AccessRight.access_right_id = AccessRight.id
+            WHERE Installation_User.installation_id = ? AND User.username = ?;`,
+            [installationUUID, username]
         );
 
         return query.map((data: { code: string }) => data.code);

@@ -1,15 +1,19 @@
-import { Next, Context } from 'koa';
+import { Context, Next } from 'koa';
 import { Service } from 'typedi';
-
-import ajv from '../schemas/schema-validator';
-import { isUUID } from '../utils/uuid-util';
-import InstallationService from '../services/installation-service';
 import installationSchema from '../schemas/installation-schema';
 import roleSchema from '../schemas/role-schema';
+import ajv from '../schemas/schema-validator';
+import selectInstallationSchema from '../schemas/select-installation-schema';
+import InstallationService from '../services/installation-service';
+import UserService from '../services/user-service';
+import { isUUID } from '../utils/uuid-util';
 
 @Service()
 export default class InstallationController {
-    constructor(private installationService: InstallationService) {}
+    constructor(
+        private installationService: InstallationService,
+        private userService: UserService
+    ) {}
 
     async getAll(ctx: Context, next: Next) {
         try {
@@ -48,6 +52,79 @@ export default class InstallationController {
             } else {
                 ctx.response.body = '';
             }
+            await next();
+        } catch (err) {
+            ctx.response.status = 500;
+        }
+    }
+
+    async getInstallationsOnUser(ctx: Context, next: Next) {
+        const id = ctx.params.userUUID;
+
+        if (!isUUID(id)) {
+            ctx.response.status = 400;
+            ctx.response.body = {
+                errors: [
+                    {
+                        message: 'The inserted id is not an UUID.',
+                        code: 'INVALID_IDENTIFIER',
+                    },
+                ],
+            };
+
+            return;
+        }
+
+        try {
+            const installations = await this.installationService.getInstallationsOnUser(
+                id
+            );
+
+            ctx.response.body = installations;
+            ctx.response.status = 200;
+
+            await next();
+        } catch (err) {
+            ctx.response.status = 500;
+        }
+    }
+
+    async select(ctx: Context, next: Next) {
+        const compiled = ajv.compile(selectInstallationSchema);
+        const valid = compiled(ctx.request.body);
+
+        if (!valid) {
+            ctx.response.body = compiled.errors;
+            ctx.response.status = 400;
+            return;
+        }
+
+        const installationId: string = ctx.request.body.installationId;
+        const tokens: ITokens = ctx.request.body.tokens;
+
+        if (!isUUID(installationId)) {
+            ctx.response.status = 400;
+            ctx.response.body = {
+                errors: [
+                    {
+                        message: 'The inserted id is not an UUID.',
+                        code: 'INVALID_IDENTIFIER',
+                    },
+                ],
+            };
+
+            return;
+        }
+
+        try {
+            const newTokens: ITokens = await this.userService.updateTokensWithInstallation(
+                tokens,
+                installationId
+            );
+
+            ctx.response.body = newTokens;
+            ctx.response.status = 200;
+
             await next();
         } catch (err) {
             ctx.response.status = 500;

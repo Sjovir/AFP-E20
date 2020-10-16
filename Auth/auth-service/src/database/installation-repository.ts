@@ -1,19 +1,30 @@
 import { Service } from 'typedi';
-
 import client from '../database/mariadb-client';
+
 
 @Service()
 export default class InstallationRepository {
     async get(uuid: string) {
-        return await client.query(
+        const installationQuery = await client.query(
             'SELECT id, name, address FROM Installation WHERE id = ?;',
             [uuid]
         );
+
+        return installationQuery.length > 0 ? installationQuery[0] : null;
     }
 
     async getAll() {
         return await client.query(
             'SELECT id, name, address FROM Installation;'
+        );
+    }
+
+    async getOnUser(userUUID: string) {
+        return await client.query(
+            `SELECT Installation.id, name, address FROM Installation 
+            INNER JOIN Installation_User ON Installation.id = Installation_User.installation_id
+            WHERE user_id = ?;`,
+            [userUUID]
         );
     }
 

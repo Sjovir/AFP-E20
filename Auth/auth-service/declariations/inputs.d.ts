@@ -13,6 +13,10 @@ interface ILogin {
 }
 
 interface IRefresh {
-    accessToken: string;
     refreshToken: string;
+}
+
+interface ISelect {
+    installationUUID: string;
+    tokens: ITokens;
 }
