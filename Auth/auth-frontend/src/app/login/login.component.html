@@ -8,7 +8,7 @@
         <input
           class="form-control text-center"
           type="text"
-          placeholder="Username or CPR"
+          placeholder="Brugernavn eller CPR"
           formControlName="username"
         />
         <small
@@ -21,7 +21,7 @@
         <input
           class="form-control text-center"
           type="password"
-          placeholder="Password"
+          placeholder="Kodeord"
           formControlName="password"
         />
         <small
@@ -56,5 +56,11 @@
       }"
       >{{ onLoginMessage }}</small
     >
+    <hr class="my-4" />
+    <div>
+      <button class="btn btn-primary" (click)="gotoRegisterPage()">
+        Opret bruger
+      </button>
+    </div>
   </div>
 </div>

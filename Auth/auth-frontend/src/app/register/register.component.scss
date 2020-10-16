@@ -7,10 +7,6 @@
     flex-direction: column;
     padding: 16px;
 
-    hr {
-      width: 100%;
-    }
-
     form {
       display: flex;
       flex-direction: column;
@@ -36,7 +32,6 @@
 
       button {
         width: 100px;
-        align-self: flex-end;
 
         &:disabled {
           opacity: 0.2;
