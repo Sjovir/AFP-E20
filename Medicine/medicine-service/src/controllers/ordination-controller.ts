@@ -36,10 +36,8 @@ export default class OrdinationController {
   }
 
   async create(ctx: Context, next: Next) {
-    const installation: IInstallation = ctx.request.body;
-
     const compiled = ajv.compile(null /* INSERT NEW SCHEMA HERE */);
-    const valid = compiled(installation);
+    const valid = compiled(null);
 
     if (!valid) {
       ctx.response.body = compiled.errors;
@@ -73,7 +71,7 @@ export default class OrdinationController {
     }
 
     const compiled = ajv.compile(null /* INSERT NEW SCHEMA HERE */);
-    const valid = compiled(ctx.request.body);
+    const valid = compiled(ctx.request);
 
     if (!valid) {
       ctx.response.body = compiled.errors;
