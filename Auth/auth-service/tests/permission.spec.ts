@@ -2,7 +2,6 @@ import chai from 'chai';
 import chaiAsPromise from 'chai-as-promised';
 import dotenv from 'dotenv';
 import 'mocha';
-import sinon from 'sinon';
 import { hasPermissions } from '../src/utils/permission-util';
 
 dotenv.config();
@@ -17,10 +16,6 @@ const userPermissions = [
 ];
 
 describe('Permission Utility', function () {
-    it('is authenticated', function () {
-        chai.expect(true).to.be.true;
-    });
-
     describe('has permissions', function () {
         it('with valid array', function () {
             const result = hasPermissions(userPermissions, [
