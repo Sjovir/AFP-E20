@@ -59,6 +59,10 @@ export class LoginComponent implements OnInit {
     );
   }
 
+  public gotoRegisterPage() {
+    window.location.replace('register');
+  }
+
   public get usernameControl(): AbstractControl {
     return this.loginForm.get('username') as AbstractControl;
   }

@@ -1,15 +1,12 @@
 <div class="content-panel p-3">
   <div class="top-bar">
-    <button class="btn btn-primary" (click)="chooseInstallation()">
-      Vælg installation
-    </button>
     <span
       [disableTooltip]="installation"
       [ngbTooltip]="'Der er ikke valgt en installation'"
       [placement]="'bottom'"
     >
       <button
-        class="btn btn-primary ml-3"
+        class="btn btn-primary"
         (click)="createCitizen()"
         [disabled]="!installation"
       >
