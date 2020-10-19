@@ -14,6 +14,6 @@ server.use(cors({ origin: '*' }));
 server.use(bodyparser());
 server.use(router.routes());
 
-const app = server.listen(7000);
+const app = server.listen(7200);
 
 export default app;
