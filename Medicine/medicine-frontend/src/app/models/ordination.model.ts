@@ -6,5 +6,5 @@ export class Ordination {
   drugAmount: number;
   drugUnit: string;
   startDate: Date;
-  endDate: Date | null;
+  endDate?: Date;
 }
