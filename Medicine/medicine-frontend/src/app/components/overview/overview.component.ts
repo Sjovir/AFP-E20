@@ -38,7 +38,8 @@ export class OverviewComponent implements OnInit {
   }
 
   public createOrdination() {
-    console.log('Create Ordination Page');
+    // Implement redirect to correct page
+    window.location.replace('create-ordination');
   }
 
   public editOrdination(ordinationId: string) {

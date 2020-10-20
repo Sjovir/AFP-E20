@@ -1,1 +1,85 @@
-<p>create-ordination works!</p>
+<div class="content-panel">
+  <div class="content px-4 py-2">
+    <p class="h2">Medicin kort</p>
+    <form [formGroup]="createOrdinationForm">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Præparat:</span>
+        </div>
+        <select class="form-control" formControlName="drug">
+          <option value="" disabled selected hidden>Vælg venligst</option>
+          <option *ngFor="let drug of drugs" value="drug">
+            {{ drug.name }}
+          </option>
+        </select>
+      </div>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Mængde:</span>
+        </div>
+        <input type="text" class="form-control" formControlName="drugAmount" />
+      </div>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Enhed:</span>
+        </div>
+        <select class="form-control" formControlName="drugUnit">
+          <option value="" disabled selected hidden>Vælg venligst</option>
+          <option *ngFor="let drugUnit of drugUnits">{{ drugUnit }}</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Startdato:</span>
+        </div>
+        <input
+          class="form-control"
+          placeholder="yyyy-mm-dd"
+          formControlName="startDate"
+          ngbDatepicker
+          #startDatePicker="ngbDatepicker"
+        />
+        <div class="input-group-append">
+          <button
+            class="btn btn-outline-secondary"
+            (click)="startDatePicker.toggle()"
+            type="button"
+          >
+            Dato
+          </button>
+        </div>
+      </div>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Slutdato:</span>
+        </div>
+        <input
+          class="form-control"
+          placeholder="yyyy-mm-dd"
+          formControlName="endDate"
+          ngbDatepicker
+          #endDatePicker="ngbDatepicker"
+        />
+        <div class="input-group-append">
+          <button
+            class="btn btn-outline-secondary"
+            (click)="endDatePicker.toggle()"
+            type="button"
+          >
+            Dato
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="submit-bar">
+    <button class="btn btn-outline-danger" (click)="cancel()">Annuller</button>
+    <button
+      class="btn btn-success"
+      (click)="createOrdination()"
+      [disabled]="!createOrdinationForm.valid"
+    >
+      Opret Ordination
+    </button>
+  </div>
+</div>
