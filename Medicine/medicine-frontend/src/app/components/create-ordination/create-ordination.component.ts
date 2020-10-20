@@ -5,7 +5,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 import { Drug } from 'src/app/models/drug.model';
 import { Ordination } from 'src/app/models/ordination.model';
 import { MedicineService } from 'src/app/services/medicine.service';
@@ -22,6 +22,7 @@ export class CreateOrdinationComponent implements OnInit {
   public drugUnits: string[];
 
   constructor(
+    private calendar: NgbCalendar,
     private formBuilder: FormBuilder,
     private medicineService: MedicineService
   ) {}
@@ -35,19 +36,11 @@ export class CreateOrdinationComponent implements OnInit {
       this.drugUnits = drugUnits;
     });
 
-    const today: Date = new Date();
-
-    const dateStruct: NgbDateStruct = {
-      year: today.getFullYear(),
-      month: today.getMonth(),
-      day: today.getDay(),
-    };
-
     this.createOrdinationForm = this.formBuilder.group({
       drug: ['', Validators.required],
       drugAmount: ['', Validators.required],
       drugUnit: ['', Validators.required],
-      startDate: [dateStruct, Validators.required],
+      startDate: [this.calendar.getToday(), Validators.required],
       endDate: [null],
     });
   }
