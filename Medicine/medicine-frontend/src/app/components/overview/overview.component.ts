@@ -43,6 +43,7 @@ export class OverviewComponent implements OnInit {
   }
 
   public editOrdination(ordinationId: string) {
-    console.log('Edit Ordination Page');
+    // Implement redirect to correct page
+    window.location.replace(`edit-ordination/${ordinationId}`);
   }
 }

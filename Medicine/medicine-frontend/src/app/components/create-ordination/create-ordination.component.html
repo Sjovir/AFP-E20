@@ -1,6 +1,6 @@
 <div class="content-panel">
   <div class="content px-4 py-2">
-    <p class="h2">Medicin kort</p>
+    <p class="h2">Opret Ordination</p>
     <form [formGroup]="createOrdinationForm">
       <div class="input-group">
         <div class="input-group-prepend">
@@ -79,7 +79,7 @@
       (click)="createOrdination()"
       [disabled]="!createOrdinationForm.valid"
     >
-      Opret Ordination
+      Ok
     </button>
   </div>
 </div>
