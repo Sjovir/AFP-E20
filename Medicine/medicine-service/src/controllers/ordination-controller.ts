@@ -1,15 +1,21 @@
 import { Context, Next } from 'koa';
 import { Service } from 'typedi';
-import ajv from '../schemas/schema-validator';
+import { validateSchema } from '../schemas/schema-validator';
 import { isUUID } from '../utils/uuid-util';
 import OrdinationService from '../services/ordination-service';
+import ordinationSchema from '../schemas/ordination-schema';
+import AbstractController from './abstract-controller';
 
 @Service()
-export default class OrdinationController {
-  constructor(private ordinationService: OrdinationService) {}
+export default class OrdinationController extends AbstractController {
+  constructor(private ordinationService: OrdinationService) {
+    super();
+  }
 
   async getAll(ctx: Context, next: Next) {
     try {
+      const allOrdinations = this.ordinationService.getAllOrdinations();
+      ctx.response.body = allOrdinations;
       ctx.response.status = 201;
       await next();
     } catch (err) {
@@ -18,16 +24,13 @@ export default class OrdinationController {
   }
 
   async get(ctx: Context, next: Next) {
-    try {
-      ctx.response.status = 201;
-      await next();
-    } catch (err) {
-      ctx.response.status = 500;
-    }
-  }
+    const id = ctx.params.ordinationUUID;
 
-  async getInstallationsOnUser(ctx: Context, next: Next) {
+    if (!this.validIdentifiers(ctx, id)) return;
+
     try {
+      const ordination = this.ordinationService.getOrdination(id);
+      ctx.response.body = ordination;
       ctx.response.status = 201;
       await next();
     } catch (err) {
@@ -36,17 +39,14 @@ export default class OrdinationController {
   }
 
   async create(ctx: Context, next: Next) {
-    const compiled = ajv.compile(null /* INSERT NEW SCHEMA HERE */);
-    const valid = compiled(null);
-
-    if (!valid) {
-      ctx.response.body = compiled.errors;
-      ctx.response.status = 400;
-      return;
-    }
+    if (!this.validSchema(ctx, ordinationSchema, ctx.params)) return;
 
     try {
+      const ordinationId = this.ordinationService.createOrdination(
+        ctx.request.body
+      );
       ctx.response.status = 201;
+      ctx.response.body = { ordinationId };
       await next();
     } catch (err) {
       ctx.response.status = 500;
@@ -54,32 +54,18 @@ export default class OrdinationController {
   }
 
   async update(ctx: Context, next: Next) {
-    const id = ctx.params;
+    const id = ctx.params.ordinationUUID;
 
-    if (!isUUID(id)) {
-      ctx.response.status = 400;
-      ctx.response.body = {
-        errors: [
-          {
-            message: 'The inserted id is not an UUID.',
-            code: 'INVALID_IDENTIFIER',
-          },
-        ],
-      };
+    if (!this.validIdentifiers(ctx, id)) return;
+    if (!this.validSchema(ctx, ordinationSchema, ctx.request.body)) return;
 
-      return;
-    }
-
-    const compiled = ajv.compile(null /* INSERT NEW SCHEMA HERE */);
-    const valid = compiled(ctx.request);
-
-    if (!valid) {
-      ctx.response.body = compiled.errors;
-      ctx.response.status = 400;
-      return;
-    }
+    const ordination: IOrdination = {
+      id,
+      ...ctx.request.body,
+    };
 
     try {
+      this.ordinationService.updateOrdination(ordination);
       ctx.response.status = 201;
       await next();
     } catch (err) {
@@ -88,21 +74,9 @@ export default class OrdinationController {
   }
 
   async delete(ctx: Context, next: Next) {
-    const id = ctx.params; /* params.param */
+    const id = ctx.params.ordinationUUID;
 
-    if (!isUUID(id)) {
-      ctx.response.status = 400;
-      ctx.response.body = {
-        errors: [
-          {
-            message: 'The inserted id is not an UUID.',
-            code: 'INVALID_IDENTIFIER',
-          },
-        ],
-      };
-
-      return;
-    }
+    if (!this.validIdentifiers(ctx, id)) return;
 
     try {
       ctx.response.status = 200;

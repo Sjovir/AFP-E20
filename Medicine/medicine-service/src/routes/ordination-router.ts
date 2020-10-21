@@ -1,29 +1,28 @@
 import { Container } from 'typedi';
 import Router from 'koa-router';
 
-import CitizenController from '../controllers/citizen-controller';
+import OrdinationController from '../controllers/ordination-controller';
 
-const router = new Router({ prefix: '/citizens' });
-const controller = Container.get(CitizenController);
+const router = new Router({ prefix: '/ordinations' });
+const controller = Container.get(OrdinationController);
 
 router.get('/', async (ctx, next) => {
   await controller.getAll(ctx, next);
 });
 
-router.get('/:citizenUUID', async (ctx, next) => {
+router.get('/:ordinationUUID', async (ctx, next) => {
   await controller.get(ctx, next);
 });
 
-// TODO: Disable this one
 router.post('/', async (ctx, next) => {
   await controller.create(ctx, next);
 });
 
-router.put('/:citizenUUID', async (ctx, next) => {
+router.put('/:ordinationUUID', async (ctx, next) => {
   await controller.update(ctx, next);
 });
 
-router.delete('/:citizenUUID', async (ctx, next) => {
+router.delete('/:ordinationUUID', async (ctx, next) => {
   await controller.delete(ctx, next);
 });
 

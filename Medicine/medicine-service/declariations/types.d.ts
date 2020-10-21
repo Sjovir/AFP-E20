@@ -1,4 +1,5 @@
 interface ICitizen {
+  id?: string;
   firstName: string;
   lastName: string;
   cpr: string;
@@ -6,14 +7,15 @@ interface ICitizen {
 
 interface IOrdination {
   id?: string;
-  drug_id: string;
-  drug_amount: string;
-  drug_unit: string;
-  start_date: Date;
-  end_date?: Date;
+  drugId: string;
+  drugAmount: string;
+  drugUnit: string;
+  startDate: Date;
+  endDate?: Date;
 }
 
 interface IDrug {
+  id?: string;
   name: string;
   code: string;
 }
