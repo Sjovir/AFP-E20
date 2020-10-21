@@ -1,13 +1,10 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { EditCitizenModalComponent } from './edit-citizen-modal/edit-citizen-modal.component';
-
-
 
 @NgModule({
   declarations: [EditCitizenModalComponent],
-  imports: [
-    CommonModule
-  ]
+  imports: [CommonModule, ReactiveFormsModule],
 })
-export class ModalsModule { }
+export class ModalsModule {}
