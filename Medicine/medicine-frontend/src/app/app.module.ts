@@ -5,6 +5,7 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ComponentsModule } from './components/components.module';
+import { ModalsModule } from './modals/modals.module';
 
 export function tokenGetter() {
   return localStorage.getItem('access-token');
@@ -16,6 +17,7 @@ export function tokenGetter() {
     BrowserModule,
     AppRoutingModule,
     ComponentsModule,
+    ModalsModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
