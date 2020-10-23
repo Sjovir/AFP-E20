@@ -12,8 +12,8 @@ export default class DrugController extends AbstractController {
 
   async getAll(ctx: Context, next: Next) {
     try {
-      const allCitizens = await this.drugRepository.getAll();
-      ctx.response.body = allCitizens;
+      const allDrugs = await this.drugRepository.getAll();
+      ctx.response.body = allDrugs;
 
       await next();
     } catch (err) {
@@ -22,14 +22,14 @@ export default class DrugController extends AbstractController {
   }
 
   async get(ctx: Context, next: Next) {
-    const id = ctx.params.drugUUID;
+    const { drugUUID } = ctx.params;
 
-    if (!this.validIdentifiers(ctx, id)) return;
+    if (!this.validIdentifiers(ctx, drugUUID)) return;
 
     try {
-      const citizen = await this.drugRepository.get(id);
-      if (citizen && citizen.length > 0) {
-        ctx.response.body = citizen[0];
+      const drugs = await this.drugRepository.get(drugUUID);
+      if (drugs && drugs.length > 0) {
+        ctx.response.body = drugs[0];
       } else {
         ctx.response.body = '';
       }
