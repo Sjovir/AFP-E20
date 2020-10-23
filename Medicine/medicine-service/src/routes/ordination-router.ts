@@ -3,7 +3,7 @@ import Router from 'koa-router';
 
 import OrdinationController from '../controllers/ordination-controller';
 
-const router = new Router({ prefix: '/ordinations' });
+const router = new Router({ prefix: '/citizens/:citizenUUID/ordinations' });
 const controller = Container.get(OrdinationController);
 
 router.get('/', async (ctx, next) => {
@@ -26,4 +26,4 @@ router.delete('/:ordinationUUID', async (ctx, next) => {
   await controller.delete(ctx, next);
 });
 
-export default router;
+export { router as ordinationRouter };
