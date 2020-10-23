@@ -1,5 +1,5 @@
 CREATE DATABASE IF NOT EXISTS medicine;
-use medicine;
+USE medicine;
 
 CREATE TABLE Citizen (
 	id VARCHAR(36) NOT NULL DEFAULT uuid(),

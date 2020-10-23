@@ -4,8 +4,6 @@ IMAGE_NAME=medicine-mdb-image
 CONTAINER_NAME=medicine-mdb
 CONTAINER_EXISTS=$(docker ps -aq -f name="${CONTAINER_NAME}")
 
-echo $CONTAINER_EXISTS
-
 if [ "$CONTAINER_EXISTS" ]; then
     echo 'Already exists!'
 else
