@@ -20,9 +20,9 @@ export default class CitizenRepository {
   async create(citizen: ICitizen, uuid: string) {
     return await client.query(
       `
-            INSERT INTO Citizen (id, first_name, last_name, cpr)
-            VALUES (?, ?, ?, ?);
-            `,
+      INSERT INTO Citizen (id, first_name, last_name, cpr)
+      VALUES (?, ?, ?, ?) RETURNING id;
+      `,
       [uuid, citizen.firstName, citizen.lastName, citizen.cpr]
     );
   }
@@ -30,10 +30,10 @@ export default class CitizenRepository {
   async update(uuid: string, citizen: ICitizen) {
     return await client.query(
       `
-            UPDATE Citizen
-            SET first_name = ?, last_name = ?, cpr = ?
-            WHERE id = ?;
-            `,
+      UPDATE Citizen
+      SET first_name = ?, last_name = ?, cpr = ?
+      WHERE id = ?;
+      `,
       [citizen.firstName, citizen.lastName, citizen.cpr, uuid]
     );
   }
@@ -44,5 +44,19 @@ export default class CitizenRepository {
 
   async getNewUuid() {
     return await client.query(`SELECT UUID()`);
+  }
+
+  async addOrdination(citizenUUID: string, ordinationUUID: string) {
+    await client.query(
+      `INSERT INTO Citizen_Ordination (citizen_id, ordination_id) VALUES (?, ?);`,
+      [citizenUUID, ordinationUUID]
+    );
+  }
+
+  async removeOrdination(citizenUUID: string, ordinationUUID: string) {
+    await client.query(
+      `DELETE FROM Citizen_Ordination WHERE citizen_id = ? AND ordination_id = ?;`,
+      [citizenUUID, ordinationUUID]
+    );
   }
 }

@@ -5,10 +5,13 @@ import ajv from '../schemas/schema-validator';
 import { isUUID } from '../utils/uuid-util';
 import CitizenService from '../services/citizen-service';
 import citizenSchema from '../schemas/citizen-schema';
+import AbstractController from './abstract-controller';
 
 @Service()
-export default class CitizenController {
-  constructor(private citizenService: CitizenService) {}
+export default class CitizenController extends AbstractController {
+  constructor(private citizenService: CitizenService) {
+    super();
+  }
 
   async getAll(ctx: Context, next: Next) {
     try {
@@ -24,19 +27,7 @@ export default class CitizenController {
   async get(ctx: Context, next: Next) {
     const id = ctx.params.citizenUUID;
 
-    if (!isUUID(id)) {
-      ctx.response.status = 400;
-      ctx.response.body = {
-        errors: [
-          {
-            message: 'The inserted id is not an UUID.',
-            code: 'INVALID_IDENTIFIER',
-          },
-        ],
-      };
-
-      return;
-    }
+    if (!this.validIdentifiers(ctx, id)) return;
 
     try {
       const citizen = await this.citizenService.getCitizen(id);
@@ -53,19 +44,12 @@ export default class CitizenController {
   }
 
   async create(ctx: Context, next: Next) {
-    const citizen: ICitizen = ctx.request.body;
-
-    const compiled = ajv.compile(citizenSchema);
-    const valid = compiled(citizen);
-
-    if (!valid) {
-      ctx.response.body = compiled.errors;
-      ctx.response.status = 400;
-      return;
-    }
+    if (!this.validSchema(ctx, citizenSchema, ctx.request.body)) return;
 
     try {
-      const citizenId = await this.citizenService.createCitizen(citizen);
+      const citizenId = await this.citizenService.createCitizen(
+        ctx.request.body
+      );
       ctx.response.status = 201;
       ctx.response.body = { citizenId };
 
@@ -89,30 +73,10 @@ export default class CitizenController {
   async update(ctx: Context, next: Next) {
     const id = ctx.params.citizenUUID;
 
-    if (!isUUID(id)) {
-      ctx.response.status = 400;
-      ctx.response.body = {
-        errors: [
-          {
-            message: 'The inserted id is not an UUID.',
-            code: 'INVALID_IDENTIFIER',
-          },
-        ],
-      };
-
-      return;
-    }
+    if (!this.validIdentifiers(ctx, id)) return;
+    if (!this.validSchema(ctx, citizenSchema, ctx.request.body)) return;
 
     const citizen: ICitizen = ctx.request.body;
-
-    const compiled = ajv.compile(citizenSchema);
-    const valid = compiled(citizen);
-
-    if (!valid) {
-      ctx.response.body = compiled.errors;
-      ctx.response.status = 400;
-      return;
-    }
 
     try {
       await this.citizenService.updateCitizen(id, citizen);
@@ -128,19 +92,7 @@ export default class CitizenController {
   async delete(ctx: Context, next: Next) {
     const id = ctx.params.citizenUUID;
 
-    if (!isUUID(id)) {
-      ctx.response.status = 400;
-      ctx.response.body = {
-        errors: [
-          {
-            message: 'The inserted id is not an UUID.',
-            code: 'INVALID_IDENTIFIER',
-          },
-        ],
-      };
-
-      return;
-    }
+    if (!this.validIdentifiers(ctx, id)) return;
 
     try {
       await this.citizenService.deleteCitizen(id);
