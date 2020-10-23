@@ -12,7 +12,7 @@ export default class OrdinationRepository {
 
   async getAllFromCitizen(citizenUUID: string) {
     return await client.query(
-      `SELECT id, drug_id, drug_amount, drug_unit, start_date, end_date FROM Ordination
+      `SELECT Ordination.id, drug_id, drug_amount, drug_unit, start_date, end_date FROM Ordination
       INNER JOIN Citizen_Ordination ON Citizen_Ordination.ordination_id = Ordination.id
       WHERE Citizen_Ordination.citizen_id = ?;`,
       [citizenUUID]
@@ -25,7 +25,7 @@ export default class OrdinationRepository {
     );
   }
 
-  async create(ordination: IOrdination) {
+  async create(ordination: IOrdination): Promise<string | null> {
     const parameters = [
       ordination.drugId,
       ordination.drugAmount,
@@ -36,25 +36,27 @@ export default class OrdinationRepository {
 
     if (ordination.id) parameters.unshift(ordination.id);
 
-    return await client.query(
+    const result = await client.query(
       `
       INSERT INTO Ordination (id, drug_id, drug_amount, drug_unit, start_date, end_date)
-      VALUES (${ordination.id ? '?' : 'DEFAULT'}, ?, ?, ?, ?, ?) RETURNS id;
+      VALUES (${ordination.id ? '?' : 'DEFAULT'}, ?, ?, ?, ?, ?) RETURNING id;
       `,
-      [parameters]
+      [...parameters]
     );
+
+    return result.length > 0 ? result[0].id : null;
   }
 
   async update(ordination: IOrdination) {
     if (!ordination.id)
       throw new Error('An identifier is required to update an ordination.');
 
-    return await client.query(
+    await client.query(
       `
-                UPDATE Ordination
-                SET drug_id = ?, drug_amount = ?, drug_unit = ?, start_date = ?, end_date = ?
-                WHERE id = ?;
-                `,
+      UPDATE Ordination
+      SET drug_id = ?, drug_amount = ?, drug_unit = ?, start_date = ?, end_date = ?
+      WHERE id = ?;
+      `,
       [
         ordination.drugId,
         ordination.drugAmount,
@@ -67,6 +69,6 @@ export default class OrdinationRepository {
   }
 
   async delete(uuid: string) {
-    return await client.query('DELETE FROM Ordination WHERE id = ?;', [uuid]);
+    await client.query('DELETE FROM Ordination WHERE id = ?;', [uuid]);
   }
 }

@@ -1,5 +1,6 @@
 import { Context, Next } from 'koa';
 import { Service } from 'typedi';
+
 import OrdinationService from '../services/ordination-service';
 import ordinationSchema from '../schemas/ordination-schema';
 import AbstractController from './abstract-controller';
@@ -11,12 +12,20 @@ export default class OrdinationController extends AbstractController {
   }
 
   async getAll(ctx: Context, next: Next) {
+    const { citizenUUID } = ctx.params;
+
+    if (!this.validIdentifiers(ctx, citizenUUID)) return;
+
     try {
-      const allOrdinations = this.ordinationService.getAllOrdinations();
+      const allOrdinations = await this.ordinationService.getAllOrdinations(
+        citizenUUID
+      );
       ctx.response.body = allOrdinations;
       ctx.response.status = 201;
       await next();
     } catch (err) {
+      console.log(err);
+
       ctx.response.status = 500;
     }
   }
@@ -27,7 +36,7 @@ export default class OrdinationController extends AbstractController {
     if (!this.validIdentifiers(ctx, id)) return;
 
     try {
-      const ordination = this.ordinationService.getOrdination(id);
+      const ordination = await this.ordinationService.getOrdination(id);
       ctx.response.body = ordination;
       ctx.response.status = 201;
       await next();
@@ -37,16 +46,30 @@ export default class OrdinationController extends AbstractController {
   }
 
   async create(ctx: Context, next: Next) {
+    const { citizenUUID } = ctx.params;
+
+    if (!this.validIdentifiers(ctx, citizenUUID)) return;
     if (!this.validSchema(ctx, ordinationSchema, ctx.request.body)) return;
 
+    const ordination: IOrdination = {
+      ...ctx.request.body,
+      startDate: new Date(Date.parse(ctx.request.body.startDate)),
+      endDate: ctx.request.body.endDate
+        ? new Date(Date.parse(ctx.request.body.endDate))
+        : null,
+    };
+
     try {
-      const ordinationId = this.ordinationService.createOrdination(
-        ctx.request.body
+      const ordinationId = await this.ordinationService.createOrdination(
+        citizenUUID,
+        ordination
       );
       ctx.response.status = 201;
       ctx.response.body = { ordinationId };
       await next();
     } catch (err) {
+      console.log(err);
+
       ctx.response.status = 500;
     }
   }
@@ -58,12 +81,15 @@ export default class OrdinationController extends AbstractController {
     if (!this.validSchema(ctx, ordinationSchema, ctx.request.body)) return;
 
     const ordination: IOrdination = {
-      id,
       ...ctx.request.body,
+      startDate: new Date(Date.parse(ctx.request.body.startDate)),
+      endDate: ctx.request.body.endDate
+        ? new Date(Date.parse(ctx.request.body.endDate))
+        : null,
     };
 
     try {
-      this.ordinationService.updateOrdination(ordination);
+      await this.ordinationService.updateOrdination(ordination);
       ctx.response.status = 201;
       await next();
     } catch (err) {
@@ -72,11 +98,15 @@ export default class OrdinationController extends AbstractController {
   }
 
   async delete(ctx: Context, next: Next) {
-    const id = ctx.params.ordinationUUID;
+    const { citizenUUID, ordinationUUID } = ctx.params;
 
-    if (!this.validIdentifiers(ctx, id)) return;
+    if (!this.validIdentifiers(ctx, [citizenUUID, ordinationUUID])) return;
 
     try {
+      await this.ordinationService.deleteOrdination(
+        citizenUUID,
+        ordinationUUID
+      );
       ctx.response.status = 200;
 
       await next();
@@ -85,8 +115,8 @@ export default class OrdinationController extends AbstractController {
         ctx.response.body = {
           errors: [
             {
-              message: 'Installation is connected to citizens.',
-              code: 'INSTALLATION_IS_CONNECTED',
+              message: 'Ordination is connected to a citizen.',
+              code: 'ORDINATION_IS_CONNECTED',
             },
           ],
         };
