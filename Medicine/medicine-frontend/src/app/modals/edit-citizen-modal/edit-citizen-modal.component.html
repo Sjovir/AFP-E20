@@ -1,1 +1,69 @@
-<p>edit-citizen-modal works!</p>
+<div class="modal-header">
+  <p class="h3">Rediger borger</p>
+</div>
+<div class="modal-body">
+  <form [formGroup]="editCitizenForm">
+    <div class="form-group">
+      <label for="firstName">Fornavn:</label>
+      <input
+        type="text"
+        class="form-control"
+        id="firstName"
+        formControlName="firstName"
+      />
+      <small
+        *ngIf="firstNameControl.touched && firstNameControl.errors?.required"
+        class="form-text text-danger"
+        >Fornavn påkrævet
+      </small>
+      <small
+        *ngIf="firstNameControl.touched && firstNameControl.errors?.minlength"
+        class="form-text text-danger"
+        >Fornavn skal være på mindst 2 bogstaver
+      </small>
+    </div>
+    <div class="form-group">
+      <label for="lastName">Efternavn:</label>
+      <input
+        type="text"
+        class="form-control"
+        id="lastName"
+        formControlName="lastName"
+      />
+      <small
+        *ngIf="lastNameControl.touched && lastNameControl.errors?.required"
+        class="form-text text-danger"
+        >Efternavn påkrævet
+      </small>
+      <small
+        *ngIf="lastNameControl.touched && lastNameControl.errors?.minlength"
+        class="form-text text-danger"
+        >Efternavn skal være på mindst 2 bogstaver
+      </small>
+    </div>
+    <div class="form-group">
+      <label for="cpr">CPR:</label>
+      <input type="text" class="form-control" id="cpr" formControlName="cpr" />
+      <small
+        *ngIf="cprControl.touched && cprControl.errors?.required"
+        class="form-text text-danger"
+        >CPR påkrævet
+      </small>
+      <small
+        *ngIf="cprControl.touched && cprControl.errors?.pattern"
+        class="form-text text-danger"
+        >CPR skal være præcis 10 tegn
+      </small>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-outline-danger" (click)="dismiss()" ngbAutoFocus>
+    Annuller
+  </button>
+  <button
+    class="btn btn-success"
+    (click)="close()"
+    [disabled]="editCitizenForm.invalid"
+  >Ok</button>
+</div>

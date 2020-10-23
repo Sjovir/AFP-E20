@@ -8,7 +8,7 @@ const routes: Routes = [
   { path: '', redirectTo: 'overview', pathMatch: 'full' },
   { path: 'overview', component: OverviewComponent },
   { path: 'create-ordination', component: CreateOrdinationComponent },
-  { path: 'edit-ordination', component: EditOrdinationComponent },
+  { path: 'edit-ordination/:ordinationId', component: EditOrdinationComponent },
 ];
 
 @NgModule({

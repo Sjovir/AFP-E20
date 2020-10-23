@@ -1,1 +1,37 @@
-<p>overview works!</p>
+<div class="content-panel px-4 py-2">
+  <p class="h2">Medicin kort</p>
+  <div class="top-bar">
+    <button class="btn btn-primary" (click)="editCitizen()">
+      Rediger borger
+    </button>
+    <button class="btn btn-primary ml-3" (click)="createOrdination()">
+      Opret Ordination
+    </button>
+  </div>
+
+  <table *ngIf="ordinations" class="table table-hover table-sm">
+    <thead class="thead-light">
+      <tr>
+        <th scope="col">Præparat</th>
+        <th scope="col">Dosering</th>
+        <th scope="col">Startdato</th>
+        <th scope="col">Slutdato</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody *ngIf="ordinations?.length > 0; else noOrdinations">
+      <tr *ngFor="let ordination of ordinations">
+        <td>{{ ordination.drug.name }}</td>
+        <td>{{ ordination.drugAmount }} {{ ordination.drugUnit }}</td>
+        <td>{{ ordination.startDate | date:'dd-MM-yyyy' }}</td>
+        <td>{{ ordination.endDate? (ordination.endDate | date:'dd-MM-yyyy') : 'Ingen slutdato' }}</td>
+        <td><a class="btn btn-primary" (click)="editOrdination(ordination.id)">Rediger</a></td>
+      </tr>
+    </tbody>
+    <ng-template #noOrdinations>
+      <tr>
+        <td colspan="3">Der er ingen ordinationer på denne borger</td>
+      </tr>
+    </ng-template>
+  </table>
+</div>
