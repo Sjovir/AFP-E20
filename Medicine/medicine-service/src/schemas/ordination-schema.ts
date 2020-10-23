@@ -26,7 +26,7 @@ const schema = {
       format: 'date-time',
     },
     endDate: {
-      type: 'string',
+      type: ['string', 'null'],
       format: 'date-time',
     },
   },

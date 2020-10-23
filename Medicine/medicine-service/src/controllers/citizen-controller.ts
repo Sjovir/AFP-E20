@@ -73,30 +73,10 @@ export default class CitizenController extends AbstractController {
   async update(ctx: Context, next: Next) {
     const id = ctx.params.citizenUUID;
 
-    if (!isUUID(id)) {
-      ctx.response.status = 400;
-      ctx.response.body = {
-        errors: [
-          {
-            message: 'The inserted id is not an UUID.',
-            code: 'INVALID_IDENTIFIER',
-          },
-        ],
-      };
-
-      return;
-    }
+    if (!this.validIdentifiers(ctx, id)) return;
+    if (!this.validSchema(ctx, citizenSchema, ctx.request.body)) return;
 
     const citizen: ICitizen = ctx.request.body;
-
-    const compiled = ajv.compile(citizenSchema);
-    const valid = compiled(citizen);
-
-    if (!valid) {
-      ctx.response.body = compiled.errors;
-      ctx.response.status = 400;
-      return;
-    }
 
     try {
       await this.citizenService.updateCitizen(id, citizen);
@@ -112,19 +92,7 @@ export default class CitizenController extends AbstractController {
   async delete(ctx: Context, next: Next) {
     const id = ctx.params.citizenUUID;
 
-    if (!isUUID(id)) {
-      ctx.response.status = 400;
-      ctx.response.body = {
-        errors: [
-          {
-            message: 'The inserted id is not an UUID.',
-            code: 'INVALID_IDENTIFIER',
-          },
-        ],
-      };
-
-      return;
-    }
+    if (!this.validIdentifiers(ctx, id)) return;
 
     try {
       await this.citizenService.deleteCitizen(id);

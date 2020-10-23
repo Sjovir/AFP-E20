@@ -1,7 +1,5 @@
 import { Context, Next } from 'koa';
 import { Service } from 'typedi';
-import { validateSchema } from '../schemas/schema-validator';
-import { isUUID } from '../utils/uuid-util';
 import OrdinationService from '../services/ordination-service';
 import ordinationSchema from '../schemas/ordination-schema';
 import AbstractController from './abstract-controller';
@@ -39,7 +37,7 @@ export default class OrdinationController extends AbstractController {
   }
 
   async create(ctx: Context, next: Next) {
-    if (!this.validSchema(ctx, ordinationSchema, ctx.params)) return;
+    if (!this.validSchema(ctx, ordinationSchema, ctx.request.body)) return;
 
     try {
       const ordinationId = this.ordinationService.createOrdination(

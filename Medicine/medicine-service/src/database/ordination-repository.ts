@@ -39,7 +39,7 @@ export default class OrdinationRepository {
     return await client.query(
       `
       INSERT INTO Ordination (id, drug_id, drug_amount, drug_unit, start_date, end_date)
-      VALUES (${ordination.id ? '?' : 'DEFAULT'}, ?, ?, ?, ?, ?);
+      VALUES (${ordination.id ? '?' : 'DEFAULT'}, ?, ?, ?, ?, ?) RETURNS id;
       `,
       [parameters]
     );
