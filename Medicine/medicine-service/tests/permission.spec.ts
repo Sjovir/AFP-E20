@@ -35,7 +35,6 @@ describe('Permission Utility', function () {
         'ADMIN',
         'MEDICINE_RECIPIENTS:WRITE',
       ]);
-      console.log(result);
       chai.expect(result).to.be.false;
     });
 
