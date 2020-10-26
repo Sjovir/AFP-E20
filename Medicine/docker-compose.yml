@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  frontend:
+    build: ./medicine-frontend
+    image: medicine_frontend
+    container_name: MedicineFrontend
+    environment:
+      - YARN-VERSION=${YARN_VERSION}
+    # depends_on:
+    #   - service
+    #   - db
+    ports:
+      - "8200:80"
+      - "7200:7200"
+#   service:
+#     build: ./medicine-service
+#     image: medicine_service
+#     container_name: MedicineService
+#     environment:
+#       - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+#       - DB_USER=${DB_USER}
+#       - DB_PASSWORD=${DB_PASSWORD}
+#       - DB_DATABASE=${DB_DATABASE}
+#       - DB_HOST=db
+#       - YARN-VERSION=${YARN_VERSION}
+#     depends_on:
+#       - db
+#   db:
+#     build: ./medicine-db
+#     image: medicine_database
+#     container_name: MedicineDatabase
+#     environment:
+#       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+#       - MYSQL_USER=${DB_USER}
+#       - MYSQL_PASSWORD=${DB_PASSWORD}
+#       - MYSQL_DATABASE=${DB_DATABASE}

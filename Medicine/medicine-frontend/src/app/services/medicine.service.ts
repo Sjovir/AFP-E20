@@ -23,7 +23,7 @@ export class MedicineService {
     return of(this.ordinations.find((ordination) => ordination.id === ordinationId));
   }
 
-  public createOrdination(ordination: Ordination): Observable<any> {
+  public createOrdination(citizenId: string, ordination: Ordination): Observable<any> {
     //TODO: Implement http call to backend
     console.log('Call to unimplemented method createOrdination in MedicineService: Trying to create:');
     console.log(ordination);

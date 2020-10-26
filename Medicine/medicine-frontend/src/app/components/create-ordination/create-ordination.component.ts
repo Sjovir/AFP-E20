@@ -8,6 +8,7 @@ import {
 import { NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 import { Drug } from 'src/app/models/drug.model';
 import { Ordination } from 'src/app/models/ordination.model';
+import { LocationService } from 'src/app/services/location.service';
 import { MedicineService } from 'src/app/services/medicine.service';
 
 @Component({
@@ -24,6 +25,7 @@ export class CreateOrdinationComponent implements OnInit {
   constructor(
     private calendar: NgbCalendar,
     private formBuilder: FormBuilder,
+    private locationService: LocationService,
     private medicineService: MedicineService
   ) {}
 
@@ -46,16 +48,20 @@ export class CreateOrdinationComponent implements OnInit {
   }
 
   public cancel() {
-    // Implement redirect to correct page
-    window.location.replace('overview');
+    this.locationService.redirect('overview');
   }
 
   public createOrdination() {
     const ordination: Ordination = this.createOrdinationForm.value;
 
-    this.medicineService.createOrdination(ordination).subscribe(() => {
-      // Implement redirect to correct page
-      window.location.replace('overview');
+    const url = window.location.href;
+    const urlSplit: string[] = url.split('/');
+
+    const citizenStringIndex: number = urlSplit.indexOf('citizen');
+    const citizenId: string = urlSplit[citizenStringIndex + 1];
+
+    this.medicineService.createOrdination(citizenId, ordination).subscribe(() => {
+      this.locationService.redirect('overview');
     });
   }
 

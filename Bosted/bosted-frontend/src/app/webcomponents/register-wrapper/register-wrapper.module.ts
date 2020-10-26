@@ -1,7 +1,6 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { LazyElementsModule } from '@angular-extensions/elements';
-
+import { CommonModule } from '@angular/common';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { RegisterWrapperComponent } from './register-wrapper.component';
 
 @NgModule({

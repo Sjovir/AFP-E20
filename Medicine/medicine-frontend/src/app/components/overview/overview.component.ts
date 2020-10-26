@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { JwtHelperService } from '@auth0/angular-jwt';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { filter } from 'rxjs/operators';
 import { EditCitizenModalComponent } from 'src/app/modals/edit-citizen-modal/edit-citizen-modal.component';
 import { Citizen } from 'src/app/models/citizen.model';
 import { Ordination } from 'src/app/models/ordination.model';
 import { CitizenService } from 'src/app/services/citizen.service';
+import { LocationService } from 'src/app/services/location.service';
 import { MedicineService } from 'src/app/services/medicine.service';
 
 @Component({
@@ -20,29 +18,26 @@ export class OverviewComponent implements OnInit {
 
   constructor(
     private citizenService: CitizenService,
-    private jwtHelper: JwtHelperService,
+    private locationService: LocationService,
     private medicineService: MedicineService,
-    private modalService: NgbModal,
-    private router: Router
-  ) {
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => {
-        const route = event.urlAfterRedirects;
+    private modalService: NgbModal
+  ) {}
 
-        console.log(route);
+  ngOnInit(): void {
+    const url = window.location.href;
+    const urlSplit: string[] = url.split('/');
 
-        this.medicineService.getOrdinations(route).subscribe((ordinations) => {
-          this.ordinations = ordinations;
-        });
+    const citizenStringIndex: number = urlSplit.indexOf('citizen');
+    const citizenId: string = urlSplit[citizenStringIndex + 1];
 
-        this.citizenService.get(route).subscribe((citizen: Citizen) => {
-          this.citizen = citizen;
-        });
-      });
+    this.medicineService.getOrdinations(citizenId).subscribe((ordinations) => {
+      this.ordinations = ordinations;
+    });
+
+    this.citizenService.get(citizenId).subscribe((citizen: Citizen) => {
+      this.citizen = citizen;
+    });
   }
-
-  ngOnInit(): void {}
 
   public editCitizen() {
     const modalReference = this.modalService.open(EditCitizenModalComponent);
@@ -58,12 +53,10 @@ export class OverviewComponent implements OnInit {
   }
 
   public createOrdination() {
-    // Implement redirect to correct page
-    window.location.replace('create-ordination');
+    this.locationService.redirect('create-ordination');
   }
 
   public editOrdination(ordinationId: string) {
-    // Implement redirect to correct page
-    window.location.replace(`edit-ordination/${ordinationId}`);
+    this.locationService.redirect(`edit-ordination/${ordinationId}`);
   }
 }

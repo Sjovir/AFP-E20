@@ -14,7 +14,12 @@ body {
   overflow: hidden;
 }
 
+.top-bar {
+  height: 60px;
+}
+
 .content-panel {
+  padding-bottom: 60px;
   height: 100%;
 }
 
@@ -23,5 +28,47 @@ body {
 
   & p {
     font-weight: bold;
+  }
+}
+
+/* From Medicine */
+.micro-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.content {
+  flex: 1 0 auto;
+}
+
+.submit-bar {
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+  bottom: 0;
+  width: 100%;
+
+  & button {
+    flex-grow: 1;
+    flex-basis: 0;
+    border-radius: 0;
+  }
+}
+
+.input-group {
+  margin-bottom: 1rem;
+
+  & .input-group-prepend {
+    flex: 0 0 15%;
+    max-width: 150px;
+  }
+
+  & .input-group-text {
+    width: 100%;
+  }
+
+  & input:read-only {
+    background-color: #f0f0f0;;
   }
 }
