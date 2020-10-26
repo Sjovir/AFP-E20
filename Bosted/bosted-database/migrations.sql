@@ -13,17 +13,17 @@ CREATE TABLE Installation (
 	PRIMARY KEY(id)
 );
 
-CREATE TABLE CitizenInstallation (
+CREATE TABLE Installation_Citizen (
 	id VARCHAR(36) NOT NULL DEFAULT uuid(),
-	citizen_id VARCHAR(36) NOT NULL,
 	installation_id VARCHAR(36) NOT NULL,
+	citizen_id VARCHAR(36) NOT NULL,
 	PRIMARY KEY(id),
-    FOREIGN KEY (citizen_id) REFERENCES Citizen(id),
 	FOREIGN KEY (installation_id) REFERENCES Installation(id),
-	CONSTRAINT row_unique UNIQUE (citizen_id, installation_id)
+    FOREIGN KEY (citizen_id) REFERENCES Citizen(id),
+	CONSTRAINT row_unique UNIQUE (installation_id, citizen_id)
 );
 
-CREATE TABLE AccountInstallation (
+CREATE TABLE Account_Installation (
 	id VARCHAR(36) NOT NULL DEFAULT uuid(),
 	account_id VARCHAR(36) NOT NULL,
 	installation_id VARCHAR(36) NOT NULL,

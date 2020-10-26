@@ -20,8 +20,8 @@ VALUES
     ("55e20ff9-0a0d-11eb-ab61-0242ac120002", "Jabba", "the Hut", "0208651249"),
     ("55e20f10-0a0d-11eb-ab61-0242ac120002", "Boba", "Fett", "0208821249");
 
-INSERT INTO CitizenInstallation
-    (id, citizen_id, installation_id)
+INSERT INTO Installation_Citizen
+    (id, installation_id, citizen_id)
 VALUES
     ("55e20ba1-0a0d-11eb-ab61-0242ac120002", "55e20ff1-0a0d-11eb-ab61-0242ac120002", "55e208bb-0a0d-11eb-ab61-0242ac120002"),
     ("55e20ba2-0a0d-11eb-ab61-0242ac120002", "55e20ff2-0a0d-11eb-ab61-0242ac120002", "55e208bb-0a0d-11eb-ab61-0242ac120002"),
