@@ -45,7 +45,11 @@ export function tokenGetter() {
   bootstrap: [environment.local ? AppComponent : []],
 })
 export class AppModule {
-  constructor(private injector: Injector) {
+  constructor(private injector: Injector) {}
+
+  ngDoBootstrap() {
+    const injector: Injector = this.injector;
+
     const microLogin = createCustomElement(LoginComponent, { injector });
     const microRegister = createCustomElement(RegisterComponent, { injector });
     const microSelectInstallation = createCustomElement(

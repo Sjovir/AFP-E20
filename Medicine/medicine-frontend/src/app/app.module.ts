@@ -1,10 +1,15 @@
 import { DatePipe } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { Injector, NgModule } from '@angular/core';
+import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 import { JwtModule } from '@auth0/angular-jwt';
+import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ComponentsModule } from './components/components.module';
+import { CreateOrdinationComponent } from './components/create-ordination/create-ordination.component';
+import { EditOrdinationComponent } from './components/edit-ordination/edit-ordination.component';
+import { OverviewComponent } from './components/overview/overview.component';
 import { ModalsModule } from './modals/modals.module';
 
 export function tokenGetter() {
@@ -31,6 +36,29 @@ export function tokenGetter() {
     }),
   ],
   providers: [DatePipe],
-  bootstrap: [AppComponent],
+  bootstrap: [environment.local ? AppComponent : []],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private injector: Injector) {}
+
+  ngDoBootstrap() {
+    const injector: Injector = this.injector;
+
+    const microMedicineOverview = createCustomElement(OverviewComponent, {
+      injector,
+    });
+    const microCreateOrdination = createCustomElement(
+      CreateOrdinationComponent,
+      {
+        injector,
+      }
+    );
+    const microEditOrdination = createCustomElement(EditOrdinationComponent, {
+      injector,
+    });
+
+    customElements.define('micro-medicine-overview', microMedicineOverview);
+    customElements.define('micro-create-ordination', microCreateOrdination);
+    customElements.define('micro-edit-ordination', microEditOrdination);
+  }
+}
