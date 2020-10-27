@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "target": "es2018",
+        "module": "commonjs",
+        "outDir": "dist",
+        "sourceMap": true,
+        "esModuleInterop": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true
+    },
+    "ts-node": {
+        "files": true
+    },
+    "include": ["src/**/*.ts", "declariations/**.d.ts"],
+    "exclude": ["node_modules", ".vscode"]
+}

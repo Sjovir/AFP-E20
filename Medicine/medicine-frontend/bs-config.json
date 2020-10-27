@@ -1,0 +1,5 @@
+{
+  "port": 8200,
+  "files": ["./src/**/*.{html,htm,css,js}"],
+  "server": { "baseDir": "./dist/medicine-frontend" }
+}

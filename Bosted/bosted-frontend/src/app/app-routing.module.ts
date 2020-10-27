@@ -6,6 +6,9 @@ import { CitizenJournalComponent } from './components/citizen/journal/citizen-jo
 import { HomeComponent } from './components/home/home.component';
 import { AuthGuard } from './guards/auth.guard';
 import { LoginWrapperComponent } from './webcomponents/login-wrapper/login-wrapper.component';
+import { CreateOrdinationComponent } from './webcomponents/medicine/create-ordination/create-ordination.component';
+import { EditOrdinationComponent } from './webcomponents/medicine/edit-ordination/edit-ordination.component';
+import { MedicineOverviewComponent } from './webcomponents/medicine/overview/medicine-overview.component';
 import { RegisterWrapperComponent } from './webcomponents/register-wrapper/register-wrapper.component';
 import { SelectInstallationWrapperComponent } from './webcomponents/select-installation-wrapper/select-installation-wrapper.component';
 
@@ -55,6 +58,32 @@ const routes: Routes = [
         path: 'journal',
         component: CitizenJournalComponent,
         canActivate: [AuthGuard],
+      },
+      {
+        path: 'medicine',
+        canActivate: [AuthGuard],
+        children: [
+          {
+            path: '',
+            redirectTo: 'overview',
+            pathMatch: 'full',
+          },
+          {
+            path: 'overview',
+            component: MedicineOverviewComponent,
+            canActivate: [AuthGuard],
+          },
+          {
+            path: 'create-ordination',
+            component: CreateOrdinationComponent,
+            canActivate: [AuthGuard],
+          },
+          {
+            path: 'edit-ordination/:ordinationId',
+            component: EditOrdinationComponent,
+            canActivate: [AuthGuard],
+          },
+        ],
       },
     ],
   },

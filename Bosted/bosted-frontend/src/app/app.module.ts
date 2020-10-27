@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 import { ComponentsModule } from './components/components.module';
 import { DigitOnlyDirective } from './directives/digit-only.directive';
 import { LoginWrapperModule } from './webcomponents/login-wrapper/login-wrapper.module';
+import { MedicineModule } from './webcomponents/medicine/medicine.module';
 import { RegisterWrapperModule } from './webcomponents/register-wrapper/register-wrapper.module';
 import { SelectInstallationWrapperModule } from './webcomponents/select-installation-wrapper/select-installation-wrapper.module';
 
@@ -28,6 +29,7 @@ export function tokenGetter() {
     LoginWrapperModule,
     RegisterWrapperModule,
     SelectInstallationWrapperModule,
+    MedicineModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,

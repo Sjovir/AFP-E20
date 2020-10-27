@@ -107,7 +107,7 @@ export default class CitizenController {
 
         const compiled = ajv.compile(citizenSchema);
         const valid = compiled(citizen);
-
+        
         if (!valid) {
             ctx.response.body = compiled.errors;
             ctx.response.status = 400;

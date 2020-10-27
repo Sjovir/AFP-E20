@@ -27,7 +27,7 @@ services:
     depends_on:
       - db
   db:
-    build: ./auth-db
+    build: ./auth-database
     image: auth_database
     container_name: AuthDatabase
     environment:
