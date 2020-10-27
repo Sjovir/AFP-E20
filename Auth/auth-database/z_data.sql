@@ -1,3 +1,5 @@
+USE auth;
+
 INSERT INTO Installation
     (id, name, address)
 VALUES

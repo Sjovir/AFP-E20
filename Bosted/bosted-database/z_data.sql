@@ -1,3 +1,5 @@
+USE bosted;
+
 INSERT INTO Installation
     (id, name, address)
 VALUES
