@@ -4,15 +4,20 @@ import client from './mariadb-client';
 @Service()
 export default class OrdinationRepository {
   async get(uuid: string) {
-    return await client.query(
-      'SELECT id, drug_id, drug_amount, drug_unit, start_date, end_date FROM Ordination WHERE id = ?;',
+    const result = await client.query(
+      `SELECT id, drug_id, drug_amount as drugAmount, drug_unit as drugUnit, 
+        start_date as startDate, end_date as endDate 
+      FROM Ordination 
+      WHERE id = ?;`,
       [uuid]
     );
+    
+    return result.length > 0 ? result[0] : null;
   }
 
   async getAllFromCitizen(citizenUUID: string) {
     return await client.query(
-      `SELECT Ordination.id, drug_id, drug_amount, drug_unit, start_date, end_date FROM Ordination
+      `SELECT Ordination.id, drug_id, drug_amount as drugAmount, drug_unit as drugUnit, start_date as startDate, end_date as endDate FROM Ordination
       INNER JOIN Citizen_Ordination ON Citizen_Ordination.ordination_id = Ordination.id
       WHERE Citizen_Ordination.citizen_id = ?;`,
       [citizenUUID]
@@ -27,7 +32,7 @@ export default class OrdinationRepository {
 
   async create(ordination: IOrdination): Promise<string | null> {
     const parameters = [
-      ordination.drugId,
+      ordination.drug.id,
       ordination.drugAmount,
       ordination.drugUnit,
       ordination.startDate,
@@ -58,7 +63,7 @@ export default class OrdinationRepository {
       WHERE id = ?;
       `,
       [
-        ordination.drugId,
+        ordination.drug.id,
         ordination.drugAmount,
         ordination.drugUnit,
         ordination.startDate,

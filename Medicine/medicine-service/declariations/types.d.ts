@@ -7,7 +7,7 @@ interface ICitizen {
 
 interface IOrdination {
   id?: string;
-  drugId: string;
+  drug: IDrug;
   drugAmount: string;
   drugUnit: string;
   startDate: Date;

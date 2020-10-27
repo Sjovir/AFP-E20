@@ -9,7 +9,7 @@ import {
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { Ordination } from 'src/app/models/ordination.model';
 import { LocationService } from 'src/app/services/location.service';
-import { MedicineService } from 'src/app/services/medicine.service';
+import { OrdinationService } from 'src/app/services/ordination.service';
 
 @Component({
   selector: 'app-edit-ordination',
@@ -19,48 +19,54 @@ import { MedicineService } from 'src/app/services/medicine.service';
 export class EditOrdinationComponent implements OnInit {
   public editOrdinationForm: FormGroup;
 
+  public citizenId: string;
   public ordination: Ordination;
 
   constructor(
     private datePipe: DatePipe,
     private formBuilder: FormBuilder,
     private locationService: LocationService,
-    private medicineService: MedicineService
+    private ordinationService: OrdinationService
   ) {}
 
   ngOnInit(): void {
     const url = window.location.href;
     const urlSplit: string[] = url.split('/');
 
+    const citizenStringIndex: number = urlSplit.indexOf('citizen');
+    this.citizenId = urlSplit[citizenStringIndex + 1];
+
     const ordinationStringIndex: number = urlSplit.indexOf('edit-ordination');
     const ordinationId: string = urlSplit[ordinationStringIndex + 1];
 
-    this.medicineService.getOrdination(ordinationId).subscribe((ordination) => {
-      this.ordination = ordination;
-    });
+    this.ordinationService
+      .getOrdination(this.citizenId, ordinationId)
+      .subscribe((ordination) => {
+        let endDate: NgbDateStruct;
 
-    const ordinationEndDate = this.ordination.endDate;
-    let endDate: NgbDateStruct;
+        if (ordination.endDate) {
+          const ordinationEndDate = new Date(ordination.endDate);
+          endDate = {
+            year: ordinationEndDate.getUTCFullYear(),
+            month: ordinationEndDate.getUTCMonth() + 1,
+            day: ordinationEndDate.getUTCDate() + 1,
+          };
+        }
 
-    if (ordinationEndDate) {
-      endDate = {
-        year: ordinationEndDate.getUTCFullYear(),
-        month: ordinationEndDate.getUTCMonth(),
-        day: ordinationEndDate.getUTCDate(),
-      };
-    }
+        const startDateAsString = this.datePipe.transform(
+          ordination.startDate,
+          'yyyy-MM-dd'
+        );
+        this.editOrdinationForm = this.formBuilder.group({
+          drug: [ordination.drug.name, Validators.required],
+          drugAmount: [ordination.drugAmount, Validators.required],
+          drugUnit: [ordination.drugUnit, Validators.required],
+          startDate: [startDateAsString, Validators.required],
+          endDate: [endDate],
+        });
 
-    const startDateAsString = this.datePipe.transform(
-      this.ordination.startDate,
-      'yyyy-MM-dd'
-    );
-    this.editOrdinationForm = this.formBuilder.group({
-      drug: [this.ordination.drug.name, Validators.required],
-      drugAmount: [this.ordination.drugAmount, Validators.required],
-      drugUnit: [this.ordination.drugUnit, Validators.required],
-      startDate: [startDateAsString, Validators.required],
-      endDate: [endDate],
-    });
+        this.ordination = ordination;
+      });
   }
 
   public cancel() {
@@ -69,8 +75,10 @@ export class EditOrdinationComponent implements OnInit {
 
   public editOrdination() {
     const ordination: Ordination = this.editOrdinationForm.value;
+    ordination.id = this.ordination.id;
+    ordination.drug = this.ordination.drug;
     ordination.startDate = new Date(this.startDateControl.value);
-    
+
     const endDate: NgbDateStruct = this.endDateControl.value;
     if (endDate) {
       ordination.endDate = new Date(
@@ -80,9 +88,11 @@ export class EditOrdinationComponent implements OnInit {
       );
     }
 
-    this.medicineService.updateOrdination(ordination).subscribe(() => {
-      this.locationService.redirect('overview');
-    });
+    this.ordinationService
+      .updateOrdination(this.citizenId, ordination)
+      .subscribe(() => {
+        this.locationService.redirect('overview');
+      });
   }
 
   public get startDateControl(): AbstractControl {

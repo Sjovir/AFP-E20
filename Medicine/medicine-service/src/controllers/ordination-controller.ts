@@ -90,6 +90,7 @@ export default class OrdinationController extends AbstractController {
 
     try {
       await this.ordinationService.updateOrdination(ordination);
+      ctx.response.body = {};
       ctx.response.status = 201;
       await next();
     } catch (err) {
@@ -107,6 +108,7 @@ export default class OrdinationController extends AbstractController {
         citizenUUID,
         ordinationUUID
       );
+      ctx.response.body = {};
       ctx.response.status = 200;
 
       await next();
