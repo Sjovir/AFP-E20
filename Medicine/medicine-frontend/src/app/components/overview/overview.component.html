@@ -23,9 +23,19 @@
       <tr *ngFor="let ordination of ordinations">
         <td>{{ ordination.drug.name }}</td>
         <td>{{ ordination.drugAmount }} {{ ordination.drugUnit }}</td>
-        <td>{{ ordination.startDate | date:'dd-MM-yyyy' }}</td>
-        <td>{{ ordination.endDate? (ordination.endDate | date:'dd-MM-yyyy') : 'Ingen slutdato' }}</td>
-        <td><a class="btn btn-primary" (click)="editOrdination(ordination.id)">Rediger</a></td>
+        <td>{{ ordination.startDate | date: "yyyy-MM-dd" }}</td>
+        <td>
+          {{
+            ordination.endDate
+              ? (ordination.endDate | date: "yyyy-MM-dd")
+              : "Ingen slutdato"
+          }}
+        </td>
+        <td>
+          <a class="btn btn-primary" (click)="editOrdination(ordination.id)"
+            >Rediger</a
+          >
+        </td>
       </tr>
     </tbody>
     <ng-template #noOrdinations>

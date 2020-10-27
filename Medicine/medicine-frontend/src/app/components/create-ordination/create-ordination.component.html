@@ -1,5 +1,5 @@
 <div class="micro-panel">
-  <div class="content px-4 py-2">
+  <div class="form-content px-4 py-2">
     <p class="h2">Opret Ordination</p>
     <form [formGroup]="createOrdinationForm">
       <div class="input-group">
@@ -8,7 +8,7 @@
         </div>
         <select class="form-control" formControlName="drug">
           <option value="" disabled selected hidden>Vælg venligst</option>
-          <option *ngFor="let drug of drugs" value="drug">
+          <option *ngFor="let drug of drugs" [ngValue]="drug">
             {{ drug.name }}
           </option>
         </select>
@@ -17,7 +17,11 @@
         <div class="input-group-prepend">
           <span class="input-group-text">Mængde:</span>
         </div>
-        <input type="text" class="form-control" formControlName="drugAmount" />
+        <input
+          type="number"
+          class="form-control"
+          formControlName="drugAmount"
+        />
       </div>
       <div class="input-group">
         <div class="input-group-prepend">

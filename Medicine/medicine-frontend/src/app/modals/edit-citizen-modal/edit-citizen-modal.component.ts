@@ -37,7 +37,9 @@ export class EditCitizenModalComponent implements OnInit {
   }
 
   public close() {
-    this.activeModal.close(this.editCitizenForm.value);
+    let citizen: Citizen = this.editCitizenForm.value;
+    citizen.id = this.citizen.id;
+    this.activeModal.close(citizen);
   }
 
   public get firstNameControl(): AbstractControl {

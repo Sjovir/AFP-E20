@@ -3,7 +3,7 @@ const schema = {
   $id: 'citizen.schema',
   type: 'object',
   title: 'Citizen',
-  required: ['drugId', 'drugAmount', 'drugUnit', 'startDate', 'endDate'],
+  required: ['drug', 'drugAmount', 'drugUnit', 'startDate', 'endDate'],
   properties: {
     id: {
       type: 'string',
@@ -11,8 +11,24 @@ const schema = {
       maxLength: 36,
       pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
     },
-    drugId: {
-      type: 'string',
+    drug: {
+        type: 'object',
+        properties: {
+            id: {
+                type: 'string',
+                minLength: 36,
+                maxLength: 36,
+                pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
+            },
+            code: {
+                type: 'string',
+                minLength: 2,
+            },
+            name: {
+                type: 'string',
+                minLength: 2,
+            },
+        }
     },
     drugAmount: {
       type: 'number',
