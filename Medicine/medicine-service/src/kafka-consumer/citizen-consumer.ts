@@ -15,6 +15,12 @@ const consumer = new kafka.Consumer(
 );
 
 consumer.on('message', (data) => {
+  if (typeof data.value === 'string') {
+    const json = JSON.parse(data.value);
+
+    // if (json.event === 'UPDATE') {}
+  }
+
   console.log('[consumer:citizen] ' + data);
 });
 
