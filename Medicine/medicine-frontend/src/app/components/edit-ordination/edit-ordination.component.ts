@@ -6,10 +6,9 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { NavigationEnd, Router } from '@angular/router';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { filter } from 'rxjs/operators';
 import { Ordination } from 'src/app/models/ordination.model';
+import { LocationService } from 'src/app/services/location.service';
 import { MedicineService } from 'src/app/services/medicine.service';
 
 @Component({
@@ -25,27 +24,21 @@ export class EditOrdinationComponent implements OnInit {
   constructor(
     private datePipe: DatePipe,
     private formBuilder: FormBuilder,
-    private medicineService: MedicineService,
-    private router: Router
-  ) {
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => {
-        const route = event.urlAfterRedirects;
-
-        console.log(route);
-
-        const ordinationId: string = route.split('/').pop();
-
-        this.medicineService
-          .getOrdination(ordinationId)
-          .subscribe((ordination) => {
-            this.ordination = ordination;
-          });
-      });
-  }
+    private locationService: LocationService,
+    private medicineService: MedicineService
+  ) {}
 
   ngOnInit(): void {
+    const url = window.location.href;
+    const urlSplit: string[] = url.split('/');
+
+    const ordinationStringIndex: number = urlSplit.indexOf('edit-ordination');
+    const ordinationId: string = urlSplit[ordinationStringIndex + 1];
+
+    this.medicineService.getOrdination(ordinationId).subscribe((ordination) => {
+      this.ordination = ordination;
+    });
+
     const ordinationEndDate = this.ordination.endDate;
     let endDate: NgbDateStruct;
 
@@ -71,13 +64,13 @@ export class EditOrdinationComponent implements OnInit {
   }
 
   public cancel() {
-    // Implement redirect to correct page
-    window.location.replace('overview');
+    this.locationService.redirect('overview');
   }
 
   public editOrdination() {
     const ordination: Ordination = this.editOrdinationForm.value;
     ordination.startDate = new Date(this.startDateControl.value);
+    
     const endDate: NgbDateStruct = this.endDateControl.value;
     if (endDate) {
       ordination.endDate = new Date(
@@ -88,8 +81,7 @@ export class EditOrdinationComponent implements OnInit {
     }
 
     this.medicineService.updateOrdination(ordination).subscribe(() => {
-      // Implement redirect to correct page
-      window.location.replace('overview');
+      this.locationService.redirect('overview');
     });
   }
 
