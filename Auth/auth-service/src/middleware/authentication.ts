@@ -13,8 +13,7 @@ export const isAuthenticated = async (ctx: Koa.Context, next: Koa.Next) => {
     const token = getAuthorizationToken(ctx.headers.authorization);
 
     try {
-        const verified = verify(token);
-        console.log(verified);
+        verify(token);
         await next();
     } catch (err) {
         ctx.response.status = 401;
