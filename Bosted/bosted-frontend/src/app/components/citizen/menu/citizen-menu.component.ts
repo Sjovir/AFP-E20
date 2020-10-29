@@ -16,7 +16,10 @@ export class CitizenMenuComponent implements OnInit {
     router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         const url: string = event.urlAfterRedirects;
-        this.activePage = url.split('/').pop();
+        const urlSplit: string[] = url.split('/');
+
+        const citizenIndex = urlSplit.indexOf('citizen');
+        this.activePage = urlSplit[citizenIndex + 2];
       }
     });
   }

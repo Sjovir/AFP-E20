@@ -5,11 +5,12 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCalendar, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { Drug } from 'src/app/models/drug.model';
 import { Ordination } from 'src/app/models/ordination.model';
+import { DrugService } from 'src/app/services/drug.service';
 import { LocationService } from 'src/app/services/location.service';
-import { MedicineService } from 'src/app/services/medicine.service';
+import { OrdinationService } from 'src/app/services/ordination.service';
 
 @Component({
   selector: 'app-create-ordination',
@@ -24,17 +25,18 @@ export class CreateOrdinationComponent implements OnInit {
 
   constructor(
     private calendar: NgbCalendar,
+    private drugService: DrugService,
     private formBuilder: FormBuilder,
     private locationService: LocationService,
-    private medicineService: MedicineService
+    private ordinationService: OrdinationService
   ) {}
 
   ngOnInit(): void {
-    this.medicineService.getDrugs().subscribe((drugs) => {
+    this.drugService.getDrugs().subscribe((drugs) => {
       this.drugs = drugs;
     });
 
-    this.medicineService.getDrugUnits().subscribe((drugUnits) => {
+    this.drugService.getDrugUnits().subscribe((drugUnits) => {
       this.drugUnits = drugUnits;
     });
 
@@ -52,17 +54,34 @@ export class CreateOrdinationComponent implements OnInit {
   }
 
   public createOrdination() {
-    const ordination: Ordination = this.createOrdinationForm.value;
-
     const url = window.location.href;
     const urlSplit: string[] = url.split('/');
 
     const citizenStringIndex: number = urlSplit.indexOf('citizen');
     const citizenId: string = urlSplit[citizenStringIndex + 1];
 
-    this.medicineService.createOrdination(citizenId, ordination).subscribe(() => {
-      this.locationService.redirect('overview');
-    });
+    const ordination: Ordination = this.createOrdinationForm.value;
+    const startDate: NgbDateStruct = this.startDateControl.value;
+    ordination.startDate = new Date(
+      startDate.year,
+      startDate.month - 1,
+      startDate.day
+    );
+
+    const endDate: NgbDateStruct = this.endDateControl.value;
+    if (endDate) {
+      ordination.endDate = new Date(
+        endDate.year,
+        endDate.month - 1,
+        endDate.day
+      );
+    }
+
+    this.ordinationService
+      .createOrdination(citizenId, ordination)
+      .subscribe(() => {
+        this.locationService.redirect('overview');
+      });
   }
 
   public get drugControl(): AbstractControl {

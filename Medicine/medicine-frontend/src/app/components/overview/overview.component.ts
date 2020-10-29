@@ -5,7 +5,7 @@ import { Citizen } from 'src/app/models/citizen.model';
 import { Ordination } from 'src/app/models/ordination.model';
 import { CitizenService } from 'src/app/services/citizen.service';
 import { LocationService } from 'src/app/services/location.service';
-import { MedicineService } from 'src/app/services/medicine.service';
+import { OrdinationService } from 'src/app/services/ordination.service';
 
 @Component({
   selector: 'app-overview',
@@ -19,8 +19,8 @@ export class OverviewComponent implements OnInit {
   constructor(
     private citizenService: CitizenService,
     private locationService: LocationService,
-    private medicineService: MedicineService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private ordinationService: OrdinationService
   ) {}
 
   ngOnInit(): void {
@@ -30,9 +30,11 @@ export class OverviewComponent implements OnInit {
     const citizenStringIndex: number = urlSplit.indexOf('citizen');
     const citizenId: string = urlSplit[citizenStringIndex + 1];
 
-    this.medicineService.getOrdinations(citizenId).subscribe((ordinations) => {
-      this.ordinations = ordinations;
-    });
+    this.ordinationService
+      .getOrdinations(citizenId)
+      .subscribe((ordinations) => {
+        this.ordinations = ordinations;
+      });
 
     this.citizenService.get(citizenId).subscribe((citizen: Citizen) => {
       this.citizen = citizen;

@@ -18,5 +18,14 @@
     >
       Journal
     </button>
+    <button
+      [routerLink]="['medicine']"
+      queryParamsHandling="preserve"
+      class="btn btn-primary"
+      [ngClass]="{ active: isPageActive('medicine') }"
+      onclick="this.blur();"
+    >
+      Medicin
+    </button>
   </div>
 </div>

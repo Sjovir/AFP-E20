@@ -1,5 +1,5 @@
-<div class="micro-panel">
-  <div class="content px-4 py-2">
+<div *ngIf="ordination" class="micro-panel">
+  <div class="form-content px-4 py-2">
     <p class="h2">Rediger ordination</p>
     <form [formGroup]="editOrdinationForm">
       <div class="input-group">
@@ -17,7 +17,11 @@
         <div class="input-group-prepend">
           <span class="input-group-text">Mængde:</span>
         </div>
-        <input type="text" class="form-control" formControlName="drugAmount" />
+        <input
+          type="number"
+          class="form-control"
+          formControlName="drugAmount"
+        />
       </div>
       <div class="input-group">
         <div class="input-group-prepend">

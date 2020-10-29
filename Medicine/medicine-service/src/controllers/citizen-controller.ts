@@ -1,8 +1,8 @@
-import { Next, Context } from 'koa';
+import { Context, Next } from 'koa';
 import { Service } from 'typedi';
 
-import CitizenService from '../services/citizen-service';
 import citizenSchema from '../schemas/citizen-schema';
+import CitizenService from '../services/citizen-service';
 import AbstractController from './abstract-controller';
 
 @Service()
