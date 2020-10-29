@@ -48,11 +48,7 @@ export class SelectInstallationComponent implements OnInit {
         localStorage.setItem('access-token', jwt.accessToken);
         localStorage.setItem('refresh-token', jwt.refreshToken);
 
-        this.router.navigate(['installation/', installationId]);
-
         window.location.replace(`installation/${installationId}`);
-
-        console.log('Installation selected. Redirecting');
       });
   }
 }
