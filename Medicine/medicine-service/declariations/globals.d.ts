@@ -8,5 +8,6 @@ declare namespace NodeJS {
     DB_PASSWORD: string;
     DB_DATABASE: string;
     DB_PORT: string;
+    KAFKA_ENABLED: string;
   }
 }

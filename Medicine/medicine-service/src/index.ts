@@ -8,7 +8,6 @@ import bodyparser from 'koa-bodyparser';
 
 import './kafka-consumer/citizen-consumer';
 import router from './routes/router';
-
 const server = new Koa();
 
 server.use(cors({ origin: '*' }));

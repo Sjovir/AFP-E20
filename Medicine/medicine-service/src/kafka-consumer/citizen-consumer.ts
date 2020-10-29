@@ -1,6 +1,10 @@
 import kafka from 'kafka-node';
+import { Container } from 'typedi';
+import CitizenService from '../services/citizen-service';
 
 const client = new kafka.KafkaClient({ kafkaHost: 'localhost:9092' });
+
+const citizenService = Container.get(CitizenService);
 
 const consumer = new kafka.Consumer(
   client,
@@ -14,18 +18,33 @@ const consumer = new kafka.Consumer(
   }
 );
 
-consumer.on('message', (data) => {
-  if (typeof data.value === 'string') {
-    const json = JSON.parse(data.value);
+consumer.on('message', async (data) => {
+  const jsonString = data.value as string;
+  const json = JSON.parse(jsonString);
 
-    // if (json.event === 'UPDATE') {}
+  const citizen: ICitizen = json.data.citizen;
+
+  switch (json.event) {
+    case 'CREATE':
+      await citizenService.createCitizen(citizen);
+      break;
+    case 'UPDATE':
+      if (citizen.id) {
+        await citizenService.updateCitizen(citizen);
+      }
+
+      break;
+    case 'DELETE':
+      if (citizen.id) {
+        await citizenService.deleteCitizen(citizen.id);
+      }
+
+      break;
   }
-
-  console.log('[consumer:citizen] ' + data);
 });
 
 consumer.on('error', (error) => {
-  console.log('[error:consumer:citizen] Consumer: ' + error);
+  console.error('[error:kafka:consumer:citizen] ' + error);
 });
 
 export { consumer };

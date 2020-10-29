@@ -1,10 +1,12 @@
 interface ICitizen {
-    firstName: string;
-    lastName: string;
-    cpr: string;
+  id?: string;
+  firstName: string;
+  lastName: string;
+  cpr: string;
 }
 
 interface IInstallation {
-    name: string;
-    address: string;
+  id?: string;
+  name: string;
+  address: string;
 }

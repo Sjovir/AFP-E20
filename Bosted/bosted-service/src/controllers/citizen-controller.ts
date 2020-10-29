@@ -4,7 +4,6 @@ import { Service } from 'typedi';
 import AbstractController from './abstract-controller';
 import CitizenService from '../services/citizen-service';
 import citizenSchema from '../schemas/citizen-schema';
-import { producer, isReady } from '../kafka-producer/citizen-producer';
 
 @Service()
 export default class CitizenController extends AbstractController {
@@ -75,41 +74,15 @@ export default class CitizenController extends AbstractController {
     if (!this.validIdentifiers(ctx, id)) return;
     if (!this.validSchema(ctx, citizenSchema, ctx.request.body)) return;
 
-    const citizen: ICitizen = ctx.request.body;
+    const citizen: ICitizen = {
+      id,
+      ...ctx.request.body,
+    };
 
     try {
-      //await this.citizenService.updateCitizen(id, citizen);
+      await this.citizenService.updateCitizen(citizen);
       ctx.response.status = 201;
       ctx.response.body = '';
-
-      if (isReady) {
-        const message = {
-          event: 'UPDATE',
-          data: {
-            citizen: {
-              id,
-              ...citizen,
-            },
-          },
-        };
-
-        producer.send(
-          [
-            {
-              topic: 'citizen',
-              messages: JSON.stringify(message),
-              key: id,
-            },
-          ],
-          (error, data) => {
-            if (data) {
-              console.log('[kafka:citizen:update] ' + data);
-            } else if (error) {
-              console.error('[error:kafka:citizen:update] ' + error);
-            }
-          }
-        );
-      }
 
       await next();
     } catch (err) {
