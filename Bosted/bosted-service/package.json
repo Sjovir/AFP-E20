@@ -16,14 +16,15 @@
         "@koa/cors": "^3.1.0",
         "ajv": "^6.12.4",
         "dotenv": "^8.2.0",
+        "jsonwebtoken": "^8.5.1",
         "koa": "^2.13.0",
         "koa-bodyparser": "^4.3.0",
         "koa-router": "^9.4.0",
         "mariadb": "^2.4.2",
+        "node-rdkafka": "^2.9.1",
         "reflect-metadata": "^0.1.13",
         "sinon": "^9.0.3",
-        "typedi": "^0.8.0",
-        "node-rdkafka": "^2.9.1"
+        "typedi": "^0.8.0"
     },
     "devDependencies": {
         "@types/bcryptjs": "^2.4.2",
