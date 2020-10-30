@@ -14,17 +14,20 @@
     },
     "dependencies": {
         "@koa/cors": "^3.1.0",
+        "@types/uuid": "^8.3.0",
         "ajv": "^6.12.4",
         "bcryptjs": "^2.4.3",
         "dotenv": "^8.2.0",
         "jsonwebtoken": "^8.5.1",
+        "kafka-node": "^5.0.0",
         "koa": "^2.13.0",
         "koa-bodyparser": "^4.3.0",
         "koa-router": "^9.4.0",
         "mariadb": "^2.4.2",
         "reflect-metadata": "^0.1.13",
         "sinon": "^9.0.3",
-        "typedi": "^0.8.0"
+        "typedi": "^0.8.0",
+        "uuid": "^8.3.1"
     },
     "devDependencies": {
         "@types/bcryptjs": "^2.4.2",

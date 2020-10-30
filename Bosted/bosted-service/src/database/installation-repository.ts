@@ -18,21 +18,21 @@ export default class InstallationRepository {
   async create(installation: IInstallation) {
     return await client.query(
       `
-            INSERT INTO Installation (name, address)
-            VALUES (?, ?);
-            `,
-      [installation.name, installation.address]
+      INSERT INTO Installation (id, name, address)
+      VALUES (?, ?, ?);
+      `,
+      [installation.id, installation.name, installation.address]
     );
   }
 
-  async update(uuid: string, installation: IInstallation) {
+  async update(installation: IInstallation) {
     return await client.query(
       `
-            UPDATE Installation
-            SET name = ?, address = ?
-            WHERE id = ?;
-            `,
-      [installation.name, installation.address, uuid]
+      UPDATE Installation
+      SET name = ?, address = ?
+      WHERE id = ?;
+      `,
+      [installation.name, installation.address, installation.id]
     );
   }
 
@@ -43,10 +43,10 @@ export default class InstallationRepository {
   async getCitizens(installationUUID: string) {
     return await client.query(
       `
-            SELECT Citizen.id, first_name as firstName, last_name as lastName, cpr FROM Citizen
-            INNER JOIN Installation_Citizen ON citizen_id = Citizen.id
-            WHERE installation_id = ?;
-            `,
+      SELECT Citizen.id, first_name as firstName, last_name as lastName, cpr FROM Citizen
+      INNER JOIN Installation_Citizen ON citizen_id = Citizen.id
+      WHERE installation_id = ?;
+      `,
       [installationUUID]
     );
   }
@@ -54,9 +54,9 @@ export default class InstallationRepository {
   async addCitizen(citizenUUID: string, installationUUID: string) {
     return await client.query(
       `
-            INSERT INTO Installation_Citizen (citizen_id, installation_id)
-            VALUES (?, ?);
-            `,
+      INSERT INTO Installation_Citizen (citizen_id, installation_id)
+      VALUES (?, ?);
+      `,
       [citizenUUID, installationUUID]
     );
   }
@@ -64,8 +64,8 @@ export default class InstallationRepository {
   async removeCitizen(citizenUUID: string, installationUUID: string) {
     return await client.query(
       `
-            DELETE FROM Installation_Citizen WHERE citizen_id = ? AND installation_id = ?;
-            `,
+      DELETE FROM Installation_Citizen WHERE citizen_id = ? AND installation_id = ?;
+      `,
       [citizenUUID, installationUUID]
     );
   }
@@ -73,8 +73,8 @@ export default class InstallationRepository {
   async removeCitizenById(installationCitizenUUID: string) {
     return await client.query(
       `
-            DELETE FROM Installation_Citizen WHERE id = ?;
-            `,
+      DELETE FROM Installation_Citizen WHERE id = ?;
+      `,
       [installationCitizenUUID]
     );
   }

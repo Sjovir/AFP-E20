@@ -24,22 +24,18 @@ consumer.on('message', async (data) => {
 
   const citizen: ICitizen = json.data.citizen;
 
-  switch (json.event) {
-    case 'CREATE':
-      await citizenService.createCitizen(citizen);
-      break;
-    case 'UPDATE':
-      if (citizen.id) {
+  if (citizen.id) {
+    switch (json.event) {
+      case 'CREATE':
+        await citizenService.createCitizen(citizen);
+        break;
+      case 'UPDATE':
         await citizenService.updateCitizen(citizen);
-      }
-
-      break;
-    case 'DELETE':
-      if (citizen.id) {
+        break;
+      case 'DELETE':
         await citizenService.deleteCitizen(citizen.id);
-      }
-
-      break;
+        break;
+    }
   }
 });
 

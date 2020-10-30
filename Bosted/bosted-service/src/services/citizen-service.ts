@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { uuidv4 as uuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 import CitizenRepository from '../database/citizen-repository';
 import {

@@ -40,7 +40,9 @@ export const createCitizenEvent = (citizen: ICitizen): void => {
         if (topic) {
           console.log('[kafka:citizen:create] ' + JSON.stringify(topic));
         } else if (error) {
-          console.error('[error:kafka:citizen:create] ' + error);
+          console.error(
+            '[error:kafka:citizen:create] ' + JSON.stringify(error)
+          );
         }
       }
     );
@@ -68,9 +70,13 @@ export const updateCitizenEvent = (citizen: ICitizen): void => {
       ],
       (error, topic) => {
         if (topic) {
-          console.log('[kafka:citizen:update] ' + JSON.stringify(topic));
+          console.log(
+            '[kafka:producer:citizen:update] ' + JSON.stringify(topic)
+          );
         } else if (error) {
-          console.error('[error:kafka:citizen:update] ' + error);
+          console.error(
+            '[error:kafka:producer:citizen:update] ' + JSON.stringify(error)
+          );
         }
       }
     );
@@ -100,7 +106,9 @@ export const deleteCitizenEvent = (citizenUUID: string): void => {
         if (topic) {
           console.log('[kafka:citizen:delete] ' + JSON.stringify(topic));
         } else if (error) {
-          console.error('[error:kafka:citizen:delete] ' + error);
+          console.error(
+            '[error:kafka:citizen:delete] ' + JSON.stringify(error)
+          );
         }
       }
     );

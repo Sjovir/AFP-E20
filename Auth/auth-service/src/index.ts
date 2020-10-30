@@ -13,7 +13,20 @@ const server = new Koa();
 server.use(cors({ origin: '*' }));
 server.use(bodyparser());
 server.use(router.routes());
+server.use(router.allowedMethods());
 
 const app = server.listen(7000);
+
+app.on('listening', () => {
+  console.log('[Auth] Server is running on port 7000!');
+});
+
+app.on('close', () => {
+  console.log('[Auth] Server is closing!');
+});
+
+process.on('SIGINT', function () {
+  app.close();
+});
 
 export default app;

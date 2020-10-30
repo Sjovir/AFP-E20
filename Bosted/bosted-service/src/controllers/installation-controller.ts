@@ -51,7 +51,6 @@ export default class InstallationController extends AbstractController {
       ctx.response.body = '';
       await next();
     } catch (err) {
-      // console.log(err);
       ctx.response.status = 500;
     }
   }
@@ -62,10 +61,13 @@ export default class InstallationController extends AbstractController {
     if (!this.validIdentifiers(ctx, id)) return;
     if (!this.validSchema(ctx, installationSchema, ctx.request.body)) return;
 
-    const installation: IInstallation = ctx.request.body;
+    const installation: IInstallation = {
+      id,
+      ...ctx.request.body,
+    };
 
     try {
-      await this.installationService.updateInstallation(id, installation);
+      await this.installationService.updateInstallation(installation);
       ctx.response.status = 201;
       ctx.response.body = '';
       await next();
