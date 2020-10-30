@@ -11,6 +11,10 @@ import { Ordination } from 'src/app/models/ordination.model';
 import { DrugService } from 'src/app/services/drug.service';
 import { LocationService } from 'src/app/services/location.service';
 import { OrdinationService } from 'src/app/services/ordination.service';
+import {
+  Permission,
+  PermissionService,
+} from 'src/app/services/permission.service';
 
 @Component({
   selector: 'app-create-ordination',
@@ -18,6 +22,8 @@ import { OrdinationService } from 'src/app/services/ordination.service';
   styleUrls: ['./create-ordination.component.scss'],
 })
 export class CreateOrdinationComponent implements OnInit {
+  public permMedicineEdit: boolean;
+
   public createOrdinationForm: FormGroup;
 
   public drugs: Drug[];
@@ -28,10 +34,16 @@ export class CreateOrdinationComponent implements OnInit {
     private drugService: DrugService,
     private formBuilder: FormBuilder,
     private locationService: LocationService,
+    private permissionService: PermissionService,
     private ordinationService: OrdinationService
   ) {}
 
   ngOnInit(): void {
+    this.permMedicineEdit = this.permissionService.hasPermissions(
+      Permission.MEDICINE_EDIT
+    );
+    if (!this.permMedicineEdit) return;
+
     this.drugService.getDrugs().subscribe((drugs) => {
       this.drugs = drugs;
     });

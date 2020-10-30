@@ -19,3 +19,10 @@ interface IDrug {
   name: string;
   code: string;
 }
+
+interface IDecodedAccessToken {
+  firstName: string;
+  lastName: string;
+  username: string;
+  permissions: string[];
+}

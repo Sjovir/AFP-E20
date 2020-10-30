@@ -10,6 +10,10 @@ import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { Ordination } from 'src/app/models/ordination.model';
 import { LocationService } from 'src/app/services/location.service';
 import { OrdinationService } from 'src/app/services/ordination.service';
+import {
+  Permission,
+  PermissionService,
+} from 'src/app/services/permission.service';
 
 @Component({
   selector: 'app-edit-ordination',
@@ -17,6 +21,8 @@ import { OrdinationService } from 'src/app/services/ordination.service';
   styleUrls: ['./edit-ordination.component.scss'],
 })
 export class EditOrdinationComponent implements OnInit {
+  public permMedicineEdit: boolean;
+
   public editOrdinationForm: FormGroup;
 
   public citizenId: string;
@@ -26,10 +32,16 @@ export class EditOrdinationComponent implements OnInit {
     private datePipe: DatePipe,
     private formBuilder: FormBuilder,
     private locationService: LocationService,
+    private permissionService: PermissionService,
     private ordinationService: OrdinationService
   ) {}
 
   ngOnInit(): void {
+    this.permMedicineEdit = this.permissionService.hasPermissions(
+      Permission.MEDICINE_EDIT
+    );
+    if (!this.permMedicineEdit) return;
+
     const url = window.location.href;
     const urlSplit: string[] = url.split('/');
 
