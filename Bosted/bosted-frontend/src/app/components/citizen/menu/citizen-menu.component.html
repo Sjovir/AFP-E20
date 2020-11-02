@@ -19,6 +19,7 @@
       Journal
     </button>
     <button
+      [disabled]="!medicineAlive"
       [routerLink]="['medicine']"
       queryParamsHandling="preserve"
       class="btn btn-primary"

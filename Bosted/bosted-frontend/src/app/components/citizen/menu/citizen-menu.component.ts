@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { Citizen } from 'src/app/models/citizen.model';
+import { AliveService, ServiceAddress } from 'src/app/services/alive.service';
 
 @Component({
   selector: 'citizen-menu',
@@ -12,7 +13,9 @@ export class CitizenMenuComponent implements OnInit {
 
   public activePage: string;
 
-  constructor(private activeRoute: ActivatedRoute, private router: Router) {
+  public medicineAlive: boolean = false;
+
+  constructor(private aliveService: AliveService, private router: Router) {
     router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         const url: string = event.urlAfterRedirects;
@@ -24,7 +27,20 @@ export class CitizenMenuComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.aliveService.isAlive(ServiceAddress.MEDICINE).subscribe(
+      () => {
+        this.medicineAlive = true;
+      },
+      (err) => {
+        if (err.status === 200) {
+          this.medicineAlive = true;
+        } else {
+          this.medicineAlive = false;
+        }
+      }
+    );
+  }
 
   public isPageActive(page: string): boolean {
     return this.activePage === page;
