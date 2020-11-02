@@ -7,7 +7,7 @@ import {
   createInstallationEvent,
   updateInstallationEvent,
   deleteInstallationEvent,
-} from '../kafka-producer/installation-producer';
+} from '../kafka/installation-producer';
 
 @Service()
 export default class InstallationService {
@@ -32,19 +32,19 @@ export default class InstallationService {
     if (!installation.id) installation.id = uuid();
 
     //await this.installationRepository.create(installation);
-    createInstallationEvent(installation);
+    await createInstallationEvent(installation);
   }
 
   async updateInstallation(installation: IInstallation) {
     if (!installation.id) throw new Error('Update Installation needs an ID.');
 
     await this.installationRepository.update(installation);
-    updateInstallationEvent(installation);
+    await updateInstallationEvent(installation);
   }
 
   async deleteInstallation(installationUUID: string) {
     await this.installationRepository.delete(installationUUID);
-    deleteInstallationEvent(installationUUID);
+    await deleteInstallationEvent(installationUUID);
   }
 
   /////////////////////////////////////////

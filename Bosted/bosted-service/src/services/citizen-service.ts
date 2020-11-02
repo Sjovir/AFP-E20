@@ -6,7 +6,7 @@ import {
   createCitizenEvent,
   updateCitizenEvent,
   deleteCitizenEvent,
-} from '../kafka-producer/citizen-producer';
+} from '../kafka/citizen-producer';
 
 @Service()
 export default class CitizenService {

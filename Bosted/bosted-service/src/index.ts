@@ -6,7 +6,7 @@ import Koa from 'koa';
 import cors from '@koa/cors';
 import bodyparser from 'koa-bodyparser';
 
-import './kafka-consumer/installation-consumer';
+import './kafka/installation-consumer';
 import router from './routes/router';
 
 const server = new Koa();
