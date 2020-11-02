@@ -6,6 +6,10 @@ import { Ordination } from 'src/app/models/ordination.model';
 import { CitizenService } from 'src/app/services/citizen.service';
 import { LocationService } from 'src/app/services/location.service';
 import { OrdinationService } from 'src/app/services/ordination.service';
+import {
+  Permission,
+  PermissionService,
+} from 'src/app/services/permission.service';
 
 @Component({
   selector: 'app-overview',
@@ -13,6 +17,10 @@ import { OrdinationService } from 'src/app/services/ordination.service';
   styleUrls: ['./overview.component.scss'],
 })
 export class OverviewComponent implements OnInit {
+  public permCitizenEdit: boolean;
+  public permMedicineView: boolean;
+  public permMedicineEdit: boolean;
+
   public citizen: Citizen;
   public ordinations: Ordination[];
 
@@ -20,25 +28,40 @@ export class OverviewComponent implements OnInit {
     private citizenService: CitizenService,
     private locationService: LocationService,
     private modalService: NgbModal,
+    private permissionService: PermissionService,
     private ordinationService: OrdinationService
   ) {}
 
   ngOnInit(): void {
+    this.permCitizenEdit = this.permissionService.hasPermissions(
+      Permission.CITIZEN_EDIT
+    );
+    this.permMedicineView = this.permissionService.hasPermissions(
+      Permission.MEDICINE_VIEW
+    );
+    this.permMedicineEdit = this.permissionService.hasPermissions(
+      Permission.MEDICINE_EDIT
+    );
+
     const url = window.location.href;
     const urlSplit: string[] = url.split('/');
 
     const citizenStringIndex: number = urlSplit.indexOf('citizen');
     const citizenId: string = urlSplit[citizenStringIndex + 1];
 
-    this.ordinationService
-      .getOrdinations(citizenId)
-      .subscribe((ordinations) => {
-        this.ordinations = ordinations;
-      });
+    if (this.permMedicineView) {
+      this.ordinationService
+        .getOrdinations(citizenId)
+        .subscribe((ordinations) => {
+          this.ordinations = ordinations;
+        });
+    }
 
-    this.citizenService.get(citizenId).subscribe((citizen: Citizen) => {
-      this.citizen = citizen;
-    });
+    if (this.permCitizenEdit) {
+      this.citizenService.get(citizenId).subscribe((citizen: Citizen) => {
+        this.citizen = citizen;
+      });
+    }
   }
 
   public editCitizen() {

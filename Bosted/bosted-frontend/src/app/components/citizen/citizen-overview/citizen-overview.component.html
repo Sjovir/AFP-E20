@@ -1,6 +1,10 @@
 <div class="content-panel px-4 py-2">
   <p class="h2">Borger information</p>
-  <button class="btn btn-primary mb-3" (click)="editCitizen()">
+  <button
+    *ngIf="permCitizenEdit"
+    class="btn btn-primary mb-3"
+    (click)="editCitizen()"
+  >
     Rediger borger
   </button>
   <div class="row">

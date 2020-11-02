@@ -10,6 +10,7 @@
       Overblik
     </button>
     <button
+      *ngIf="permJournalView"
       [routerLink]="['journal']"
       queryParamsHandling="preserve"
       class="btn btn-primary"
@@ -19,6 +20,7 @@
       Journal
     </button>
     <button
+      *ngIf="permMedicineView"
       [disabled]="!medicineAlive"
       [routerLink]="['medicine']"
       queryParamsHandling="preserve"
