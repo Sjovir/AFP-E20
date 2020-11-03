@@ -1,9 +1,4 @@
-import { Kafka } from 'kafkajs';
-
-const kafka = new Kafka({
-  clientId: 'auth-microservice',
-  brokers: ['localhost:9092'],
-});
+import kafka from './kafka-client';
 
 const producer = kafka.producer();
 

@@ -3,11 +3,13 @@ import { Container } from 'typedi';
 import CitizenService from '../services/citizen-service';
 
 const kafka = new Kafka({
-  clientId: 'auth-microservice',
+  clientId: 'medicine-microservice',
   brokers: ['localhost:9092'],
 });
 
-const consumer = kafka.consumer();
+const consumer = kafka.consumer({
+  groupId: 'test-group2',
+});
 
 const citizenService = Container.get(CitizenService);
 

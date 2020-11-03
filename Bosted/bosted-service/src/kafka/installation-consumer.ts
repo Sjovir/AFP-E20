@@ -1,14 +1,11 @@
-import { Kafka } from 'kafkajs';
+import kafka from './kafka-client';
 import { Container } from 'typedi';
 
 import InstallationService from '../services/installation-service';
 
-const kafka = new Kafka({
-  clientId: 'auth-microservice',
-  brokers: ['localhost:9092'],
+const consumer = kafka.consumer({
+  groupId: 'test-group',
 });
-
-const consumer = kafka.consumer();
 
 const installationService = Container.get(InstallationService);
 

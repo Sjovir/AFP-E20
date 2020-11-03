@@ -30,6 +30,7 @@ export const createInstallationEvent = async (
     messages: [{ value: JSON.stringify(message) }],
   });
 
+  console.log('[kafka:producer:installation:create] ' + installation.id);
   console.log('[kafka:producer:installation:create] ' + JSON.stringify(result));
 };
 

@@ -18,6 +18,7 @@
     "ajv": "^6.12.4",
     "bcryptjs": "^2.4.3",
     "dotenv": "^8.2.0",
+    "http-graceful-shutdown": "^2.3.2",
     "jsonwebtoken": "^8.5.1",
     "kafkajs": "^1.14.0",
     "koa": "^2.13.0",

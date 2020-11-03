@@ -31,7 +31,7 @@ export default class InstallationService {
   async createInstallation(installation: IInstallation) {
     if (!installation.id) installation.id = uuid();
 
-    //await this.installationRepository.create(installation);
+    await this.installationRepository.create(installation);
     await createInstallationEvent(installation);
   }
 

@@ -31,8 +31,8 @@ export default class InstallationRepository {
 
   async create(installation: IInstallation) {
     return await client.query(
-      `INSERT INTO Installation (name, address) VALUES (?, ?);`,
-      [installation.name, installation.address]
+      `INSERT INTO Installation (id, name, address) VALUES (?, ?, ?);`,
+      [installation.id, installation.name, installation.address]
     );
   }
 

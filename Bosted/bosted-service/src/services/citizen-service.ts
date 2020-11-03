@@ -25,7 +25,7 @@ export default class CitizenService {
     if (!citizen.id) citizen.id = uuid();
 
     const result = await this.citizenRepository.create(citizen);
-    createCitizenEvent(citizen);
+    await createCitizenEvent(citizen);
 
     return result.length > 0 ? result[0].id : null;
   }
@@ -35,12 +35,12 @@ export default class CitizenService {
     if (!citizen.id) throw new Error('No ID found.');
 
     await this.citizenRepository.update(citizen);
-    updateCitizenEvent(citizen);
+    await updateCitizenEvent(citizen);
   }
 
   // TODO: maybe dont send the kafka event if delete fails, so the sync/data will remain the same.
   async deleteCitizen(citizenUUID: string) {
     await this.citizenRepository.delete(citizenUUID);
-    deleteCitizenEvent(citizenUUID);
+    await deleteCitizenEvent(citizenUUID);
   }
 }

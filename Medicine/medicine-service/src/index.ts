@@ -5,29 +5,35 @@ dotenv.config();
 import Koa from 'koa';
 import cors from '@koa/cors';
 import bodyparser from 'koa-bodyparser';
+import gracefulShutdown from 'http-graceful-shutdown';
 
+import client from './database/mariadb-client';
 import './kafka/citizen-consumer';
 import router from './routes/router';
 
-const server = new Koa();
+const app = new Koa();
 
-server.use(cors({ origin: '*' }));
-server.use(bodyparser());
-server.use(router.routes());
-server.use(router.allowedMethods());
+app.use(cors({ origin: '*' }));
+app.use(bodyparser());
+app.use(router.routes());
+app.use(router.allowedMethods());
 
-const app = server.listen(7200);
+const server = app.listen(7200);
 
-app.on('listening', () => {
+server.on('listening', () => {
   console.log('[Medicine] Server is running on port 7200!');
 });
 
-app.on('close', () => {
-  console.log('[Medicine] Server is closing!');
+gracefulShutdown(server, {
+  onShutdown: async (signal) => {
+    console.log(`[Medicine] Cleaning up from ${signal}.`);
+
+    await client.end();
+    // await consumer.disconnect();
+  },
+  finally: async () => {
+    console.log('[Medicine] Server is shutting down.');
+  },
 });
 
-process.on('SIGINT', function () {
-  app.close();
-});
-
-export default app;
+export default server;
