@@ -28,8 +28,10 @@ gracefulShutdown(server, {
   onShutdown: async (signal) => {
     console.log(`[Medicine] Cleaning up from ${signal}.`);
 
+    // consumer cannot be disconnected or stopped since
+    // it runs on a child process (I think?)
+
     await client.end();
-    // await consumer.disconnect();
   },
   finally: async () => {
     console.log('[Medicine] Server is shutting down.');

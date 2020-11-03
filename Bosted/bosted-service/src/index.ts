@@ -34,7 +34,7 @@ gracefulShutdown(server, {
     await producer.disconnect();
     await client.end();
   },
-  finally: async () => {
+  finally: () => {
     console.log('[Bosted] Server is shutting down.');
   },
 });

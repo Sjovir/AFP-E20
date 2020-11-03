@@ -42,6 +42,7 @@ const citizenService = Container.get(CitizenService);
         }
       }
     },
+    qq,
   });
 })();
 
