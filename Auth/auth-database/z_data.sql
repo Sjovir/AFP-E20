@@ -23,11 +23,17 @@ VALUES
 INSERT INTO AccessRight
     (id, name, code)
 VALUES
-    ("55e2f802-0a0d-11eb-ab61-0242ac120002", "Admin", "admin"),
-    ("55e2f982-0a0d-11eb-ab61-0242ac120002", "See installations", "installation_see"),
-    ("55e2f05b-0a0d-11eb-ab61-0242ac120002", "Edit installations", "installation_edit"),
-    ("55e2f7a5-0a0d-11eb-ab61-0242ac120002", "See users", "user_see"),
-    ("55e2fe86-0a0d-11eb-ab61-0242ac120002", "Edit users", "user_edit");
+    ("55e2f802-0a0d-11eb-ab61-0242ac120002", "Admin", "ADMIN"),
+    ("55e2f982-0a0d-11eb-ab61-0242ac120002", "See installations", "INSTALLATION:VIEW"),
+    ("55e2f05b-0a0d-11eb-ab61-0242ac120002", "Edit installations", "INSTALLATION:EDIT"),
+    ("55e2f7a5-0a0d-11eb-ab61-0242ac120002", "See users", "USER:VIEW"),
+    ("55e2fe86-0a0d-11eb-ab61-0242ac120002", "Edit users", "USER:EDIT"),
+    ("55e2fe22-0a0d-11eb-ab61-0242ac120002", "See citizens", "CITIZEN:VIEW"),
+    ("55e2fe23-0a0d-11eb-ab61-0242ac120002", "Edit citizens", "CITIZEN:EDIT"),
+    ("55e2fe24-0a0d-11eb-ab61-0242ac120002", "See journals", "JOURNAL:VIEW"),
+    ("55e2fe25-0a0d-11eb-ab61-0242ac120002", "Edit journals", "JOURNAL:EDIT"),
+    ("55e2fe26-0a0d-11eb-ab61-0242ac120002", "See medicine", "MEDICINE:VIEW"),
+    ("55e2fe27-0a0d-11eb-ab61-0242ac120002", "Edit medicine", "MEDICINE:EDIT");
 
 INSERT INTO Role_AccessRight
     (role_id, access_right_id)
@@ -38,9 +44,15 @@ VALUES
     ("55e2f663-0a0d-11eb-ab61-0242ac120002", "55e2f982-0a0d-11eb-ab61-0242ac120002"),
     ("55e2f663-0a0d-11eb-ab61-0242ac120002", "55e2f7a5-0a0d-11eb-ab61-0242ac120002"),
     ("55e2f663-0a0d-11eb-ab61-0242ac120002", "55e2fe86-0a0d-11eb-ab61-0242ac120002"),
+    ("55e2f663-0a0d-11eb-ab61-0242ac120002", "55e2fe22-0a0d-11eb-ab61-0242ac120002"),
     ("55e2f796-0a0d-11eb-ab61-0242ac120002", "55e2f982-0a0d-11eb-ab61-0242ac120002"),
     ("55e2f796-0a0d-11eb-ab61-0242ac120002", "55e2f7a5-0a0d-11eb-ab61-0242ac120002"),
-    ("55e2f796-0a0d-11eb-ab61-0242ac120002", "55e2fe86-0a0d-11eb-ab61-0242ac120002");
+    ("55e2f796-0a0d-11eb-ab61-0242ac120002", "55e2fe22-0a0d-11eb-ab61-0242ac120002"),
+    ("55e2f796-0a0d-11eb-ab61-0242ac120002", "55e2fe23-0a0d-11eb-ab61-0242ac120002"),
+    ("55e2f796-0a0d-11eb-ab61-0242ac120002", "55e2fe24-0a0d-11eb-ab61-0242ac120002"),
+    ("55e2f796-0a0d-11eb-ab61-0242ac120002", "55e2fe25-0a0d-11eb-ab61-0242ac120002"),
+    ("55e2f796-0a0d-11eb-ab61-0242ac120002", "55e2fe26-0a0d-11eb-ab61-0242ac120002"),
+    ("55e2f796-0a0d-11eb-ab61-0242ac120002", "55e2fe27-0a0d-11eb-ab61-0242ac120002");
 
 INSERT INTO Installation_Role
     (id, installation_id, role_id)
@@ -65,5 +77,6 @@ VALUES
 INSERT INTO Installation_User_Role
     (installation_user_id, installation_role_id)
 VALUES
-    ("e822f2c4-0a0d-11eb-b3a0-0242ac120002", "55e20ba1-0a0d-11eb-ab61-0242ac120002"),
-    ("f088db14-0a0d-11eb-b3a0-0242ac120002", "55e20ba5-0a0d-11eb-ab61-0242ac120002");
+    ("e822f2c4-0a0d-11eb-b3a0-0242ac120002", "55e20ba3-0a0d-11eb-ab61-0242ac120002"),
+    ("f088db14-0a0d-11eb-b3a0-0242ac120002", "55e20ba5-0a0d-11eb-ab61-0242ac120002"),
+    ("a088d85c-0a0d-11eb-b3a0-0242ac120002", "55e20ba7-0a0d-11eb-ab61-0242ac120002");

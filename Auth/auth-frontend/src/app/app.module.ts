@@ -32,11 +32,9 @@ export function tokenGetter() {
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
-        allowedDomains: [
+        allowedDomains: [ // Domains to which the access token is sent as an authorization header
           'localhost:7000',
           'localhost:7100',
-          'localhost:8000',
-          'localhost:8100',
         ],
       },
     }),
