@@ -5,15 +5,37 @@ dotenv.config();
 import Koa from 'koa';
 import cors from '@koa/cors';
 import bodyparser from 'koa-bodyparser';
+import gracefulShutdown from 'http-graceful-shutdown';
 
+import client from './database/mariadb-client';
+import './kafka/citizen-consumer';
 import router from './routes/router';
 
-const server = new Koa();
+const app = new Koa();
 
-server.use(cors({ origin: '*' }));
-server.use(bodyparser());
-server.use(router.routes());
+app.use(cors({ origin: '*' }));
+app.use(bodyparser());
+app.use(router.routes());
+app.use(router.allowedMethods());
 
-const app = server.listen(7200);
+const server = app.listen(7200);
 
-export default app;
+server.on('listening', () => {
+  console.log('[Medicine] Server is running on port 7200!');
+});
+
+gracefulShutdown(server, {
+  onShutdown: async (signal) => {
+    console.log(`[Medicine] Cleaning up from ${signal}.`);
+
+    // consumer cannot be disconnected or stopped since
+    // it runs on a child process (I think?)
+
+    await client.end();
+  },
+  finally: () => {
+    console.log('[Medicine] Server is shutting down.');
+  },
+});
+
+export default server;

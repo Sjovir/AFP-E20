@@ -1,4 +1,5 @@
 import { Service } from 'typedi';
+import { v4 as uuid } from 'uuid';
 
 import CitizenRepository from '../database/citizen-repository';
 
@@ -15,16 +16,17 @@ export default class CitizenService {
   }
 
   async createCitizen(citizen: ICitizen) {
-    const uuid_query_result = await this.citizenRepository.getNewUuid();
-    const uuid: string = uuid_query_result[0]['UUID()'];
+    if (!citizen.id) citizen.id = uuid();
 
-    await this.citizenRepository.create(citizen, uuid);
+    const result = await this.citizenRepository.create(citizen);
 
-    return uuid;
+    return result.length > 0 ? result[0].id : null;
   }
 
-  async updateCitizen(citizenUUID: string, citizen: ICitizen) {
-    await this.citizenRepository.update(citizenUUID, citizen);
+  async updateCitizen(citizen: ICitizen) {
+    if (!citizen.id) throw new Error('No ID found.');
+
+    await this.citizenRepository.update(citizen);
   }
 
   async deleteCitizen(citizenUUID: string) {

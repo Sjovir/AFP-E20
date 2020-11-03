@@ -1,5 +1,5 @@
 interface IUser {
-    id: string;
+    id?: string;
     firstName: string;
     lastName: string;
     cpr: string;
@@ -8,7 +8,7 @@ interface IUser {
 }
 
 interface IInstallation {
-    id: string;
+    id?: string;
     name: string;
     address: string;
 }

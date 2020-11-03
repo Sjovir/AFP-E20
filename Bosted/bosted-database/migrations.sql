@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS bosted;
+USE bosted;
+
 CREATE TABLE Citizen (
 	id VARCHAR(36) NOT NULL DEFAULT uuid(),
 	first_name VARCHAR(50) NOT NULL,

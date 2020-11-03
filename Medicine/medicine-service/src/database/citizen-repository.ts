@@ -17,33 +17,29 @@ export default class CitizenRepository {
     );
   }
 
-  async create(citizen: ICitizen, uuid: string) {
+  async create(citizen: ICitizen) {
     return await client.query(
       `
       INSERT INTO Citizen (id, first_name, last_name, cpr)
       VALUES (?, ?, ?, ?) RETURNING id;
       `,
-      [uuid, citizen.firstName, citizen.lastName, citizen.cpr]
+      [citizen.id, citizen.firstName, citizen.lastName, citizen.cpr]
     );
   }
 
-  async update(uuid: string, citizen: ICitizen) {
+  async update(citizen: ICitizen) {
     return await client.query(
       `
       UPDATE Citizen
       SET first_name = ?, last_name = ?, cpr = ?
       WHERE id = ?;
       `,
-      [citizen.firstName, citizen.lastName, citizen.cpr, uuid]
+      [citizen.firstName, citizen.lastName, citizen.cpr, citizen.id]
     );
   }
 
   async delete(uuid: string) {
     return await client.query('DELETE FROM Citizen WHERE id = ?;', [uuid]);
-  }
-
-  async getNewUuid() {
-    return await client.query(`SELECT UUID()`);
   }
 
   async addOrdination(citizenUUID: string, ordinationUUID: string) {

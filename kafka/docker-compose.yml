@@ -6,6 +6,7 @@ networks:
 
 services:
   zookeeper:
+    container_name: zookeeper
     image: "bitnami/zookeeper:latest"
     ports:
       - "2181:2181"
@@ -14,6 +15,7 @@ services:
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
   kafka:
+    container_name: kafka_server1
     image: "bitnami/kafka:latest"
     ports:
       - "9092:9092"

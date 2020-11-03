@@ -1,5 +1,6 @@
 import { Context, Next } from 'koa';
 import { Service } from 'typedi';
+
 import citizenSchema from '../schemas/citizen-schema';
 import CitizenService from '../services/citizen-service';
 import AbstractController from './abstract-controller';
@@ -73,10 +74,10 @@ export default class CitizenController extends AbstractController {
     if (!this.validIdentifiers(ctx, id)) return;
     if (!this.validSchema(ctx, citizenSchema, ctx.request.body)) return;
 
-    const citizen: ICitizen = ctx.request.body;
+    const citizen: ICitizen = { id, ...ctx.request.body };
 
     try {
-      await this.citizenService.updateCitizen(id, citizen);
+      await this.citizenService.updateCitizen(citizen);
       ctx.response.status = 201;
       ctx.response.body = '';
 
