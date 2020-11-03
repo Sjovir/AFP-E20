@@ -7,9 +7,12 @@ import cors from '@koa/cors';
 import bodyparser from 'koa-bodyparser';
 import gracefulShutdown from 'http-graceful-shutdown';
 
+import logger from './logger';
 import client from './database/mariadb-client';
 import { producer } from './kafka/installation-producer';
 import router from './routes/router';
+
+const PORT = process.env.PORT || 7000;
 
 const app = new Koa();
 
@@ -18,10 +21,8 @@ app.use(bodyparser());
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-const server = app.listen(7000);
-
-server.on('listening', () => {
-  console.log('[Auth] Server is running on port 7000!');
+const server = app.listen(PORT, () => {
+  console.log(`[Auth] Server is running on port ${PORT}!`);
 });
 
 gracefulShutdown(server, {

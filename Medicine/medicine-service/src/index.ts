@@ -11,6 +11,8 @@ import client from './database/mariadb-client';
 import './kafka/citizen-consumer';
 import router from './routes/router';
 
+const PORT = process.env.PORT || 7200;
+
 const app = new Koa();
 
 app.use(cors({ origin: '*' }));
@@ -18,10 +20,8 @@ app.use(bodyparser());
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-const server = app.listen(7200);
-
-server.on('listening', () => {
-  console.log('[Medicine] Server is running on port 7200!');
+const server = app.listen(PORT, () => {
+  console.log(`[Medicine] Server is running on port ${PORT}!`);
 });
 
 gracefulShutdown(server, {

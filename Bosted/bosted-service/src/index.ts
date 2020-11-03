@@ -12,6 +12,8 @@ import { producer } from './kafka/citizen-producer';
 import './kafka/installation-consumer';
 import router from './routes/router';
 
+const PORT = process.env.PORT || 7100;
+
 const app = new Koa();
 
 app.use(cors({ origin: '*' }));
@@ -19,8 +21,8 @@ app.use(bodyparser());
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-const server = app.listen(7100, () => {
-  console.log('[Bosted] Server is running on port 7100!');
+const server = app.listen(PORT, () => {
+  console.log(`[Bosted] Server is running on port ${PORT}!`);
 });
 
 gracefulShutdown(server, {
