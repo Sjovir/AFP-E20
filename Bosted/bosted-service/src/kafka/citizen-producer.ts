@@ -28,7 +28,7 @@ export const createCitizenEvent = async (citizen: ICitizen): Promise<void> => {
 
 export const updateCitizenEvent = async (citizen: ICitizen): Promise<void> => {
   const message = {
-    event: 'CREATE',
+    event: 'UPDATE',
     data: {
       citizen: {
         ...citizen,

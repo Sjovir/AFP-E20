@@ -7,12 +7,12 @@ services:
     container_name: AuthFrontend
     environment:
       - YARN-VERSION=${YARN_VERSION}
-    depends_on:
-      - service
-      - db
     ports:
       - "8000:80"
       - "7000:7000"
+    depends_on:
+      - service
+      - database
   service:
     build: ./auth-service
     image: auth_service
@@ -22,11 +22,12 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_DATABASE=${DB_DATABASE}
-      - DB_HOST=db
+      - DB_HOST=database
+      - KAFKA_HOST=${KAFKA_HOST}
       - YARN-VERSION=${YARN_VERSION}
     depends_on:
-      - db
-  db:
+      - database
+  database:
     build: ./auth-database
     image: auth_database
     container_name: AuthDatabase
@@ -35,3 +36,9 @@ services:
       - MYSQL_USER=${DB_USER}
       - MYSQL_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=${DB_DATABASE}
+
+networks:
+  default:
+    external: 
+      name: kafka_apache-net
+
