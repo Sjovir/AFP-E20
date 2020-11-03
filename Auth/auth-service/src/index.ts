@@ -22,18 +22,18 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 
 const server = app.listen(PORT, () => {
-  console.log(`[Auth] Server is running on port ${PORT}!`);
+  logger.info(`Server is running on port ${PORT}!`);
 });
 
 gracefulShutdown(server, {
   onShutdown: async (signal) => {
-    console.log(`[Auth] Cleaning up from ${signal}.`);
+    logger.info(`Cleaning up from ${signal}.`);
 
     await client.end();
     await producer.disconnect();
   },
   finally: () => {
-    console.log('[Auth] Server is shutting down.');
+    logger.info('Server is shutting down.');
   },
 });
 
