@@ -33,7 +33,7 @@ gracefulShutdown(server, {
 
     await client.end();
   },
-  finally: async () => {
+  finally: () => {
     console.log('[Medicine] Server is shutting down.');
   },
 });
