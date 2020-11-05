@@ -1,8 +1,10 @@
 import { Kafka } from 'kafkajs';
 
+const brokers = process.env.KAFKA_HOST || 'localhost';
+
 const kafka = new Kafka({
   clientId: 'auth-microservice',
-  brokers: ['localhost:9092'],
+  brokers: [`${brokers}:9092`],
 });
 
 const producer = kafka.producer();

@@ -1,13 +1,10 @@
 import { Context, Next } from 'koa';
 import { Service } from 'typedi';
-
 import installationSchema from '../schemas/installation-schema';
 import roleSchema from '../schemas/role-schema';
-import ajv from '../schemas/schema-validator';
 import selectInstallationSchema from '../schemas/select-installation-schema';
 import InstallationService from '../services/installation-service';
 import UserService from '../services/user-service';
-import { isUUID } from '../utils/uuid-util';
 import AbstractController from './abstract-controller';
 
 @Service()

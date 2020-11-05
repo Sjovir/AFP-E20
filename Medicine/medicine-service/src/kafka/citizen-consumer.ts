@@ -2,9 +2,11 @@ import { Kafka } from 'kafkajs';
 import { Container } from 'typedi';
 import CitizenService from '../services/citizen-service';
 
+const brokers = process.env.KAFKA_HOST || 'localhost';
+
 const kafka = new Kafka({
   clientId: 'medicine-microservice',
-  brokers: ['localhost:9092'],
+  brokers: [`${brokers}:9092`],
 });
 
 const consumer = kafka.consumer({
@@ -42,7 +44,6 @@ const citizenService = Container.get(CitizenService);
         }
       }
     },
-    qq,
   });
 })();
 
