@@ -1,0 +1,102 @@
+<div class="register-page mt-4">
+  <div class="container jumbotron submit-form text-center">
+    <p class="h1">Registrer</p>
+    <hr />
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="fields">
+        <div class="field">
+          <input
+            class="form-control"
+            type="text"
+            id="username"
+            formControlName="username"
+            placeholder="Brugernavn"
+          />
+          <small
+            *ngIf="usernameControl.touched && usernameControl.errors !== null"
+            class="form-text text-danger"
+            >Brugernavn skal indeholde mindst 2 tegn.</small
+          >
+        </div>
+        <div class="field">
+          <input
+            class="form-control"
+            type="text"
+            id="password"
+            formControlName="password"
+            placeholder="Kodeord"
+          />
+          <small
+            *ngIf="passwordControl.touched && passwordControl.errors !== null"
+            class="form-text text-danger"
+            >Kodeord skal indeholde mindst 8 tegn.</small
+          >
+        </div>
+        <div class="field">
+          <input
+            class="form-control"
+            type="text"
+            id="cpr"
+            formControlName="cpr"
+            placeholder="CPR"
+          />
+          <small
+            *ngIf="cprControl.touched && cprControl.errors !== null"
+            class="form-text text-danger"
+            >CPR skal indeholde præcis 10 tal.</small
+          >
+        </div>
+        <div class="field">
+          <input
+            class="form-control"
+            type="text"
+            id="firstName"
+            formControlName="firstName"
+            placeholder="Fornavn"
+          />
+          <small
+            *ngIf="firstNameControl.touched && firstNameControl.errors !== null"
+            class="form-text text-danger"
+            >Fornavn skal indeholde mindst 2 tegn.</small
+          >
+        </div>
+        <div class="field">
+          <input
+            class="form-control"
+            type="text"
+            id="lastName"
+            formControlName="lastName"
+            placeholder="Efternavn"
+          />
+          <small
+            *ngIf="lastNameControl.touched && lastNameControl.errors !== null"
+            class="form-text text-danger"
+            >Efternavn skal indeholde mindst 2 tegn.</small
+          >
+        </div>
+      </div>
+      <div>
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!registerForm.valid"
+        >
+          Registrer
+        </button>
+      </div>
+    </form>
+    <small
+      class="form-text text-danger"
+      *ngIf="onSubmitMessage"
+      [ngClass]="{
+        'text-danger': onSubmitStatus > 0,
+        'text-success': onSubmitStatus === 0
+      }"
+      >{{ onSubmitMessage }}</small
+    >
+    <hr class="my-4" />
+    <div>
+      <button class="btn btn-primary" (click)="gotoLoginPage()">Log ind</button>
+    </div>
+  </div>
+</div>

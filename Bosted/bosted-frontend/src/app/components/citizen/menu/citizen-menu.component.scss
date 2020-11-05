@@ -1,0 +1,9 @@
+.nav-menu {
+  width: 100%;
+
+  & button:active,
+  button:focus,
+  button:focus:active {
+    box-shadow: none;
+  }
+}

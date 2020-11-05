@@ -1,0 +1,49 @@
+<div class="content-panel p-3">
+  <div class="top-bar">
+    <span
+      *ngIf="permCitizenEdit"
+      [disableTooltip]="installation"
+      [ngbTooltip]="'Der er ikke valgt en installation'"
+      [placement]="'bottom'"
+    >
+      <button
+        class="btn btn-primary mr-3"
+        (click)="createCitizen()"
+        [disabled]="!installation"
+      >
+        Opret borger
+      </button>
+    </span>
+    <span *ngIf="installation" class="h4">{{ installation.name }}</span>
+  </div>
+  <div *ngIf="permCitizenView; else citizenTableRestricted">
+    <table *ngIf="installation" class="table table-hover table-sm">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">Fornavn</th>
+          <th scope="col">Efternavn</th>
+          <th scope="col">CPR</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="citizens?.length > 0; else noCitizens">
+        <tr *ngFor="let citizen of citizens">
+          <td>
+            <a [routerLink]="['citizen', citizen.id]">{{
+              citizen.firstName
+            }}</a>
+          </td>
+          <td>{{ citizen.lastName }}</td>
+          <td>{{ citizen.cpr }}</td>
+        </tr>
+      </tbody>
+      <ng-template #noCitizens>
+        <tr>
+          <td colspan="3">Der er ingen borgere på denne installation</td>
+        </tr>
+      </ng-template>
+    </table>
+  </div>
+  <ng-template #citizenTableRestricted>
+    <p>Du har ikke adgang til at se informationer om borgerne</p>
+  </ng-template>
+</div>

@@ -1,0 +1,34 @@
+<div class="bg-primary content-panel">
+  <div class="btn-group-vertical nav-menu" role="group" aria-label="nav">
+    <button
+      [routerLink]="['overview']"
+      queryParamsHandling="preserve"
+      class="btn btn-primary"
+      [ngClass]="{ active: isPageActive('overview') }"
+      onclick="this.blur();"
+    >
+      Overblik
+    </button>
+    <button
+      *ngIf="permJournalView"
+      [routerLink]="['journal']"
+      queryParamsHandling="preserve"
+      class="btn btn-primary"
+      [ngClass]="{ active: isPageActive('journal') }"
+      onclick="this.blur();"
+    >
+      Journal
+    </button>
+    <button
+      *ngIf="permMedicineView"
+      [disabled]="!medicineAlive"
+      [routerLink]="['medicine']"
+      queryParamsHandling="preserve"
+      class="btn btn-primary"
+      [ngClass]="{ active: isPageActive('medicine') }"
+      onclick="this.blur();"
+    >
+      Medicin
+    </button>
+  </div>
+</div>

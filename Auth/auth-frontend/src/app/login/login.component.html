@@ -1,0 +1,66 @@
+<div class="content-page">
+  <div class="container jumbotron text-center">
+    <p class="h1">Log ind</p>
+    <hr class="my-4" />
+    <br />
+    <form [formGroup]="loginForm" (ngSubmit)="login()">
+      <div class="field">
+        <input
+          class="form-control text-center"
+          type="text"
+          placeholder="Brugernavn eller CPR"
+          formControlName="username"
+        />
+        <small
+          *ngIf="usernameControl.touched && usernameControl.errors?.required"
+          class="form-text text-danger"
+          >Mangler brugernavn eller CPR</small
+        >
+      </div>
+      <div class="field">
+        <input
+          class="form-control text-center"
+          type="password"
+          placeholder="Kodeord"
+          formControlName="password"
+        />
+        <small
+          *ngIf="passwordControl.touched && passwordControl.errors?.required"
+          class="form-text text-danger"
+          >Mangler kodeord</small
+        >
+        <small
+          *ngIf="
+            passwordControl.touched &&
+            !passwordControl.errors?.required &&
+            passwordControl.errors?.minlength !== null
+          "
+          class="form-text text-danger"
+          >Kodeordet skal mindst indeholde 8 tegn</small
+        >
+      </div>
+      <button
+        class="btn btn-primary"
+        type="submit"
+        [disabled]="!loginForm.valid"
+      >
+        Log ind
+      </button>
+    </form>
+    <small
+      class="form-text"
+      *ngIf="onLoginMessage"
+      [ngClass]="{
+        'text-danger': onLoginStatus > 0,
+        'text-success': onLoginStatus === 0
+      }"
+      >{{ onLoginMessage }}</small
+    >
+    <hr class="my-4" />
+    <div>
+      <button class="btn btn-primary" (click)="gotoRegisterPage()">
+        Opret bruger
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+/* Importing Bootstrap SCSS file. */
+@import "~bootstrap/scss/bootstrap";
+
+/* You can add global styles to this file, and also import other style files */
+$full-page-padding: 5rem;
+$shrunk-page-padding: 2rem;
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+.navbar-nav {
+  padding: 0 5rem;
+}
+
+@media only screen and (max-width: 992px) {
+  .navbar-nav {
+    padding: 0 2rem;
+  }
+
+  .content-page {
+    padding: 0 (2rem + 1);
+  }
+}

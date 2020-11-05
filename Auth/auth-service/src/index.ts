@@ -1,12 +1,39 @@
-import Koa from "koa";
-import bodyparser from "koa-bodyparser";
-import dd from "koa-json"
+import 'reflect-metadata';
+import dotenv from 'dotenv';
+dotenv.config();
 
-import router from "./routes/router";
+import Koa from 'koa';
+import cors from '@koa/cors';
+import bodyparser from 'koa-bodyparser';
+import gracefulShutdown from 'http-graceful-shutdown';
 
-const server = new Koa();
+import client from './database/mariadb-client';
+import { producer } from './kafka/installation-producer';
+import router from './routes/router';
 
-server.use(bodyparser())
-server.use(router.routes())
+const app = new Koa();
 
-server.listen(3000);
+app.use(cors({ origin: '*' }));
+app.use(bodyparser());
+app.use(router.routes());
+app.use(router.allowedMethods());
+
+const server = app.listen(7000);
+
+server.on('listening', () => {
+  console.log('[Auth] Server is running on port 7000!');
+});
+
+gracefulShutdown(server, {
+  onShutdown: async (signal) => {
+    console.log(`[Auth] Cleaning up from ${signal}.`);
+
+    await client.end();
+    await producer.disconnect();
+  },
+  finally: () => {
+    console.log('[Auth] Server is shutting down.');
+  },
+});
+
+export default server;
