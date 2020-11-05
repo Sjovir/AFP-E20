@@ -1,6 +1,11 @@
 language: node_js
+
 node_js:
   - 12
+
+service:
+  - docker
+
 cache: yarn
 jobs:
   include:
@@ -33,6 +38,9 @@ jobs:
       - echo '***** STAGE merge_into_dev *****'
       - echo '***** SETUP Kafka *****'
       # start kafka container
+      - cd kafka
+      - docker-compose up -d --build
+      - docker ps -a
       - echo '***** SETUP Auth *****'
       # start auth container
       - echo '***** SETUP Medicine *****'
