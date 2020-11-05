@@ -5,14 +5,14 @@ cache: yarn
 jobs:
   include:
     - stage: test_auth
-    script:
+      script:
       - echo '***** STAGE test_auth *****'
       - cd Medicine/medicine-service
       - echo '***** TESTING AUTH *****'
       - yarn
       - yarn run test
     - stage: merge_into_dev
-    script:
+      script:
       - echo '***** STAGE merge_into_dev *****'
       - echo '***** SETUP Kafka *****'
       # start kafka container
@@ -27,7 +27,7 @@ jobs:
 stages:
   - name: test_auth
 
-  if: type = pull_request
+    if: type = pull_request
   - name: merge_into_dev
 
-  if: type = push AND branch = dev
+    if: type = push AND branch = dev
