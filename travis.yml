@@ -1,0 +1,33 @@
+language: node_js
+node_js:
+  - 12
+cache: yarn
+jobs:
+  include:
+    - stage: test_auth
+    script:
+      - echo '***** STAGE test_auth *****'
+      - cd Medicine/medicine-service
+      - echo '***** TESTING AUTH *****'
+      - yarn
+      - yarn run test
+    - stage: merge_into_dev
+    script:
+      - echo '***** STAGE merge_into_dev *****'
+      - echo '***** SETUP Kafka *****'
+      # start kafka container
+      - echo '***** SETUP Auth *****'
+      # start auth container
+      - echo '***** SETUP Medicine *****'
+      # start medicine container
+      - echo '***** SETUP Bosted *****'
+      # start bosted container
+      
+
+stages:
+  - name: test_auth
+
+  if: type = pull_request
+  - name: merge_into_dev
+
+  if: type = push AND branch = dev
