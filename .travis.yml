@@ -7,10 +7,27 @@ jobs:
     - stage: test_auth
       script:
       - echo '***** STAGE test_auth *****'
-      - cd Medicine/medicine-service
+      - cd Auth/auth-service
       - echo '***** TESTING AUTH *****'
       - yarn
       - yarn run test
+
+      - stage: test_bosted
+      script:
+      - echo '***** STAGE test_bosted *****'
+      - cd Bosted/bosted-service
+      - echo '***** TESTING AUTH *****'
+      - yarn
+      - yarn run test
+
+      - stage: test_medicine
+      script:
+      - echo '***** STAGE test_medicine *****'
+      - cd Medicine/medicine-service
+      - echo '***** TESTING Medicine *****'
+      - yarn
+      - yarn run test
+
     - stage: merge_into_dev
       script:
       - echo '***** STAGE merge_into_dev *****'
@@ -22,10 +39,15 @@ jobs:
       # start medicine container
       - echo '***** SETUP Bosted *****'
       # start bosted container
-      
 
 stages:
   - name: test_auth
+
+    if: type = pull_request
+  - name: test_bosted
+
+    if: type = pull_request
+  - name: test_medicine
 
     if: type = pull_request
   - name: merge_into_dev
