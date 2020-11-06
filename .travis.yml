@@ -39,25 +39,25 @@ jobs:
 
       # start kafka container
       - echo '***** SETUP Kafka *****'
-      - cd /kafka
+      - cd kafka
       - docker-compose up -d --build
       - docker ps -a
 
       # start auth container
       - echo '***** SETUP Auth *****'
-      - cd /Auth
+      - cd ../Auth
       - docker-compose up -d --build
       - docker ps -a
 
       # start bosted container
       - echo '***** SETUP Bosted *****'
-      - cd /Bosted
+      - cd ../Bosted
       - docker-compose up -d --build
       - docker ps -a
 
       # start medicine container
       - echo '***** SETUP Medicine *****'
-      - cd /Medicine
+      - cd ../Medicine
       - docker-compose up -d --build
       - docker ps -a
 
