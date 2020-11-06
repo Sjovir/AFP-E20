@@ -7,6 +7,8 @@ import selectInstallationSchema from '../schemas/select-installation-schema';
 import InstallationService from '../services/installation-service';
 import UserService from '../services/user-service';
 import AbstractController from './abstract-controller';
+import ExistsError from '../errors/exists-error';
+import LinkedError from '../errors/linked-error';
 
 @Service()
 export default class InstallationController extends AbstractController {
@@ -20,11 +22,10 @@ export default class InstallationController extends AbstractController {
   async getAll(ctx: Context, next: Next) {
     try {
       const allInstallations = await this.installationService.getAllInstallations();
-      // throw new Error('something happened');
       ctx.response.body = allInstallations;
       await next();
     } catch (err) {
-      ctx.response.status = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -36,14 +37,12 @@ export default class InstallationController extends AbstractController {
     try {
       const installation = await this.installationService.getInstallation(id);
 
-      if (installation && installation.length > 0) {
-        ctx.response.body = installation[0];
-      } else {
-        ctx.response.body = '';
-      }
+      ctx.response.status = 200;
+      if (installation.length > 0) ctx.response.body = installation[0];
+
       await next();
     } catch (err) {
-      ctx.response.status = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -62,7 +61,7 @@ export default class InstallationController extends AbstractController {
 
       await next();
     } catch (err) {
-      ctx.response.status = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -80,13 +79,11 @@ export default class InstallationController extends AbstractController {
         tokens,
         installationId
       );
-
-      ctx.response.body = newTokens;
       ctx.response.status = 200;
-
+      ctx.response.body = newTokens;
       await next();
     } catch (err) {
-      ctx.response.status = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -98,10 +95,9 @@ export default class InstallationController extends AbstractController {
     try {
       await this.installationService.createInstallation(installation);
       ctx.response.status = 201;
-      ctx.response.body = '';
       await next();
     } catch (err) {
-      ctx.response.status = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -121,7 +117,7 @@ export default class InstallationController extends AbstractController {
       ctx.response.status = 201;
       await next();
     } catch (err) {
-      ctx.response.status = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -132,21 +128,13 @@ export default class InstallationController extends AbstractController {
 
     try {
       await this.installationService.deleteInstallation(id);
-      ctx.response.status = 200;
-
+      ctx.response.status = 204;
       await next();
     } catch (err) {
-      if (err.errno === 1062) {
-        ctx.response.body = {
-          errors: [
-            {
-              message: 'Installation is connected to citizens.',
-              code: 'INSTALLATION_IS_CONNECTED',
-            },
-          ],
-        };
+      if (err instanceof LinkedError) {
+        ctx.throw(400, err);
       } else {
-        ctx.response.status = 500;
+        ctx.throw(500, err);
       }
     }
   }
@@ -160,10 +148,11 @@ export default class InstallationController extends AbstractController {
 
     try {
       const allUsers = await this.installationService.getAllUsers(id);
+      ctx.response.status = 204;
       ctx.response.body = allUsers;
       await next();
     } catch (err) {
-      ctx.response.status = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -174,23 +163,13 @@ export default class InstallationController extends AbstractController {
 
     try {
       await this.installationService.addUser(installationUUID, userUUID);
-      ctx.response.status = 200;
-
+      ctx.response.status = 201;
       await next();
     } catch (err) {
-      console.log(err);
-
-      if (err.errno === 1062) {
-        ctx.response.body = {
-          errors: [
-            {
-              message: 'Installation has already that user.',
-              code: 'USER_EXISTS_ON_INSTALLATION',
-            },
-          ],
-        };
+      if (err instanceof ExistsError) {
+        ctx.throw(400, err.message);
       } else {
-        ctx.response.status = 500;
+        ctx.throw(500, err);
       }
     }
   }
@@ -202,23 +181,10 @@ export default class InstallationController extends AbstractController {
 
     try {
       await this.installationService.removeUser(installationUUID, userUUID);
-      ctx.response.status = 200;
-      ctx.response.body = '';
-
+      ctx.response.status = 204;
       await next();
     } catch (err) {
-      if (err.errno === 1062) {
-        ctx.response.body = {
-          errors: [
-            {
-              message: 'Installation has already that user.',
-              code: 'USER_EXISTS_ON_INSTALLATION',
-            },
-          ],
-        };
-      } else {
-        ctx.response.status = 500;
-      }
+      ctx.throw(500, err);
     }
   }
 
@@ -236,6 +202,7 @@ export default class InstallationController extends AbstractController {
         installationUUID,
         userUUID
       );
+      ctx.response.status = 200;
       ctx.response.body = allUserRoles;
       await next();
     } catch (err) {
@@ -255,21 +222,13 @@ export default class InstallationController extends AbstractController {
         userUUID,
         roleUUID
       );
-      ctx.response.status = 200;
-
+      ctx.response.status = 201;
       await next();
     } catch (err) {
-      if (err.errno === 1062) {
-        ctx.response.body = {
-          errors: [
-            {
-              message: 'User has already that role.',
-              code: 'ROLE_EXISTS_ON_USER',
-            },
-          ],
-        };
+      if (err instanceof ExistsError) {
+        ctx.throw(400, err);
       } else {
-        ctx.response.status = 500;
+        ctx.throw(500, err);
       }
     }
   }
@@ -286,22 +245,13 @@ export default class InstallationController extends AbstractController {
         userUUID,
         roleUUID
       );
-      ctx.response.status = 200;
-      ctx.response.body = '';
-
+      ctx.response.status = 204;
       await next();
     } catch (err) {
-      if (err.errno === 1062) {
-        ctx.response.body = {
-          errors: [
-            {
-              message: 'Installation has already that user.',
-              code: 'USER_EXISTS_ON_INSTALLATION',
-            },
-          ],
-        };
+      if (err instanceof ExistsError) {
+        ctx.throw(400, err);
       } else {
-        ctx.response.status = 500;
+        ctx.throw(500, err);
       }
     }
   }
@@ -317,11 +267,11 @@ export default class InstallationController extends AbstractController {
 
     try {
       const allRoles = await this.installationService.getAllRoles(id);
+      ctx.response.status = 200;
       ctx.response.body = allRoles;
       await next();
     } catch (err) {
-      console.log(err);
-      ctx.response.status = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -335,12 +285,10 @@ export default class InstallationController extends AbstractController {
 
     try {
       await this.installationService.addRole(installationUUID, title);
-      ctx.response.status = 200;
-
+      ctx.response.status = 201;
       await next();
     } catch (err) {
-      console.log(err);
-      ctx.response.status = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -351,12 +299,10 @@ export default class InstallationController extends AbstractController {
 
     try {
       await this.installationService.removeRole(installationUUID, roleUUID);
-      ctx.response.status = 200;
-      ctx.response.body = '';
-
+      ctx.response.status = 204;
       await next();
     } catch (err) {
-      ctx.response.status = 500;
+      ctx.throw(500, err);
     }
   }
 }

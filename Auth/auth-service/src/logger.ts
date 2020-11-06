@@ -9,9 +9,8 @@ import 'winston-daily-rotate-file';
 const dailyTransport = new winston.transports.DailyRotateFile({
   filename: 'auth-service_%DATE%.log',
   datePattern: 'YYYY-MM-DD-HH',
-  zippedArchive: true,
+  zippedArchive: false,
   dirname: '/var/log/afpe20',
-  maxSize: '20m',
 });
 
 const customFormat = format.combine(
