@@ -17,19 +17,19 @@ jobs:
       - yarn
       - yarn run test
 
-      - stage: test_bosted
+    - stage: test_bosted
       script:
       - echo '***** STAGE test_bosted *****'
       - cd Bosted/bosted-service
-      - echo '***** TESTING AUTH *****'
+      - echo '***** TESTING BOSTED *****'
       - yarn
       - yarn run test
 
-      - stage: test_medicine
+    - stage: test_medicine
       script:
       - echo '***** STAGE test_medicine *****'
       - cd Medicine/medicine-service
-      - echo '***** TESTING Medicine *****'
+      - echo '***** TESTING MEDICINE *****'
       - yarn
       - yarn run test
 
