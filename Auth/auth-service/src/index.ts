@@ -22,6 +22,12 @@ app.use(cors({ origin: '*' }));
 app.use(bodyparser());
 
 app.use(async (ctx, next) => {
+  if (!ctx.header[CORRELATION_HEADER]) ctx.header[CORRELATION_HEADER] = uuid();
+
+  await next();
+});
+
+app.use(async (ctx, next) => {
   const { request, response } = ctx;
 
   const requestMetadata = {
