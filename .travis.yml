@@ -13,40 +13,55 @@ jobs:
       script:
       - echo '***** STAGE test_auth *****'
       - cd Auth/auth-service
-      - echo '***** TESTING AUTH *****'
       - yarn
+      - echo '***** TESTING AUTH *****'
       - yarn run test
 
     - stage: test_bosted
       script:
       - echo '***** STAGE test_bosted *****'
       - cd Bosted/bosted-service
-      - echo '***** TESTING BOSTED *****'
       - yarn
+      - echo '***** TESTING BOSTED *****'
       - yarn run test
 
     - stage: test_medicine
       script:
       - echo '***** STAGE test_medicine *****'
       - cd Medicine/medicine-service
-      - echo '***** TESTING MEDICINE *****'
       - yarn
+      - echo '***** TESTING MEDICINE *****'
       - yarn run test
 
     - stage: merge_into_dev
       script:
       - echo '***** STAGE merge_into_dev *****'
-      - echo '***** SETUP Kafka *****'
+
       # start kafka container
-      - cd kafka
+      - echo '***** SETUP Kafka *****'
+      - cd /kafka
       - docker-compose up -d --build
       - docker ps -a
-      - echo '***** SETUP Auth *****'
+
       # start auth container
-      - echo '***** SETUP Medicine *****'
-      # start medicine container
-      - echo '***** SETUP Bosted *****'
+      - echo '***** SETUP Auth *****'
+      - cd /Auth
+      - docker-compose up -d --build
+      - docker ps -a
+
       # start bosted container
+      - echo '***** SETUP Bosted *****'
+      - cd /Bosted
+      - docker-compose up -d --build
+      - docker ps -a
+
+      # start medicine container
+      - echo '***** SETUP Medicine *****'
+      - cd /Medicine
+      - docker-compose up -d --build
+      - docker ps -a
+
+      after_success: ./push.sh
 
 stages:
   - name: test_auth
@@ -61,3 +76,7 @@ stages:
   - name: merge_into_dev
 
     if: type = push AND branch = dev
+
+env:
+  global:
+    secure: A4KwOYtufWBQfSsYkWfvnpESPxt1tJ0GEBXeDLJk4bWS01c2efu4OkXsGjd9IgpXIpbubqkNM1mHqdFuYh9MUCChvEvO4D6Sd9P5xOHUNoYr7kc50/uRsTo85QaIDDBAzsl6+lG0JS0THTe20wQ2CCDDSc6kKOwboalptdISTDklkOXovYsMxZMX234xFpW0ik50+C3IFAAmaD87Pss+6Fq87KDxkOob1Sl7BrDfu4gXeCTGwbCYNA14zwR+jDQhst/iLhPTEcvlZOz9qxEKHAJpleX3GMTuQD83SgJ2hkZcAO5Q1ypBQIPIxMjZI2aV7kJrhD5eyCNrHZibqYXSCY4aqgIKV3nnQg4KdmC/j7llXyXPFE1ylYxVV68627eTL7ZwnbTkrxv1nHAPslgLuZ3mMBbOAcMtE72a0gEnOLOyfKuIbFtXiuDSivRs8NER3OyL7tK+9N4lhXTpYt+Uzq73RM9JbA4EMtPZg2jtBL+0+pmgAfTjadihL0qJ0hhb9lfmtzEy1Km5eM1g2XB/kGZFMRVv/q/X6BnNq1pr+sHSjX9XWNFLe6eRMrFULJI3LC8KbR1zg3COYbqpTizH22d0djrOU5jQWRq8ItZLk9nwmSExpYPbxR1BjX+qRGhI2lWcy50iT2vleOJ3Iojt0J0JsejIYtzk1m+e5X20T2w=
