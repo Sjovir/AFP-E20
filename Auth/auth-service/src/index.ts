@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import dotenv from 'dotenv';
 dotenv.config();
 
-import Koa from 'koa';
+import Koa, { Context } from 'koa';
 import cors from '@koa/cors';
 import bodyparser from 'koa-bodyparser';
 import gracefulShutdown from 'http-graceful-shutdown';
@@ -23,7 +23,6 @@ app.use(bodyparser());
 
 app.use(async (ctx, next) => {
   if (!ctx.header[CORRELATION_HEADER]) ctx.header[CORRELATION_HEADER] = uuid();
-
   await next();
 });
 
@@ -69,13 +68,22 @@ app.use(async (ctx, next) => {
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-app.on('error', (err, ctx) => {
+app.on('error', (err: Error, ctx: Context) => {
+  const errObj = {
+    correlationId: ctx.header[CORRELATION_HEADER],
+    error: {
+      name: err.name,
+      message: err.message,
+      stack: err.stack,
+    },
+  };
+
   if (ctx.status >= 500) {
-    logger.error(`error on request: ${ctx.request.url}`, err);
+    logger.error(`error on request: ${ctx.request.url}`, errObj);
   } else if (ctx.status >= 400) {
-    logger.warn(`warning on request: ${ctx.request.url}`, err);
+    logger.warn(`warning on request: ${ctx.request.url}`, errObj);
   } else {
-    logger.info(`warning on request: ${ctx.request.url}`, err);
+    logger.info(`warning on request: ${ctx.request.url}`, errObj);
   }
 });
 
