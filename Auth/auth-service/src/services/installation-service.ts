@@ -49,7 +49,7 @@ export default class InstallationService {
       await this.installationRepository.delete(installationUUID);
       await deleteInstallationEvent(installationUUID);
     } catch (err) {
-      if (err.errno === 1062) {
+      if (err.errno === 1451) {
         throw new LinkedError('Installation is connected to citizens.');
       } else {
         throw err;

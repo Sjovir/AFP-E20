@@ -1,5 +1,7 @@
 import { Kafka } from 'kafkajs';
 
+import logger from '../logger';
+
 const kafka = new Kafka({
   clientId: 'auth-microservice',
   brokers: ['localhost:9092'],
@@ -12,6 +14,8 @@ const producer = kafka.producer();
 })();
 
 const INSTALLATION_TOPIC = 'installation';
+const SUCCESS_MESSAGE = `citizen event has been sent to kafka topic: ${INSTALLATION_TOPIC}`;
+const ERROR_MESSAGE = `error occurred when trying to send citizen event to kafka topic: ${INSTALLATION_TOPIC}`;
 
 export const createInstallationEvent = async (
   installation: IInstallation
@@ -25,13 +29,25 @@ export const createInstallationEvent = async (
     },
   };
 
-  const result = await producer.send({
-    topic: INSTALLATION_TOPIC,
-    messages: [{ value: JSON.stringify(message) }],
-  });
+  try {
+    const result = await producer.send({
+      topic: INSTALLATION_TOPIC,
+      messages: [{ value: JSON.stringify(message) }],
+    });
 
-  console.log('[kafka:producer:installation:create] ' + installation.id);
-  console.log('[kafka:producer:installation:create] ' + JSON.stringify(result));
+    logger.info(SUCCESS_MESSAGE, {
+      event: message.event,
+      id: installation.id,
+      data: message.data,
+      result: result,
+    });
+  } catch (err) {
+    logger.error(ERROR_MESSAGE, {
+      event: message.event,
+      id: installation.id,
+      data: message.data,
+    });
+  }
 };
 
 export const updateInstallationEvent = async (
@@ -46,12 +62,25 @@ export const updateInstallationEvent = async (
     },
   };
 
-  const result = await producer.send({
-    topic: INSTALLATION_TOPIC,
-    messages: [{ value: JSON.stringify(message) }],
-  });
+  try {
+    const result = await producer.send({
+      topic: INSTALLATION_TOPIC,
+      messages: [{ value: JSON.stringify(message) }],
+    });
 
-  console.log('[kafka:producer:installation:update] ' + JSON.stringify(result));
+    logger.info(SUCCESS_MESSAGE, {
+      event: message.event,
+      id: installation.id,
+      data: message.data,
+      result: result,
+    });
+  } catch (err) {
+    logger.error(ERROR_MESSAGE, {
+      event: message.event,
+      id: installation.id,
+      data: message.data,
+    });
+  }
 };
 
 export const deleteInstallationEvent = async (
@@ -66,12 +95,25 @@ export const deleteInstallationEvent = async (
     },
   };
 
-  const result = await producer.send({
-    topic: INSTALLATION_TOPIC,
-    messages: [{ value: JSON.stringify(message) }],
-  });
+  try {
+    const result = await producer.send({
+      topic: INSTALLATION_TOPIC,
+      messages: [{ value: JSON.stringify(message) }],
+    });
 
-  console.log('[kafka:producer:installation:delete] ' + JSON.stringify(result));
+    logger.info(SUCCESS_MESSAGE, {
+      event: message.event,
+      id: installationUUID,
+      data: message.data,
+      result: result,
+    });
+  } catch (err) {
+    logger.error(ERROR_MESSAGE, {
+      event: message.event,
+      id: installationUUID,
+      data: message.data,
+    });
+  }
 };
 
 export { producer };

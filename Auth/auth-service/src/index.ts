@@ -83,7 +83,7 @@ app.on('error', (err: Error, ctx: Context) => {
   } else if (ctx.status >= 400) {
     logger.warn(`warning on request: ${ctx.request.url}`, errObj);
   } else {
-    logger.info(`warning on request: ${ctx.request.url}`, errObj);
+    logger.info(`info error on request: ${ctx.request.url}`, errObj);
   }
 });
 
