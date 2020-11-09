@@ -11,8 +11,10 @@ setup_git() {
 
 push_changes() {
   echo '***** Fetching *****'
+  git branch -a
   git fetch
-
+  echo ''
+  git branch -a
   echo '***** Checking Master *****'
   git checkout master
 
