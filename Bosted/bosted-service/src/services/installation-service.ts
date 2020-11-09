@@ -2,10 +2,14 @@ import { Service } from 'typedi';
 import { v4 as uuid } from 'uuid';
 
 import InstallationRepository from '../database/installation-repository';
+import LinkedError from '../errors/linked-error';
+import ExistsError from '../errors/exists-error';
 
 @Service()
 export default class InstallationService {
   constructor(private installationRepository: InstallationRepository) {}
+
+  // TODO: call auth service instead of directly edit the database.
 
   async getInstallation(installationUUID: string) {
     return this.installationRepository.get(installationUUID);
@@ -18,7 +22,15 @@ export default class InstallationService {
   async createInstallation(installation: IInstallation) {
     if (!installation.id) installation.id = uuid();
 
-    await this.installationRepository.create(installation);
+    try {
+      await this.installationRepository.create(installation);
+    } catch (err) {
+      if (err.errno === 1062) {
+        throw new ExistsError('Installation already exists.');
+      }
+
+      throw err;
+    }
   }
 
   async updateInstallation(installation: IInstallation) {
@@ -28,7 +40,15 @@ export default class InstallationService {
   }
 
   async deleteInstallation(installationUUID: string) {
-    await this.installationRepository.delete(installationUUID);
+    try {
+      await this.installationRepository.delete(installationUUID);
+    } catch (err) {
+      if (err.errno === 1451) {
+        throw new LinkedError('Installation is connected to citizens.');
+      }
+
+      throw err;
+    }
   }
 
   async getCitizens(installationUUID: string) {
@@ -36,7 +56,18 @@ export default class InstallationService {
   }
 
   async addCitizen(citizenUUID: string, installationUUID: string) {
-    await this.installationRepository.addCitizen(citizenUUID, installationUUID);
+    try {
+      await this.installationRepository.addCitizen(
+        citizenUUID,
+        installationUUID
+      );
+    } catch (err) {
+      if (err.errno === 1062) {
+        throw new ExistsError('Installation has already that citizen.');
+      }
+
+      throw err;
+    }
   }
 
   async removeCitizen(citizenUUID: string, installationUUID: string) {

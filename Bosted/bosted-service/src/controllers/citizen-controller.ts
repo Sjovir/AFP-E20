@@ -4,6 +4,8 @@ import { Service } from 'typedi';
 import AbstractController from './abstract-controller';
 import CitizenService from '../services/citizen-service';
 import citizenSchema from '../schemas/citizen-schema';
+import ExistsError from '../errors/exists-error';
+import LinkedError from '../errors/linked-error';
 
 @Service()
 export default class CitizenController extends AbstractController {
@@ -18,7 +20,7 @@ export default class CitizenController extends AbstractController {
 
       await next();
     } catch (err) {
-      ctx.response.body = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -37,7 +39,7 @@ export default class CitizenController extends AbstractController {
 
       await next();
     } catch (err) {
-      ctx.response.body = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -53,17 +55,10 @@ export default class CitizenController extends AbstractController {
 
       await next();
     } catch (err) {
-      if (err.errno === 1062) {
-        ctx.response.body = {
-          errors: [
-            {
-              message: 'Citizen exists already.',
-              code: 'CITIZEN_EXISTS',
-            },
-          ],
-        };
+      if (err instanceof ExistsError) {
+        ctx.throw(400, err);
       } else {
-        ctx.response.status = 500;
+        ctx.throw(500, err);
       }
     }
   }
@@ -86,7 +81,7 @@ export default class CitizenController extends AbstractController {
 
       await next();
     } catch (err) {
-      ctx.response.status = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -102,17 +97,10 @@ export default class CitizenController extends AbstractController {
 
       await next();
     } catch (err) {
-      if (err.errno === 1451) {
-        ctx.response.body = {
-          errors: [
-            {
-              message: 'Citizen is connected to installations.',
-              code: 'CITIZEN_IS_CONNECTED',
-            },
-          ],
-        };
+      if (err instanceof LinkedError) {
+        ctx.throw(400, err);
       } else {
-        ctx.response.status = 500;
+        ctx.throw(500, err);
       }
     }
   }

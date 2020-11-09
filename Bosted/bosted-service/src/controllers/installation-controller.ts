@@ -4,6 +4,8 @@ import { Service } from 'typedi';
 import AbstractController from './abstract-controller';
 import InstallationService from '../services/installation-service';
 import installationSchema from '../schemas/installation-schema';
+import LinkedError from '../errors/linked-error';
+import ExistsError from '../errors/exists-error';
 
 @Service()
 export default class InstallationController extends AbstractController {
@@ -17,7 +19,7 @@ export default class InstallationController extends AbstractController {
       ctx.response.body = allInstallations;
       await next();
     } catch (err) {
-      ctx.response.body = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -36,7 +38,7 @@ export default class InstallationController extends AbstractController {
       }
       await next();
     } catch (err) {
-      ctx.response.body = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -51,7 +53,7 @@ export default class InstallationController extends AbstractController {
       ctx.response.body = '';
       await next();
     } catch (err) {
-      ctx.response.status = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -72,7 +74,7 @@ export default class InstallationController extends AbstractController {
       ctx.response.body = '';
       await next();
     } catch (err) {
-      ctx.response.status = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -88,17 +90,10 @@ export default class InstallationController extends AbstractController {
 
       await next();
     } catch (err) {
-      if (err.errno === 1451) {
-        ctx.response.body = {
-          errors: [
-            {
-              message: 'Installation is connected to citizens.',
-              code: 'INSTALLATION_IS_CONNECTED',
-            },
-          ],
-        };
+      if (err instanceof LinkedError) {
+        ctx.throw(400, err);
       } else {
-        ctx.response.status = 500;
+        ctx.throw(500, err);
       }
     }
   }
@@ -116,7 +111,7 @@ export default class InstallationController extends AbstractController {
       ctx.response.body = installationCitizens;
       await next();
     } catch (err) {
-      ctx.response.status = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -133,17 +128,10 @@ export default class InstallationController extends AbstractController {
 
       await next();
     } catch (err) {
-      if (err.errno === 1062) {
-        ctx.response.body = {
-          errors: [
-            {
-              message: 'Installation has already that citizen.',
-              code: 'CITIZEN_EXISTS_IN_INSTALLATION',
-            },
-          ],
-        };
+      if (err instanceof ExistsError) {
+        ctx.throw(400, err);
       } else {
-        ctx.response.status = 500;
+        ctx.throw(500, err);
       }
     }
   }
@@ -164,7 +152,7 @@ export default class InstallationController extends AbstractController {
 
       await next();
     } catch (err) {
-      ctx.response.status = 500;
+      ctx.throw(500, err);
     }
   }
 }

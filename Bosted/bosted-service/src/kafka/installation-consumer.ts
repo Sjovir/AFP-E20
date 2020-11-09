@@ -1,17 +1,21 @@
 import kafka from './kafka-client';
 import { Container } from 'typedi';
 
+import logger from '../logger';
 import InstallationService from '../services/installation-service';
 
 const consumer = kafka.consumer({
   groupId: 'test-group',
 });
 
+const TOPIC = 'installation';
+const SUCCESS_MESSAGE = `consuming kafka event on topic ${TOPIC}`;
+
 const installationService = Container.get(InstallationService);
 
 (async () => {
   await consumer.connect();
-  await consumer.subscribe({ topic: 'installation' });
+  await consumer.subscribe({ topic: TOPIC });
   await consumer.run({
     eachMessage: async ({ topic: _topic, partition: _partition, message }) => {
       const jsonString = message.value.toString();
@@ -19,22 +23,48 @@ const installationService = Container.get(InstallationService);
 
       const installation: IInstallation = json.data.installation;
 
-      console.log('[kafka:consumer:installation] ' + installation.id);
-
       if (installation.id) {
-        switch (json.event) {
-          case 'CREATE':
-            await installationService.createInstallation(installation);
+        try {
+          switch (json.event) {
+            case 'CREATE':
+              await installationService.createInstallation(installation);
+              logger.info(SUCCESS_MESSAGE, {
+                event: json.event,
+                id: installation.id,
+                data: installation,
+              });
 
-            break;
-          case 'UPDATE':
-            await installationService.updateInstallation(installation);
+              break;
+            case 'UPDATE':
+              await installationService.updateInstallation(installation);
+              logger.info(SUCCESS_MESSAGE, {
+                event: json.event,
+                id: installation.id,
+                data: installation,
+              });
 
-            break;
-          case 'DELETE':
-            await installationService.deleteInstallation(installation.id);
+              break;
+            case 'DELETE':
+              await installationService.deleteInstallation(installation.id);
+              logger.info(SUCCESS_MESSAGE, {
+                event: json.event,
+                id: installation.id,
+                data: installation,
+              });
 
-            break;
+              break;
+            default:
+              logger.warn(
+                `unknown event when consuming kafka event on topic ${TOPIC}`,
+                {
+                  event: json.event,
+                  id: installation.id,
+                  data: installation,
+                }
+              );
+          }
+        } catch (err) {
+          logger.error(`error consuming kafka event on topic ${TOPIC}`, err);
         }
       }
     },
