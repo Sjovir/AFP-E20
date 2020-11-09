@@ -26,6 +26,8 @@ describe('UserService', function () {
             username: 'testUser',
             password: 'testPass',
         };
+
+        process.env.JWT_SECRET = 'AVeryS3crtTokenWh!chIsUnbre4kable';
     });
 
     describe('Register users', function () {
@@ -70,7 +72,7 @@ describe('UserService', function () {
             sbFind
                 .withArgs(undefined, this.testUser.cpr)
                 .returns(Promise.resolve(this.testUserDB));
-
+            
             const tokens = await this.userSV.login({
                 password: this.testUser.password,
                 cpr: this.testUser.cpr,
