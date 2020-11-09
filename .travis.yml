@@ -45,23 +45,23 @@ jobs:
 
       # start auth container
       - echo '***** SETUP Auth *****'
-      - cd ../Auth
-      - docker-compose up -d --build
-      - docker ps -a
+      # - cd ../Auth
+      # - docker-compose up -d --build
+      # - docker ps -a
 
       # start bosted container
       - echo '***** SETUP Bosted *****'
-      - cd ../Bosted
-      - docker-compose up -d --build
-      - docker ps -a
+      # - cd ../Bosted
+      # - docker-compose up -d --build
+      # - docker ps -a
 
       # start medicine container
       - echo '***** SETUP Medicine *****'
-      - cd ../Medicine
-      - docker-compose up -d --build
-      - docker ps -a
+      # - cd ../Medicine
+      # - docker-compose up -d --build
+      # - docker ps -a
 
-      after_success: ./push.sh
+      after_success: ../push.sh
 
 stages:
   - name: test_auth
