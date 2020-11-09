@@ -10,14 +10,22 @@ setup_git() {
 }
 
 push_changes() {
+  echo '***** Fetching *****'
+  git fetch
+
+  echo '***** Checking Master *****'
   git checkout master
 
+  echo '***** Merging commit *****'
   git merge --ff-only "$TRAVIS_COMMIT"
 
+  echo '***** Remove remote origin *****'
   git remote rm origin
 
+  echo '***** Adding origin as remote *****'
   git remote add origin "https://${GH_TOKEN}@github.com/Sjovir/AFP-E20.git" > /dev/null 2>&1
 
+  echo '***** Pushing to origin master *****'
   git push origin master --quiet
 }
 
