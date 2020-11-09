@@ -21,12 +21,9 @@ export default class OrdinationController extends AbstractController {
         citizenUUID
       );
       ctx.response.body = allOrdinations;
-      ctx.response.status = 201;
       await next();
     } catch (err) {
-      console.log(err);
-
-      ctx.response.status = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -38,10 +35,9 @@ export default class OrdinationController extends AbstractController {
     try {
       const ordination = await this.ordinationService.getOrdination(id);
       ctx.response.body = ordination;
-      ctx.response.status = 201;
       await next();
     } catch (err) {
-      ctx.response.status = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -68,9 +64,7 @@ export default class OrdinationController extends AbstractController {
       ctx.response.body = { ordinationId };
       await next();
     } catch (err) {
-      console.log(err);
-
-      ctx.response.status = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -90,11 +84,10 @@ export default class OrdinationController extends AbstractController {
 
     try {
       await this.ordinationService.updateOrdination(ordination);
-      ctx.response.body = {};
-      ctx.response.status = 201;
+      ctx.response.status = 200;
       await next();
     } catch (err) {
-      ctx.response.status = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -108,23 +101,10 @@ export default class OrdinationController extends AbstractController {
         citizenUUID,
         ordinationUUID
       );
-      ctx.response.body = {};
-      ctx.response.status = 200;
-
+      ctx.response.status = 204;
       await next();
     } catch (err) {
-      if (err.errno === 1062) {
-        ctx.response.body = {
-          errors: [
-            {
-              message: 'Ordination is connected to a citizen.',
-              code: 'ORDINATION_IS_CONNECTED',
-            },
-          ],
-        };
-      } else {
-        ctx.response.status = 500;
-      }
+      ctx.throw(500, err);
     }
   }
 }

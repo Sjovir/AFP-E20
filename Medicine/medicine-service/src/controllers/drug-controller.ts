@@ -17,7 +17,7 @@ export default class DrugController extends AbstractController {
 
       await next();
     } catch (err) {
-      ctx.response.body = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -31,12 +31,12 @@ export default class DrugController extends AbstractController {
       if (drugs && drugs.length > 0) {
         ctx.response.body = drugs[0];
       } else {
-        ctx.response.body = '';
+        ctx.response.body = null;
       }
 
       await next();
     } catch (err) {
-      ctx.response.body = 500;
+      ctx.throw(500, err);
     }
   }
 }
