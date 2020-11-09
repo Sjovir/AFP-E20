@@ -15,18 +15,17 @@ push_changes() {
 
   echo '***** Adding origin as remote *****'
   git remote add origin "https://${GH_TOKEN}@github.com/Sjovir/AFP-E20.git" > /dev/null 2>&1
-  
-  echo '***** Fetching *****'
-  git branch -a
-  git fetch
-  echo ''
-  git branch -a
+
+  # echo '***** Fetching *****'
+  # git branch -a
+  # git fetch
+  # echo ''
+  # git branch -a
   echo '***** Checking Master *****'
   git checkout master
 
   echo '***** Merging commit *****'
-  git merge --ff-only "$TRAVIS_COMMIT"
-
+  git merge "$TRAVIS_COMMIT"
 
   echo '***** Pushing to origin master *****'
   git push origin master --quiet
