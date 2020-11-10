@@ -22,7 +22,6 @@ export default class CitizenService {
     return this.citizenRepository.getAll();
   }
 
-  // TODO: maybe dont send the kafka event if create fails, so the sync/data will remain the same.
   async createCitizen(citizen: ICitizen) {
     if (!citizen.id) citizen.id = uuid();
 
@@ -40,7 +39,6 @@ export default class CitizenService {
     }
   }
 
-  // TODO: maybe dont send the kafka event if update fails, so the sync/data will remain the same.
   async updateCitizen(citizen: ICitizen) {
     if (!citizen.id) throw new Error('No ID found.');
 
@@ -48,7 +46,6 @@ export default class CitizenService {
     await updateCitizenEvent(citizen);
   }
 
-  // TODO: maybe dont send the kafka event if delete fails, so the sync/data will remain the same.
   async deleteCitizen(citizenUUID: string) {
     try {
       await this.citizenRepository.delete(citizenUUID);

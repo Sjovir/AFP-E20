@@ -76,8 +76,6 @@ export default class CitizenController extends AbstractController {
     try {
       await this.citizenService.updateCitizen(citizen);
       ctx.response.status = 201;
-      ctx.response.body = '';
-
       await next();
     } catch (err) {
       ctx.throw(500, err);

@@ -84,7 +84,7 @@ export default class OrdinationController extends AbstractController {
 
     try {
       await this.ordinationService.updateOrdination(ordination);
-      ctx.response.status = 200;
+      ctx.response.status = 204;
       await next();
     } catch (err) {
       ctx.throw(500, err);
