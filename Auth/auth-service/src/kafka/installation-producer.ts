@@ -15,8 +15,8 @@ const producer = kafka.producer();
 })();
 
 const INSTALLATION_TOPIC = 'installation';
-const SUCCESS_MESSAGE = `citizen event has been sent to kafka topic: ${INSTALLATION_TOPIC}`;
-const ERROR_MESSAGE = `error occurred when trying to send citizen event to kafka topic: ${INSTALLATION_TOPIC}`;
+const SUCCESS_MESSAGE = `installation event has been sent to kafka topic: ${INSTALLATION_TOPIC}`;
+const ERROR_MESSAGE = `error occurred when trying to send installation event to kafka topic: ${INSTALLATION_TOPIC}`;
 
 export const createInstallationEvent = async (
   installation: IInstallation
