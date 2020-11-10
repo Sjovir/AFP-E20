@@ -1,4 +1,7 @@
-<div class="bg-primary content-panel">
+<div class="bg-primary menu-panel">
+  <span *ngIf="citizen" class="name-label"
+    >{{ citizen.firstName }} {{ citizen.lastName }}
+  </span>
   <div class="btn-group-vertical nav-menu" role="group" aria-label="nav">
     <button
       [routerLink]="['overview']"
