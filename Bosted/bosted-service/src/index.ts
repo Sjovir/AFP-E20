@@ -95,9 +95,6 @@ gracefulShutdown(server, {
   onShutdown: async (signal) => {
     logger.info(`Cleaning up from ${signal}.`);
 
-    // consumer cannot be disconnected or stopped since
-    // it runs on a child process (I think?)
-
     await producer.disconnect();
     await client.end();
   },
