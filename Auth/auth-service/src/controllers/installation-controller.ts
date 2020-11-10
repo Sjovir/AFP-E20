@@ -113,7 +113,7 @@ export default class InstallationController extends AbstractController {
 
     try {
       await this.installationService.updateInstallation(installation);
-      ctx.response.status = 201;
+      ctx.response.status = 204;
       await next();
     } catch (err) {
       ctx.throw(500, err);
