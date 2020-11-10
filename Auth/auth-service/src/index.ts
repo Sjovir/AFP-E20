@@ -18,6 +18,23 @@ const PORT = process.env.PORT || 7000;
 
 const app = new Koa();
 
+app.on('error', (err: Error, ctx: Context) => {
+  const errObj = {
+    correlationId: ctx.header[CORRELATION_HEADER],
+    error: {
+      name: err.name,
+      message: err.message,
+      stack: err.stack,
+    },
+  };
+
+  if (ctx.status >= 500) {
+    logger.error(`error on request: ${ctx.request.url}`, errObj);
+  } else {
+    logger.warn(`warning on request: ${ctx.request.url}`, errObj);
+  }
+});
+
 app.use(cors({ origin: '*' }));
 app.use(bodyparser());
 
@@ -67,25 +84,6 @@ app.use(async (ctx, next) => {
 
 app.use(router.routes());
 app.use(router.allowedMethods());
-
-app.on('error', (err: Error, ctx: Context) => {
-  const errObj = {
-    correlationId: ctx.header[CORRELATION_HEADER],
-    error: {
-      name: err.name,
-      message: err.message,
-      stack: err.stack,
-    },
-  };
-
-  if (ctx.status >= 500) {
-    logger.error(`error on request: ${ctx.request.url}`, errObj);
-  } else if (ctx.status >= 400) {
-    logger.warn(`warning on request: ${ctx.request.url}`, errObj);
-  } else {
-    logger.info(`info error on request: ${ctx.request.url}`, errObj);
-  }
-});
 
 const server = app.listen(PORT, () => {
   logger.info(`Server is running on port ${PORT}!`);

@@ -2,10 +2,11 @@ import 'reflect-metadata';
 import dotenv from 'dotenv';
 dotenv.config();
 
-import Koa from 'koa';
+import Koa, { Context } from 'koa';
 import cors from '@koa/cors';
 import bodyparser from 'koa-bodyparser';
 import gracefulShutdown from 'http-graceful-shutdown';
+import { v4 as uuid } from 'uuid';
 
 import logger from './logger';
 import client from './database/mariadb-client';
@@ -17,6 +18,23 @@ const CORRELATION_HEADER = 'X-Correlation-Id';
 const PORT = process.env.PORT || 7100;
 
 const app = new Koa();
+
+app.on('error', (err: Error, ctx: Context) => {
+  const errObj = {
+    correlationId: ctx.header[CORRELATION_HEADER],
+    error: {
+      name: err.name,
+      message: err.message,
+      stack: err.stack,
+    },
+  };
+
+  if (ctx.status >= 500) {
+    logger.error(`error on request: ${ctx.request.url}`, errObj);
+  } else {
+    logger.warn(`warning on request: ${ctx.request.url}`, errObj);
+  }
+});
 
 app.use(cors({ origin: '*' }));
 app.use(bodyparser());
