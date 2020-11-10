@@ -50,7 +50,7 @@ export default class InstallationController extends AbstractController {
     try {
       await this.installationService.createInstallation(installation);
       ctx.response.status = 201;
-      ctx.response.body = '';
+      ctx.response.body = null;
       await next();
     } catch (err) {
       ctx.throw(500, err);
@@ -70,8 +70,7 @@ export default class InstallationController extends AbstractController {
 
     try {
       await this.installationService.updateInstallation(installation);
-      ctx.response.status = 201;
-      ctx.response.body = '';
+      ctx.response.status = 204;
       await next();
     } catch (err) {
       ctx.throw(500, err);
@@ -85,9 +84,7 @@ export default class InstallationController extends AbstractController {
 
     try {
       await this.installationService.deleteInstallation(id);
-      ctx.response.status = 200;
-      ctx.response.body = '';
-
+      ctx.response.status = 204;
       await next();
     } catch (err) {
       if (err instanceof ForeignKeyError) {

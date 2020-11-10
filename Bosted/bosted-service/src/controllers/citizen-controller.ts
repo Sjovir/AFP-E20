@@ -51,7 +51,6 @@ export default class CitizenController extends AbstractController {
       const citizenId = await this.citizenService.createCitizen(citizen);
       ctx.response.status = 201;
       ctx.response.body = { citizenId };
-
       await next();
     } catch (err) {
       if (err instanceof ExistsError) {
@@ -75,7 +74,7 @@ export default class CitizenController extends AbstractController {
 
     try {
       await this.citizenService.updateCitizen(citizen);
-      ctx.response.status = 201;
+      ctx.response.status = 204;
       await next();
     } catch (err) {
       ctx.throw(500, err);
@@ -89,9 +88,7 @@ export default class CitizenController extends AbstractController {
 
     try {
       await this.citizenService.deleteCitizen(id);
-      ctx.response.status = 200;
-      ctx.response.body = '';
-
+      ctx.response.status = 204;
       await next();
     } catch (err) {
       if (err instanceof ForeignKeyError) {
