@@ -5,6 +5,8 @@ services:
     build: ./bosted-frontend
     image: bosted_frontend
     container_name: BostedFrontend
+    environment:
+      - YARN-VERSION=${YARN_VERSION}
     ports:
       - "8100:80"
       - "7100:7100"
@@ -21,7 +23,9 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_DATABASE=${DB_DATABASE}
       - DB_HOST=database
+      - KAFKA_HOST=${KAFKA_HOST}
       - YARN-VERSION=${YARN_VERSION}
+      - JWT_SECRET=${JWT_SECRET}
     depends_on:
       - database
   database:
@@ -34,3 +38,8 @@ services:
       - MYSQL_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=${DB_DATABASE}
       - MYSQL_PORT=${DB_PORT}
+
+networks: 
+  default:
+    external: 
+      name: kafka_apache-net

@@ -7,8 +7,7 @@ FROM node:12.18.3-alpine3.12 as builder
 WORKDIR /app
 
 # The dependencies to the project
-COPY package.json .
-COPY yarn.lock .
+COPY package.json yarn.lock* ./
 
 # Add curl
 RUN apk --no-cache add curl
