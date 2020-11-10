@@ -23,12 +23,13 @@ export class CitizenService {
     );
   }
 
-  public update(citizen: Citizen): Observable<any> {
-    return this.http.put<Citizen>(
+  public update(citizen: Citizen) {
+    return this.http.put(
       this.BASE_URL.replace(this.PORT_PARAM, this.BOSTED_PORT).concat(
         `/${citizen.id}`
       ),
-      citizen
+      citizen,
+      { responseType: 'text' }
     );
   }
 }
