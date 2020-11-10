@@ -26,7 +26,9 @@
     "reflect-metadata": "^0.1.13",
     "sinon": "^9.0.3",
     "typedi": "^0.8.0",
-    "uuid": "^8.3.1"
+    "uuid": "^8.3.1",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",

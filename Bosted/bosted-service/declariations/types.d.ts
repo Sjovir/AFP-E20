@@ -15,5 +15,5 @@ interface IDecodedAccessToken {
   firstName: string;
   lastName: string;
   username: string;
-  permissions: string[];
+  permissions?: string[];
 }

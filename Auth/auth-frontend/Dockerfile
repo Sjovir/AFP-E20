@@ -1,7 +1,7 @@
 #######################
 ## STEP 1 Base image ##
 #######################
-FROM node:12.18.3-alpine3.12 as builder
+FROM node:14.15.0-alpine3.12 as builder
 
 # Working directory in base container
 WORKDIR /app

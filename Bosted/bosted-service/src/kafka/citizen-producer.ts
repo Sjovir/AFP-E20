@@ -1,5 +1,7 @@
 import kafka from './kafka-client';
 
+import logger from '../logger';
+
 const producer = kafka.producer();
 
 (async () => {
@@ -7,6 +9,8 @@ const producer = kafka.producer();
 })();
 
 const CITIZEN_TOPIC = 'citizen';
+const SUCCESS_MESSAGE = `citizen event has been sent to kafka topic: ${CITIZEN_TOPIC}`;
+const ERROR_MESSAGE = `error occurred when trying to send citizen event to kafka topic: ${CITIZEN_TOPIC}`;
 
 export const createCitizenEvent = async (citizen: ICitizen): Promise<void> => {
   const message = {
@@ -18,12 +22,25 @@ export const createCitizenEvent = async (citizen: ICitizen): Promise<void> => {
     },
   };
 
-  const result = await producer.send({
-    topic: CITIZEN_TOPIC,
-    messages: [{ value: JSON.stringify(message) }],
-  });
+  try {
+    const result = await producer.send({
+      topic: CITIZEN_TOPIC,
+      messages: [{ value: JSON.stringify(message) }],
+    });
 
-  console.log('[kafka:producer:citizen:create] ' + JSON.stringify(result));
+    logger.info(SUCCESS_MESSAGE, {
+      event: message.event,
+      id: citizen.id,
+      data: message.data,
+      result: result,
+    });
+  } catch (err) {
+    logger.error(ERROR_MESSAGE, {
+      event: message.event,
+      id: citizen.id,
+      data: message.data,
+    });
+  }
 };
 
 export const updateCitizenEvent = async (citizen: ICitizen): Promise<void> => {
@@ -36,12 +53,25 @@ export const updateCitizenEvent = async (citizen: ICitizen): Promise<void> => {
     },
   };
 
-  const result = await producer.send({
-    topic: CITIZEN_TOPIC,
-    messages: [{ value: JSON.stringify(message) }],
-  });
+  try {
+    const result = await producer.send({
+      topic: CITIZEN_TOPIC,
+      messages: [{ value: JSON.stringify(message) }],
+    });
 
-  console.log('[kafka:producer:citizen:update] ' + JSON.stringify(result));
+    logger.info(SUCCESS_MESSAGE, {
+      event: message.event,
+      id: citizen.id,
+      data: message.data,
+      result: result,
+    });
+  } catch (err) {
+    logger.error(ERROR_MESSAGE, {
+      event: message.event,
+      id: citizen.id,
+      data: message.data,
+    });
+  }
 };
 
 export const deleteCitizenEvent = async (
@@ -56,12 +86,25 @@ export const deleteCitizenEvent = async (
     },
   };
 
-  const result = await producer.send({
-    topic: CITIZEN_TOPIC,
-    messages: [{ value: JSON.stringify(message) }],
-  });
+  try {
+    const result = await producer.send({
+      topic: CITIZEN_TOPIC,
+      messages: [{ value: JSON.stringify(message) }],
+    });
 
-  console.log('[kafka:producer:citizen:delete] ' + JSON.stringify(result));
+    logger.info(SUCCESS_MESSAGE, {
+      event: message.event,
+      id: citizenUUID,
+      data: message.data,
+      result: result,
+    });
+  } catch (err) {
+    logger.error(ERROR_MESSAGE, {
+      event: message.event,
+      id: citizenUUID,
+      data: message.data,
+    });
+  }
 };
 
 export { producer };

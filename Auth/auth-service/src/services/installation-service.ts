@@ -8,6 +8,8 @@ import {
   updateInstallationEvent,
   deleteInstallationEvent,
 } from '../kafka/installation-producer';
+import ExistsError from '../errors/exists-error';
+import ForeignKeyError from '../errors/foreignkey-error';
 
 @Service()
 export default class InstallationService {
@@ -43,8 +45,16 @@ export default class InstallationService {
   }
 
   async deleteInstallation(installationUUID: string) {
-    await this.installationRepository.delete(installationUUID);
-    await deleteInstallationEvent(installationUUID);
+    try {
+      await this.installationRepository.delete(installationUUID);
+      await deleteInstallationEvent(installationUUID);
+    } catch (err) {
+      if (err.errno === 1451) {
+        throw new ForeignKeyError('Installation is connected to citizens.');
+      } else {
+        throw err;
+      }
+    }
   }
 
   /////////////////////////////////////////
@@ -56,7 +66,15 @@ export default class InstallationService {
   }
 
   async addUser(installationUUID: string, userUUID: string) {
-    await this.installationRepository.addUser(installationUUID, userUUID);
+    try {
+      await this.installationRepository.addUser(installationUUID, userUUID);
+    } catch (err) {
+      if (err.errno === 1062) {
+        throw new ExistsError('User already exists on installation.');
+      } else {
+        throw err;
+      }
+    }
   }
 
   async removeUser(installationUUID: string, userUUID: string) {
@@ -75,11 +93,19 @@ export default class InstallationService {
     userUUID: string,
     roleUUID: string
   ) {
-    await this.installationRepository.addUserRole(
-      installationUUID,
-      userUUID,
-      roleUUID
-    );
+    try {
+      await this.installationRepository.addUserRole(
+        installationUUID,
+        userUUID,
+        roleUUID
+      );
+    } catch (err) {
+      if (err.errno === 1062) {
+        throw new ExistsError('User has already that role.');
+      } else {
+        throw err;
+      }
+    }
   }
 
   async removeUserRole(
@@ -87,11 +113,19 @@ export default class InstallationService {
     userUUID: string,
     roleUUID: string
   ) {
-    await this.installationRepository.removeUserRole(
-      installationUUID,
-      userUUID,
-      roleUUID
-    );
+    try {
+      await this.installationRepository.removeUserRole(
+        installationUUID,
+        userUUID,
+        roleUUID
+      );
+    } catch (err) {
+      if (err.errno === 1062) {
+        throw new ExistsError('Installation has already that user.');
+      } else {
+        throw err;
+      }
+    }
   }
 
   /////////////////////////////////////////

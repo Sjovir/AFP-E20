@@ -36,7 +36,8 @@ export class OrdinationService {
   ): Observable<any> {
     return this.http.post(
       this.BASE_URL.replace(this.CITIZEN_PARAM, citizenId),
-      ordination
+      ordination,
+      { responseType: 'text' }
     );
   }
 
@@ -48,7 +49,8 @@ export class OrdinationService {
       this.BASE_URL.replace(this.CITIZEN_PARAM, citizenId).concat(
         `/${ordination.id}`
       ),
-      ordination
+      ordination,
+      { responseType: 'text' }
     );
   }
 }

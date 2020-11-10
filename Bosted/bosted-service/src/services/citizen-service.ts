@@ -7,6 +7,8 @@ import {
   updateCitizenEvent,
   deleteCitizenEvent,
 } from '../kafka/citizen-producer';
+import ExistsError from '../errors/exists-error';
+import ForeignKeyError from '../errors/foreignkey-error';
 
 @Service()
 export default class CitizenService {
@@ -20,17 +22,23 @@ export default class CitizenService {
     return this.citizenRepository.getAll();
   }
 
-  // TODO: maybe dont send the kafka event if create fails, so the sync/data will remain the same.
   async createCitizen(citizen: ICitizen) {
     if (!citizen.id) citizen.id = uuid();
 
-    const result = await this.citizenRepository.create(citizen);
-    await createCitizenEvent(citizen);
+    try {
+      const result = await this.citizenRepository.create(citizen);
+      await createCitizenEvent(citizen);
 
-    return result.length > 0 ? result[0].id : null;
+      return result.length > 0 ? result[0].id : null;
+    } catch (err) {
+      if (err.errno === 1062) {
+        throw new ExistsError('Citizen already exists.');
+      }
+
+      throw err;
+    }
   }
 
-  // TODO: maybe dont send the kafka event if update fails, so the sync/data will remain the same.
   async updateCitizen(citizen: ICitizen) {
     if (!citizen.id) throw new Error('No ID found.');
 
@@ -38,9 +46,16 @@ export default class CitizenService {
     await updateCitizenEvent(citizen);
   }
 
-  // TODO: maybe dont send the kafka event if delete fails, so the sync/data will remain the same.
   async deleteCitizen(citizenUUID: string) {
-    await this.citizenRepository.delete(citizenUUID);
-    await deleteCitizenEvent(citizenUUID);
+    try {
+      await this.citizenRepository.delete(citizenUUID);
+      await deleteCitizenEvent(citizenUUID);
+    } catch (err) {
+      if (err.errno === 1451) {
+        throw new ForeignKeyError('Citizen is connected to installations.');
+      }
+
+      throw err;
+    }
   }
 }

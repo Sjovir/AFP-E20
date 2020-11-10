@@ -1,5 +1,5 @@
 # Base image
-FROM node:12.18.3-alpine3.12 as builder
+FROM node:14.15.0-alpine3.12 as builder
 
 WORKDIR /usr/app
 
@@ -33,21 +33,21 @@ COPY . .
 
 
 # Lint the code
-FROM node:12.18.3-alpine3.12 as linting
+FROM node:14.15.0-alpine3.12 as linting
 WORKDIR /usr/app
 COPY --from=builder /usr/app/ .
 RUN [ "yarn", "eslint" ]
 
 
 # Test the code
-FROM node:12.18.3-alpine3.12 as test
+FROM node:14.15.0-alpine3.12 as test
 WORKDIR /usr/app
 COPY --from=builder /usr/app/ .
 RUN [ "yarn", "test" ]
 
 
 # Starts the server
-FROM node:12.18.3-alpine3.12 as serve
+FROM node:14.15.0-alpine3.12 as serve
 WORKDIR /usr/app
 # ENV SERVER-FILE index.js
 # COPY --from=builder /usr/app/dist .

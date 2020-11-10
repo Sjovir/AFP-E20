@@ -16,7 +16,9 @@ export class CitizenService {
   }
 
   public editCitizen(citizen: Citizen) {
-    return this.http.put<any>(`${this.BASE_URL}/${citizen.id}`, citizen);
+    return this.http.put(`${this.BASE_URL}/${citizen.id}`, citizen, {
+      responseType: 'text',
+    });
   }
 
   public createCitizen(citizen: Citizen) {

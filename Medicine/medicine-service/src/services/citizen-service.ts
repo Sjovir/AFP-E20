@@ -2,6 +2,10 @@ import { Service } from 'typedi';
 import { v4 as uuid } from 'uuid';
 
 import CitizenRepository from '../database/citizen-repository';
+import ExistsError from '../errors/exists-error';
+import ForeignKeyError from '../errors/foreignkey-error';
+
+// TODO: call bosted service to execute actions on citizen
 
 @Service()
 export default class CitizenService {
@@ -18,9 +22,17 @@ export default class CitizenService {
   async createCitizen(citizen: ICitizen) {
     if (!citizen.id) citizen.id = uuid();
 
-    const result = await this.citizenRepository.create(citizen);
+    try {
+      const result = await this.citizenRepository.create(citizen);
 
-    return result.length > 0 ? result[0].id : null;
+      return result.length > 0 ? result[0].id : null;
+    } catch (err) {
+      if (err.errno === 1062) {
+        throw new ExistsError('Citizen already exists.');
+      } else {
+        throw err;
+      }
+    }
   }
 
   async updateCitizen(citizen: ICitizen) {
@@ -30,6 +42,14 @@ export default class CitizenService {
   }
 
   async deleteCitizen(citizenUUID: string) {
-    await this.citizenRepository.delete(citizenUUID);
+    try {
+      await this.citizenRepository.delete(citizenUUID);
+    } catch (err) {
+      if (err.errno === 1451) {
+        throw new ForeignKeyError('Installation is connected to citizens.');
+      } else {
+        throw err;
+      }
+    }
   }
 }
