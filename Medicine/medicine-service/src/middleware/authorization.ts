@@ -18,14 +18,15 @@ export const isAuthorized = (requiredPermissions: string | string[]) => async (
   try {
     const accessToken = <IDecodedAccessToken>decode(token);
 
-    if (hasPermissions(accessToken.permissions, requiredPermissions)) {
+    if (
+      accessToken?.permissions &&
+      hasPermissions(accessToken.permissions, requiredPermissions)
+    ) {
       await next();
     } else {
-      ctx.response.status = 403;
-      ctx.response.body = 'User is not authorized';
+      ctx.throw(403, 'User is not authorized');
     }
   } catch (err) {
-    ctx.response.status = 500;
-    ctx.response.body = err;
+    ctx.throw(400, err);
   }
 };

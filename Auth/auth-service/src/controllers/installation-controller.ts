@@ -206,7 +206,7 @@ export default class InstallationController extends AbstractController {
       ctx.response.body = allUserRoles;
       await next();
     } catch (err) {
-      ctx.response.status = 500;
+      ctx.throw(500, err);
     }
   }
 

@@ -17,7 +17,6 @@ export default class CitizenController extends AbstractController {
     try {
       const allCitizens = await this.citizenService.getAllCitizens();
       ctx.response.body = allCitizens;
-
       await next();
     } catch (err) {
       ctx.throw(500, err);
@@ -34,7 +33,7 @@ export default class CitizenController extends AbstractController {
       if (citizen && citizen.length > 0) {
         ctx.response.body = citizen[0];
       } else {
-        ctx.response.body = '';
+        ctx.response.body = null;
       }
 
       await next();
