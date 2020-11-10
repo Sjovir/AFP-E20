@@ -4,6 +4,8 @@ import { Service } from 'typedi';
 import AbstractController from './abstract-controller';
 import CitizenService from '../services/citizen-service';
 import citizenSchema from '../schemas/citizen-schema';
+import ExistsError from '../errors/exists-error';
+import ForeignKeyError from '../errors/foreignkey-error';
 
 @Service()
 export default class CitizenController extends AbstractController {
@@ -15,10 +17,9 @@ export default class CitizenController extends AbstractController {
     try {
       const allCitizens = await this.citizenService.getAllCitizens();
       ctx.response.body = allCitizens;
-
       await next();
     } catch (err) {
-      ctx.response.body = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -32,12 +33,12 @@ export default class CitizenController extends AbstractController {
       if (citizen && citizen.length > 0) {
         ctx.response.body = citizen[0];
       } else {
-        ctx.response.body = '';
+        ctx.response.body = null;
       }
 
       await next();
     } catch (err) {
-      ctx.response.body = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -50,20 +51,12 @@ export default class CitizenController extends AbstractController {
       const citizenId = await this.citizenService.createCitizen(citizen);
       ctx.response.status = 201;
       ctx.response.body = { citizenId };
-
       await next();
     } catch (err) {
-      if (err.errno === 1062) {
-        ctx.response.body = {
-          errors: [
-            {
-              message: 'Citizen exists already.',
-              code: 'CITIZEN_EXISTS',
-            },
-          ],
-        };
+      if (err instanceof ExistsError) {
+        ctx.throw(400, err);
       } else {
-        ctx.response.status = 500;
+        ctx.throw(500, err);
       }
     }
   }
@@ -81,12 +74,10 @@ export default class CitizenController extends AbstractController {
 
     try {
       await this.citizenService.updateCitizen(citizen);
-      ctx.response.status = 201;
-      ctx.response.body = '';
-
+      ctx.response.status = 204;
       await next();
     } catch (err) {
-      ctx.response.status = 500;
+      ctx.throw(500, err);
     }
   }
 
@@ -97,22 +88,13 @@ export default class CitizenController extends AbstractController {
 
     try {
       await this.citizenService.deleteCitizen(id);
-      ctx.response.status = 200;
-      ctx.response.body = '';
-
+      ctx.response.status = 204;
       await next();
     } catch (err) {
-      if (err.errno === 1451) {
-        ctx.response.body = {
-          errors: [
-            {
-              message: 'Citizen is connected to installations.',
-              code: 'CITIZEN_IS_CONNECTED',
-            },
-          ],
-        };
+      if (err instanceof ForeignKeyError) {
+        ctx.throw(400, err);
       } else {
-        ctx.response.status = 500;
+        ctx.throw(500, err);
       }
     }
   }

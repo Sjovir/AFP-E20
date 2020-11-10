@@ -12,8 +12,7 @@ export default abstract class AbstractController {
     const valid = compiled(input);
 
     if (!valid) {
-      ctx.response.body = compiled.errors;
-      ctx.response.status = 400;
+      ctx.throw(400, compiled.errors);
     }
 
     return <boolean>valid;
@@ -28,17 +27,7 @@ export default abstract class AbstractController {
         ? 'One of the identifiers is not an UUID.'
         : 'The inserted identifier is not an UUID.';
 
-      ctx.response.status = 400;
-      ctx.response.body = {
-        errors: [
-          {
-            message,
-            code: 'INVALID_IDENTIFIER',
-          },
-        ],
-      };
-
-      return false;
+      ctx.throw(400, message);
     }
 
     return true;

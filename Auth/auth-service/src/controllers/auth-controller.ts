@@ -6,6 +6,8 @@ import UserService from '../services/user-service';
 import registerSchema from '../schemas/register-schema';
 import loginSchema from '../schemas/login-schema';
 import refreshSchema from '../schemas/refresh-schema';
+import ExistsError from '../errors/exists-error';
+import { JsonWebTokenError } from 'jsonwebtoken';
 
 @Service()
 export default class AuthController extends AbstractController {
@@ -20,26 +22,17 @@ export default class AuthController extends AbstractController {
 
     try {
       await this.userService.createUser(body);
-
-      ctx.response.status = 200;
+      ctx.response.status = 201;
       ctx.response.body = { username: body.username };
     } catch (err) {
-      ctx.response.status = 400;
-
-      if (err.errno === 1062) {
-        ctx.response.body = {
-          name: 'CPR or Username is already in use.',
-          code: 'CPR_OR_USERNAME_IN_USE',
-        };
+      if (err instanceof ExistsError) {
+        ctx.throw(400, 'CPR or Username is already in use.');
       } else {
-        ctx.response.body = {
-          name: 'Something went wrong in the server.',
-          code: 'INTERNAL_SERVER_ERROR',
-        };
+        ctx.throw(500, err);
       }
     }
 
-    next();
+    await next();
   }
 
   async postLogin(ctx: Context, next: Next) {
@@ -47,30 +40,21 @@ export default class AuthController extends AbstractController {
 
     const { cpr, username, password }: ILogin = ctx.request.body;
 
-    ctx.response.status = 400;
-
-    if (cpr && username) {
-      ctx.response.body = {
-        message: 'Use either CPR or Username to log in.',
-        code: 'CPR_XOR_USERNAME_LOGIN',
-      };
-
-      return;
+    let token: ITokens;
+    try {
+      token = await this.userService.login({ password, username, cpr });
+    } catch (err) {
+      ctx.throw(500, err);
     }
-
-    const token = await this.userService.login({ password, username, cpr });
 
     if (token) {
-      ctx.response.body = token;
       ctx.response.status = 200;
+      ctx.response.body = token;
     } else {
-      ctx.response.body = {
-        message: 'Account with given credentials do not exist.',
-        code: 'ACCOUNT_NOT_EXISTS',
-      };
+      ctx.throw(400, 'Account with given credentials do not exist.');
     }
 
-    next();
+    await next();
   }
 
   async postRefresh(ctx: Context, next: Next) {
@@ -78,23 +62,22 @@ export default class AuthController extends AbstractController {
 
     const tokens: IRefresh = ctx.request.body;
 
+    let newAccessToken: string;
     try {
-      const newAccessToken = await this.userService.refresh(tokens);
-
-      if (newAccessToken) {
-        ctx.response.status = 200;
-
-        ctx.response.body = {
-          accessToken: newAccessToken,
-        };
-      } else {
-        ctx.response.status = 401;
-      }
+      newAccessToken = await this.userService.refresh(tokens);
     } catch (err) {
-      ctx.response.body = err;
-      ctx.response.status = 401;
+      if (err instanceof JsonWebTokenError) {
+        ctx.throw(401, err);
+      } else {
+        ctx.throw(500, err);
+      }
     }
 
-    next();
+    ctx.response.status = 200;
+    ctx.response.body = {
+      accessToken: newAccessToken,
+    };
+
+    await next();
   }
 }

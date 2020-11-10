@@ -15,7 +15,6 @@ export const isAuthenticated = async (ctx: Koa.Context, next: Koa.Next) => {
     verify(token);
     await next();
   } catch (err) {
-    ctx.response.status = 401;
-    ctx.response.body = err;
+    ctx.throw(401, err);
   }
 };
