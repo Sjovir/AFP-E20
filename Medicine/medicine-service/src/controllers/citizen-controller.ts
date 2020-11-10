@@ -5,7 +5,7 @@ import citizenSchema from '../schemas/citizen-schema';
 import CitizenService from '../services/citizen-service';
 import AbstractController from './abstract-controller';
 import ExistsError from '../errors/exists-error';
-import LinkedError from '../errors/linked-error';
+import ForeignKeyError from '../errors/foreignkey-error';
 
 @Service()
 export default class CitizenController extends AbstractController {
@@ -93,7 +93,7 @@ export default class CitizenController extends AbstractController {
 
       await next();
     } catch (err) {
-      if (err instanceof LinkedError) {
+      if (err instanceof ForeignKeyError) {
         ctx.throw(400, err);
       } else {
         ctx.throw(500, err);

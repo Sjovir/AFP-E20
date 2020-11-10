@@ -2,7 +2,7 @@ import { Service } from 'typedi';
 import { v4 as uuid } from 'uuid';
 
 import InstallationRepository from '../database/installation-repository';
-import LinkedError from '../errors/linked-error';
+import ForeignKeyError from '../errors/foreignkey-error';
 import ExistsError from '../errors/exists-error';
 
 @Service()
@@ -44,7 +44,7 @@ export default class InstallationService {
       await this.installationRepository.delete(installationUUID);
     } catch (err) {
       if (err.errno === 1451) {
-        throw new LinkedError('Installation is connected to citizens.');
+        throw new ForeignKeyError('Installation is connected to citizens.');
       }
 
       throw err;

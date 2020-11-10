@@ -8,7 +8,7 @@ import {
   deleteCitizenEvent,
 } from '../kafka/citizen-producer';
 import ExistsError from '../errors/exists-error';
-import LinkedError from '../errors/linked-error';
+import ForeignKeyError from '../errors/foreignkey-error';
 
 @Service()
 export default class CitizenService {
@@ -55,7 +55,7 @@ export default class CitizenService {
       await deleteCitizenEvent(citizenUUID);
     } catch (err) {
       if (err.errno === 1451) {
-        throw new LinkedError('Citizen is connected to installations.');
+        throw new ForeignKeyError('Citizen is connected to installations.');
       }
 
       throw err;

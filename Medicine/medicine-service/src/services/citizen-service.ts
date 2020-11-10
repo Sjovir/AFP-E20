@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid';
 
 import CitizenRepository from '../database/citizen-repository';
 import ExistsError from '../errors/exists-error';
-import LinkedError from '../errors/linked-error';
+import ForeignKeyError from '../errors/foreignkey-error';
 
 // TODO: call bosted service to execute actions on citizen
 
@@ -46,7 +46,7 @@ export default class CitizenService {
       await this.citizenRepository.delete(citizenUUID);
     } catch (err) {
       if (err.errno === 1451) {
-        throw new LinkedError('Installation is connected to citizens.');
+        throw new ForeignKeyError('Installation is connected to citizens.');
       } else {
         throw err;
       }

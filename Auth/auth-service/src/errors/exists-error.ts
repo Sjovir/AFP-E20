@@ -1,7 +1,6 @@
-import CustomError from './custom-error';
-
-export default class ExistsError extends CustomError {
+export default class ExistsError extends Error {
   constructor(message?: string) {
-    super('ExistsError', message);
+    super(message);
+    this.name = 'ExistsError';
   }
 }

@@ -4,7 +4,7 @@ import { Service } from 'typedi';
 import AbstractController from './abstract-controller';
 import InstallationService from '../services/installation-service';
 import installationSchema from '../schemas/installation-schema';
-import LinkedError from '../errors/linked-error';
+import ForeignKeyError from '../errors/foreignkey-error';
 import ExistsError from '../errors/exists-error';
 
 @Service()
@@ -90,7 +90,7 @@ export default class InstallationController extends AbstractController {
 
       await next();
     } catch (err) {
-      if (err instanceof LinkedError) {
+      if (err instanceof ForeignKeyError) {
         ctx.throw(400, err);
       } else {
         ctx.throw(500, err);
