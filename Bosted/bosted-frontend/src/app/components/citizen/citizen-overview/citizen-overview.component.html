@@ -12,7 +12,7 @@
       <p>Navn:</p>
       <p>CPR:</p>
     </div>
-    <div *ngIf="!loading" class="col-9">
+    <div *ngIf="citizen" class="col-9">
       <p>{{ citizen.firstName }} {{ citizen.lastName }}</p>
       <p>{{ citizen.cpr }}</p>
     </div>

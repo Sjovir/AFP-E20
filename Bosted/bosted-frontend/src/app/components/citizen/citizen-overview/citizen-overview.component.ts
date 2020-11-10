@@ -12,13 +12,11 @@ import { CitizenModalComponent } from '../modals/citizen-modal/citizen-modal.com
 @Component({
   selector: 'citizen-overview',
   templateUrl: './citizen-overview.component.html',
-  styleUrls: ['./citizen-overview.component.scss'],
 })
 export class CitizenOverviewComponent implements OnInit {
   public permCitizenEdit: boolean;
 
   public citizen: Citizen;
-  public loading: boolean = true;
 
   constructor(
     private activeRoute: ActivatedRoute,
@@ -36,7 +34,6 @@ export class CitizenOverviewComponent implements OnInit {
       const citizenId = this.activeRoute.parent.snapshot.params['id'];
       this.citizenService.get(citizenId).subscribe((citizen: Citizen) => {
         this.citizen = citizen;
-        this.loading = false;
       });
     });
   }
