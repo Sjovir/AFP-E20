@@ -3,7 +3,7 @@ version: "3"
 services:
   frontend:
     build: ./auth-frontend
-    image: auth_frontend
+    image: erikbn/afp20_auth_frontend
     container_name: AuthFrontend
     environment:
       - YARN-VERSION=${YARN_VERSION}
@@ -15,7 +15,7 @@ services:
       - database
   service:
     build: ./auth-service
-    image: auth_service
+    image: erikbn/afp20_auth_service
     container_name: AuthService
     environment:
       - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
@@ -30,7 +30,7 @@ services:
       - database
   database:
     build: ./auth-database
-    image: auth_database
+    image: erikbn/afp20_auth_database
     container_name: AuthDatabase
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
