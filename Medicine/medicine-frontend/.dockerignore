@@ -1,6 +1,8 @@
+.vs_code
+node_modules
+dist
+e2e
+Dockerfile
 .editorconfig
 .gitignore
-/e2e
-/node_modules
-/dist
 *.md
