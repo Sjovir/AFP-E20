@@ -74,6 +74,7 @@ jobs:
 
       - echo '***** PUSH Auth *****'
       - cd Auth
+      - docker-compose build
       - docker-compose push
 
 stages:
