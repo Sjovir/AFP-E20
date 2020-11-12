@@ -48,20 +48,20 @@ jobs:
       - docker-compose up -d --build
       - docker ps -a
 
-      # - echo '***** SETUP Auth *****'
-      # - cd ../Auth
-      # - docker-compose up -d --build
-      # - docker ps -a
+      - echo '***** SETUP Auth *****'
+      - cd ../Auth
+      - docker-compose up -d --build
+      - docker ps -a
 
-      # - echo '***** SETUP Bosted *****'
-      # - cd ../Bosted
-      # - docker-compose up -d --build
-      # - docker ps -a
+      - echo '***** SETUP Bosted *****'
+      - cd ../Bosted
+      - docker-compose up -d --build
+      - docker ps -a
 
-      # - echo '***** SETUP Medicine *****'
-      # - cd ../Medicine
-      # - docker-compose up -d --build
-      # - docker ps -a
+      - echo '***** SETUP Medicine *****'
+      - cd ../Medicine
+      - docker-compose up -d --build
+      - docker ps -a
 
       after_success: ../merge_to_master.sh
 
@@ -74,6 +74,16 @@ jobs:
 
       - echo '***** PUSH Auth *****'
       - cd Auth
+      - docker-compose build
+      - docker-compose push
+
+      - echo '***** PUSH Bosted *****'
+      - cd ../Bosted
+      - docker-compose build
+      - docker-compose push
+
+      - echo '***** PUSH Medicine *****'
+      - cd ../Medicine
       - docker-compose build
       - docker-compose push
 
