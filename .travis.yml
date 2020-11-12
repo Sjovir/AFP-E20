@@ -48,20 +48,20 @@ jobs:
       - docker-compose up -d --build
       - docker ps -a
 
-      - echo '***** SETUP Auth *****'
-      - cd ../Auth
-      - docker-compose up -d --build
-      - docker ps -a
+      # - echo '***** SETUP Auth *****'
+      # - cd ../Auth
+      # - docker-compose up -d --build
+      # - docker ps -a
 
-      - echo '***** SETUP Bosted *****'
-      - cd ../Bosted
-      - docker-compose up -d --build
-      - docker ps -a
+      # - echo '***** SETUP Bosted *****'
+      # - cd ../Bosted
+      # - docker-compose up -d --build
+      # - docker ps -a
 
-      - echo '***** SETUP Medicine *****'
-      - cd ../Medicine
-      - docker-compose up -d --build
-      - docker ps -a
+      # - echo '***** SETUP Medicine *****'
+      # - cd ../Medicine
+      # - docker-compose up -d --build
+      # - docker ps -a
 
       after_success: ../merge_to_master.sh
 
@@ -70,7 +70,11 @@ jobs:
       - echo '***** STAGE push_docker_images *****'
 
       - echo '***** DOCKER login *****'
-      - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+
+      - echo '***** PUSH Auth *****'
+      - cd Auth
+      - docker-compose push
 
 stages:
   - name: test_auth
