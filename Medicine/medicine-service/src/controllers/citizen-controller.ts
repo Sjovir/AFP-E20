@@ -4,8 +4,8 @@ import { Service } from 'typedi';
 import citizenSchema from '../schemas/citizen-schema';
 import CitizenService from '../services/citizen-service';
 import AbstractController from './abstract-controller';
-import ExistsError from '../errors/exists-error';
-import ForeignKeyError from '../errors/foreignkey-error';
+
+const BOSTED_URL = 'http://localhost:7100/api/citizens/';
 
 @Service()
 export default class CitizenController extends AbstractController {
@@ -34,7 +34,7 @@ export default class CitizenController extends AbstractController {
       if (citizen && citizen.length > 0) {
         ctx.response.body = citizen[0];
       } else {
-        ctx.response.body = '';
+        ctx.response.status = 204;
       }
 
       await next();
@@ -46,20 +46,16 @@ export default class CitizenController extends AbstractController {
   async create(ctx: Context, next: Next) {
     if (!this.validSchema(ctx, citizenSchema, ctx.request.body)) return;
 
+    const citizen: ICitizen = ctx.request.body;
+
     try {
-      const citizenId = await this.citizenService.createCitizen(
-        ctx.request.body
-      );
-      ctx.response.status = 201;
-      ctx.response.body = { citizenId };
+      const result = await ctx.axios.post(BOSTED_URL, citizen);
+      ctx.response.status = result.status;
+      ctx.response.body = result.data;
 
       await next();
     } catch (err) {
-      if (err instanceof ExistsError) {
-        ctx.throw(400, err);
-      } else {
-        ctx.throw(500, err);
-      }
+      ctx.throw(500, err);
     }
   }
 
@@ -72,9 +68,9 @@ export default class CitizenController extends AbstractController {
     const citizen: ICitizen = { id, ...ctx.request.body };
 
     try {
-      await this.citizenService.updateCitizen(citizen);
-      ctx.response.status = 201;
-      ctx.response.body = '';
+      const result = await ctx.axios.put(BOSTED_URL, citizen);
+      ctx.response.status = result.status;
+      ctx.response.body = result.data;
 
       await next();
     } catch (err) {
@@ -88,16 +84,15 @@ export default class CitizenController extends AbstractController {
     if (!this.validIdentifiers(ctx, id)) return;
 
     try {
-      await this.citizenService.deleteCitizen(id);
-      ctx.response.status = 204;
+      const result = await ctx.axios.put(BOSTED_URL, {
+        params: ctx.params,
+      });
+      ctx.response.status = result.status;
+      ctx.response.body = result.data;
 
       await next();
     } catch (err) {
-      if (err instanceof ForeignKeyError) {
-        ctx.throw(400, err);
-      } else {
-        ctx.throw(500, err);
-      }
+      ctx.throw(500, err);
     }
   }
 }

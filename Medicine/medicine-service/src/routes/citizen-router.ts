@@ -19,6 +19,10 @@ router.get(
   }
 );
 
+router.post('/', isAuthorized(Permission.CITIZEN_EDIT), async (ctx, next) => {
+  await controller.create(ctx, next);
+});
+
 router.put(
   '/:citizenUUID',
   isAuthorized(Permission.CITIZEN_EDIT),
