@@ -3,7 +3,7 @@ version: "3"
 services:
   frontend:
     build: ./medicine-frontend
-    image: erikbn/afp20_erikbn/afp20_medicine_frontend
+    image: erikbn/afp20_medicine_frontend
     container_name: MedicineFrontend
     environment:
       - YARN-VERSION=${YARN_VERSION}
@@ -15,7 +15,7 @@ services:
       - database
   service:
     build: ./medicine-service
-    image: erikbn/afp20_erikbn/afp20_medicine_service
+    image: erikbn/afp20_medicine_service
     container_name: MedicineService
     environment:
       - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
@@ -30,7 +30,7 @@ services:
       - database
   database:
     build: ./medicine-database
-    image: erikbn/afp20_erikbn/afp20_medicine_database
+    image: erikbn/afp20_medicine_database
     container_name: MedicineDatabase
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
