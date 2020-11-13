@@ -15,6 +15,7 @@
   "dependencies": {
     "@koa/cors": "^3.1.0",
     "ajv": "^6.12.4",
+    "axios": "^0.21.0",
     "dotenv": "^8.2.0",
     "http-graceful-shutdown": "^2.3.2",
     "jsonwebtoken": "^8.5.1",

@@ -2,6 +2,8 @@ import kafka from './kafka-client';
 import { Container } from 'typedi';
 
 import logger from '../logger';
+import ExistsError from '../errors/exists-error';
+import ForeignKeyError from '../errors/foreignkey-error';
 import InstallationService from '../services/installation-service';
 
 const consumer = kafka.consumer({
@@ -64,7 +66,19 @@ const installationService = Container.get(InstallationService);
               );
           }
         } catch (err) {
-          logger.error(`error consuming kafka event on topic ${TOPIC}`, err);
+          if (err instanceof ExistsError) {
+            logger.error(
+              `exists error consuming kafka event on topic ${TOPIC}`,
+              err
+            );
+          } else if (err instanceof ForeignKeyError) {
+            logger.error(
+              `foreign key error consuming kafka event on topic ${TOPIC}`,
+              err
+            );
+          } else {
+            logger.error(`error consuming kafka event on topic ${TOPIC}`, err);
+          }
         }
       }
     },

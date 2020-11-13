@@ -1,11 +1,13 @@
 import { Next, Context } from 'koa';
 import { Service } from 'typedi';
+import axios from 'axios';
 
 import AbstractController from './abstract-controller';
 import InstallationService from '../services/installation-service';
 import installationSchema from '../schemas/installation-schema';
-import ForeignKeyError from '../errors/foreignkey-error';
 import ExistsError from '../errors/exists-error';
+
+const AUTH_URL = 'http://localhost:7000/api/installations/';
 
 @Service()
 export default class InstallationController extends AbstractController {
@@ -34,7 +36,7 @@ export default class InstallationController extends AbstractController {
       if (installation && installation.length > 0) {
         ctx.response.body = installation[0];
       } else {
-        ctx.response.body = '';
+        ctx.response.body = null;
       }
       await next();
     } catch (err) {
@@ -48,9 +50,9 @@ export default class InstallationController extends AbstractController {
     if (!this.validSchema(ctx, installationSchema, ctx.request.body)) return;
 
     try {
-      await this.installationService.createInstallation(installation);
-      ctx.response.status = 201;
-      ctx.response.body = null;
+      const result = await axios.post(AUTH_URL, installation);
+      ctx.response.status = result.status;
+      ctx.response.body = result.data;
       await next();
     } catch (err) {
       ctx.throw(500, err);
@@ -69,8 +71,9 @@ export default class InstallationController extends AbstractController {
     };
 
     try {
-      await this.installationService.updateInstallation(installation);
-      ctx.response.status = 204;
+      const result = await axios.put(AUTH_URL, installation);
+      ctx.response.status = result.status;
+      ctx.response.body = result.data;
       await next();
     } catch (err) {
       ctx.throw(500, err);
@@ -83,15 +86,14 @@ export default class InstallationController extends AbstractController {
     if (!this.validIdentifiers(ctx, id)) return;
 
     try {
-      await this.installationService.deleteInstallation(id);
-      ctx.response.status = 204;
+      const result = await axios.delete(AUTH_URL, {
+        params: ctx.params,
+      });
+      ctx.response.status = result.status;
+      ctx.response.body = result.data;
       await next();
     } catch (err) {
-      if (err instanceof ForeignKeyError) {
-        ctx.throw(400, err);
-      } else {
-        ctx.throw(500, err);
-      }
+      ctx.throw(500, err);
     }
   }
 
