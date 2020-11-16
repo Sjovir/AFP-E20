@@ -50,17 +50,20 @@ jobs:
 
       - echo '***** SETUP Auth *****'
       - cd ../Auth
-      - docker-compose up -d --build
+      - docker-compose build
+      - docker-compose up -d
       - docker ps -a
 
       - echo '***** SETUP Bosted *****'
       - cd ../Bosted
-      - docker-compose up -d --build
+      - docker-compose build --build-arg MODE=prod
+      - docker-compose up -d
       - docker ps -a
 
       - echo '***** SETUP Medicine *****'
       - cd ../Medicine
-      - docker-compose up -d --build
+      - docker-compose build
+      - docker-compose up -d
       - docker ps -a
 
       after_success: ../merge_to_master.sh
@@ -79,7 +82,7 @@ jobs:
 
       - echo '***** PUSH Bosted *****'
       - cd ../Bosted
-      - docker-compose build
+      - docker-compose build --build-arg MODE=prod
       - docker-compose push
 
       - echo '***** PUSH Medicine *****'
