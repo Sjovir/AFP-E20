@@ -25,8 +25,12 @@ RUN yarn
 # Copy the application
 COPY . .
 
+# Get mode from docker-compose
+ARG MODE
+RUN echo "MODE: $MODE"
+
 # Build the application
-RUN yarn run build --prod
+RUN yarn run build-$MODE
 
 #############################
 ## STEP 2 Production image ##
