@@ -1,4 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'auth-register-wrapper',
@@ -6,7 +7,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: [],
 })
 export class RegisterWrapperComponent implements OnInit {
-  link: string = 'http://localhost:8000/main.js';
+  link: string = `http://${environment.host}:8000/main.js`;
 
   @Input() dataToChild: string;
   @Output() dataFromChild = new EventEmitter<string>();

@@ -2,7 +2,10 @@ version: "3"
 
 services:
   frontend:
-    build: ./bosted-frontend
+    build:
+      context: ./bosted-frontend
+      args:
+        MODE: ${MODE}
     image: erikbn/afp20_bosted_frontend
     container_name: BostedFrontend
     environment:
