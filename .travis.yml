@@ -50,13 +50,13 @@ jobs:
 
       - echo '***** SETUP Auth *****'
       - cd ../Auth
-      - docker-compose build
+      - docker-compose build --build-arg MODE=dev
       - docker-compose up -d
       - docker ps -a
 
       - echo '***** SETUP Bosted *****'
       - cd ../Bosted
-      - docker-compose build
+      - docker-compose build --build-arg MODE=dev
       - docker-compose up -d
       - docker ps -a
 
