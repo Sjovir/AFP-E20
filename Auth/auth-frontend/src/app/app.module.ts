@@ -33,14 +33,14 @@ export function tokenGetter() {
       config: {
         tokenGetter: tokenGetter,
         allowedDomains: [ // Domains to which the access token is sent as an authorization header
-          'localhost:7000',
-          'localhost:7100',
+          `${environment.host}:7000`,
+          `${environment.host}:7100`,
         ],
       },
     }),
   ],
   providers: [],
-  bootstrap: [environment.local ? AppComponent : []],
+  bootstrap: [environment.bootstrap ? AppComponent : []],
 })
 export class AppModule {
   constructor(private injector: Injector) {}
