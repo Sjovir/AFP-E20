@@ -92,7 +92,7 @@ export default class CitizenController extends AbstractController {
     if (!this.validIdentifiers(ctx, id)) return;
 
     try {
-      const result = await ctx.axios.put(BOSTED_URL, {
+      const result = await ctx.axios.delete(BOSTED_URL, {
         params: ctx.params,
       });
       ctx.response.status = result.status;
