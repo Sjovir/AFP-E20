@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { Ordination } from '../models/ordination.model';
 
 @Injectable({
@@ -9,7 +10,7 @@ import { Ordination } from '../models/ordination.model';
 export class OrdinationService {
   readonly CITIZEN_PARAM: string = 'citizenId';
 
-  readonly BASE_URL: string = `http://localhost:7200/api/citizens/${this.CITIZEN_PARAM}/ordinations`;
+  readonly BASE_URL: string = `http://${environment.host}:7200/api/citizens/${this.CITIZEN_PARAM}/ordinations`;
 
   constructor(private http: HttpClient) {}
 

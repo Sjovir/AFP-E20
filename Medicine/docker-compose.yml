@@ -2,8 +2,11 @@ version: "3"
 
 services:
   frontend:
-    build: ./medicine-frontend
-    image: medicine_frontend
+    build:
+      context: ./medicine-frontend
+      args:
+        MODE: ${MODE}
+    image: erikbn/afp20_medicine_frontend
     container_name: MedicineFrontend
     environment:
       - YARN-VERSION=${YARN_VERSION}
@@ -15,7 +18,7 @@ services:
       - database
   service:
     build: ./medicine-service
-    image: medicine_service
+    image: erikbn/afp20_medicine_service
     container_name: MedicineService
     volumes:
       - /var/log/afpe20:/var/log/afpe20
@@ -23,7 +26,7 @@ services:
       - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
-      - DB_DATABASE=${DB_DATABASE}
+      - DB_DATABASE=${DB_DATABASE_MEDICINE}
       - DB_HOST=database
       - KAFKA_HOST=${KAFKA_HOST}
       - YARN-VERSION=${YARN_VERSION}
@@ -34,13 +37,13 @@ services:
       - database
   database:
     build: ./medicine-database
-    image: medicine_database
+    image: erikbn/afp20_medicine_database
     container_name: MedicineDatabase
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - MYSQL_USER=${DB_USER}
       - MYSQL_PASSWORD=${DB_PASSWORD}
-      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_DATABASE=${DB_DATABASE_MEDICINE}
 
 networks:
   default:

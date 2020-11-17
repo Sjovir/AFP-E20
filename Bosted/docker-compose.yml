@@ -2,8 +2,11 @@ version: "3"
 
 services:
   frontend:
-    build: ./bosted-frontend
-    image: bosted_frontend
+    build:
+      context: ./bosted-frontend
+      args:
+        MODE: ${MODE}
+    image: erikbn/afp20_bosted_frontend
     container_name: BostedFrontend
     environment:
       - YARN-VERSION=${YARN_VERSION}
@@ -15,7 +18,7 @@ services:
       - database
   service:
     build: ./bosted-service
-    image: bosted_service
+    image: erikbn/afp20_bosted_service
     container_name: BostedService
     volumes:
       - /var/log/afpe20:/var/log/afpe20
@@ -23,7 +26,7 @@ services:
       - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
-      - DB_DATABASE=${DB_DATABASE}
+      - DB_DATABASE=${DB_DATABASE_BOSTED}
       - DB_HOST=database
       - KAFKA_HOST=${KAFKA_HOST}
       - YARN-VERSION=${YARN_VERSION}
@@ -34,13 +37,13 @@ services:
       - database
   database:
     build: ./bosted-database
-    image: bosted_database
+    image: erikbn/afp20_bosted_database
     container_name: BostedDatabase
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - MYSQL_USER=${DB_USER}
       - MYSQL_PASSWORD=${DB_PASSWORD}
-      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_DATABASE=${DB_DATABASE_BOSTED}
       - MYSQL_PORT=${DB_PORT}
 
 networks:

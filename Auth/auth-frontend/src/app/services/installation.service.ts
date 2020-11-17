@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { Installation } from '../models/installation.model';
 import { JavaWebTokens } from '../models/java-web-token.model';
 
@@ -8,7 +9,7 @@ import { JavaWebTokens } from '../models/java-web-token.model';
   providedIn: 'root',
 })
 export class InstallationService {
-  readonly BASE_URL: string = 'http://localhost:7000/api/installations';
+  readonly BASE_URL: string = `http://${environment.host}:7000/api/installations`;
 
   constructor(private http: HttpClient) {}
 

@@ -28,12 +28,15 @@ export function tokenGetter() {
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
-        allowedDomains: ['localhost:7100', 'localhost:7200'],
+        allowedDomains: [
+          `${environment.host}:7100`,
+          `${environment.host}:7200`,
+        ],
       },
     }),
   ],
   providers: [DatePipe],
-  bootstrap: [environment.local ? AppComponent : []],
+  bootstrap: [environment.bootstrap ? AppComponent : []],
 })
 export class AppModule {
   constructor(private injector: Injector) {}

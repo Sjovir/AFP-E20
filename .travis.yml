@@ -14,6 +14,8 @@ jobs:
       - echo '***** STAGE test_auth *****'
       - cd Auth/auth-service
       - yarn
+      - echo '***** LINTING AUTH *****'
+      - yarn run eslint
       - echo '***** TESTING AUTH *****'
       - yarn run test
 
@@ -22,6 +24,8 @@ jobs:
       - echo '***** STAGE test_bosted *****'
       - cd Bosted/bosted-service
       - yarn
+      - echo '***** LINTING BOSTED *****'
+      - yarn run eslint
       - echo '***** TESTING BOSTED *****'
       - yarn run test
 
@@ -30,6 +34,8 @@ jobs:
       - echo '***** STAGE test_medicine *****'
       - cd Medicine/medicine-service
       - yarn
+      - echo '***** LINTING MEDICINE *****'
+      - yarn run eslint
       - echo '***** TESTING MEDICINE *****'
       - yarn run test
 
@@ -37,46 +43,70 @@ jobs:
       script:
       - echo '***** STAGE merge_into_dev *****'
 
-      # start kafka container
       - echo '***** SETUP Kafka *****'
       - cd kafka
       - docker-compose up -d --build
       - docker ps -a
 
-      # start auth container
       - echo '***** SETUP Auth *****'
       - cd ../Auth
-      - docker-compose up -d --build
+      - docker-compose build --build-arg MODE=dev
+      - docker-compose up -d
       - docker ps -a
 
-      # start bosted container
       - echo '***** SETUP Bosted *****'
       - cd ../Bosted
-      - docker-compose up -d --build
+      - docker-compose build --build-arg MODE=dev
+      - docker-compose up -d
       - docker ps -a
 
-      # start medicine container
       - echo '***** SETUP Medicine *****'
       - cd ../Medicine
-      - docker-compose up -d --build
+      - docker-compose build --build-arg MODE=dev
+      - docker-compose up -d
       - docker ps -a
 
-      after_success: ../push.sh
+      after_success: ../merge_to_master.sh
+
+    - stage: push_docker_images
+      script:
+      - echo '***** STAGE push_docker_images *****'
+
+      - echo '***** DOCKER login *****'
+      - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+
+      - echo '***** PUSH Auth *****'
+      - cd Auth
+      - docker-compose build --build-arg MODE=prod
+      - docker-compose push
+
+      - echo '***** PUSH Bosted *****'
+      - cd ../Bosted
+      - docker-compose build --build-arg MODE=prod
+      - docker-compose push
+
+      - echo '***** PUSH Medicine *****'
+      - cd ../Medicine
+      - docker-compose build --build-arg MODE=prod
+      - docker-compose push
 
 stages:
   - name: test_auth
-
     if: type = pull_request
+
   - name: test_bosted
-
     if: type = pull_request
+
   - name: test_medicine
-
     if: type = pull_request
-  - name: merge_into_dev
 
+  - name: merge_into_dev
     if: type = push AND branch = dev
+
+  - name: push_docker_images
+    if: type = push AND branch = master
 
 env:
   global:
-    secure: A4KwOYtufWBQfSsYkWfvnpESPxt1tJ0GEBXeDLJk4bWS01c2efu4OkXsGjd9IgpXIpbubqkNM1mHqdFuYh9MUCChvEvO4D6Sd9P5xOHUNoYr7kc50/uRsTo85QaIDDBAzsl6+lG0JS0THTe20wQ2CCDDSc6kKOwboalptdISTDklkOXovYsMxZMX234xFpW0ik50+C3IFAAmaD87Pss+6Fq87KDxkOob1Sl7BrDfu4gXeCTGwbCYNA14zwR+jDQhst/iLhPTEcvlZOz9qxEKHAJpleX3GMTuQD83SgJ2hkZcAO5Q1ypBQIPIxMjZI2aV7kJrhD5eyCNrHZibqYXSCY4aqgIKV3nnQg4KdmC/j7llXyXPFE1ylYxVV68627eTL7ZwnbTkrxv1nHAPslgLuZ3mMBbOAcMtE72a0gEnOLOyfKuIbFtXiuDSivRs8NER3OyL7tK+9N4lhXTpYt+Uzq73RM9JbA4EMtPZg2jtBL+0+pmgAfTjadihL0qJ0hhb9lfmtzEy1Km5eM1g2XB/kGZFMRVv/q/X6BnNq1pr+sHSjX9XWNFLe6eRMrFULJI3LC8KbR1zg3COYbqpTizH22d0djrOU5jQWRq8ItZLk9nwmSExpYPbxR1BjX+qRGhI2lWcy50iT2vleOJ3Iojt0J0JsejIYtzk1m+e5X20T2w=
+  - secure: A4KwOYtufWBQfSsYkWfvnpESPxt1tJ0GEBXeDLJk4bWS01c2efu4OkXsGjd9IgpXIpbubqkNM1mHqdFuYh9MUCChvEvO4D6Sd9P5xOHUNoYr7kc50/uRsTo85QaIDDBAzsl6+lG0JS0THTe20wQ2CCDDSc6kKOwboalptdISTDklkOXovYsMxZMX234xFpW0ik50+C3IFAAmaD87Pss+6Fq87KDxkOob1Sl7BrDfu4gXeCTGwbCYNA14zwR+jDQhst/iLhPTEcvlZOz9qxEKHAJpleX3GMTuQD83SgJ2hkZcAO5Q1ypBQIPIxMjZI2aV7kJrhD5eyCNrHZibqYXSCY4aqgIKV3nnQg4KdmC/j7llXyXPFE1ylYxVV68627eTL7ZwnbTkrxv1nHAPslgLuZ3mMBbOAcMtE72a0gEnOLOyfKuIbFtXiuDSivRs8NER3OyL7tK+9N4lhXTpYt+Uzq73RM9JbA4EMtPZg2jtBL+0+pmgAfTjadihL0qJ0hhb9lfmtzEy1Km5eM1g2XB/kGZFMRVv/q/X6BnNq1pr+sHSjX9XWNFLe6eRMrFULJI3LC8KbR1zg3COYbqpTizH22d0djrOU5jQWRq8ItZLk9nwmSExpYPbxR1BjX+qRGhI2lWcy50iT2vleOJ3Iojt0J0JsejIYtzk1m+e5X20T2w=
+  - secure: K8qnLkdQfG1UHmcDFK5a+ClIDGYS1jJet7nPoce/WhtnfowcIgB+oMHq8NVHrnXs+AmFc0Bx6Vdygg713sOwPXpSTUDZXT+9E6tN2C19U9oVnml18exd8jFzdnixu9VEAyUg7lB8gTws2S0ben9KYsHtEwRcbtP2g3o2BwYdsthXvsTwJHlvncG2MJh0uYFk8mSiZnYdHJlzlK4aXFBrr7+CXXw0LwA5lTRhR+SG9rfLzg6t8JPfY7gu+akZUEY1vzqlQonF4o7H1caY7GFKaweltSIaw1si/t2oeOXExaIZTjijODDkPKr8/vo+/G4sVAv1kputGLDD20Ih3gMsjorZebDvKL1IZcoSXoXPQNFC8D8d5h+3vsBJFfd/HqOWtb9v1VWOxVl08sadkNpSEmcFmMvKFLupfTDEyxVfIlrQ9D4P1QjBzgHxC8eN6v19PcDN7Z3f4FOZ7kLPixsuaMLRVwE0UmCfEVBxFKIWxACnCeovNKOsR2cLs3+DEOd+4M6mHYzYIrzMyl8uwJ1ZE+u0tE88WarDOmZYEhdINTsDVFEr2JEGHOGTWAp2EqJfI+nrVt+w0cw/uJzIwZFwxS/aYEj/Mk8ah24j7mBjrXKFz9/bN9Vsxe0q3YDtF0ozGe2rZsYJyx7qhENKzr/0QEFVu5vxPPlns6xBAOwLDPk=

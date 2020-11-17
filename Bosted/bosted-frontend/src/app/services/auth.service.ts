@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +25,9 @@ export class AuthService {
     }
 
     return this.http
-      .post<string>('http://localhost:7000/api/refresh', { refreshToken })
+      .post<string>(`http://${environment.host}:7000/api/refresh`, {
+        refreshToken,
+      })
       .pipe(
         map(
           (response) => {
