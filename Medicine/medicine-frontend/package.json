@@ -4,10 +4,12 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 8200",
-    "build": "ng build --prod --single-bundle --output-hashing none --vendor-chunk false",
+    "build": "ng build --single-bundle --output-hashing none --vendor-chunk false",
     "buildrun": "yarn build && yarn runbuild",
     "runbuild": "lite-server -c bs-config.json",
     "dev": "ng build",
+    "build-dev": "yarn build",
+    "build-prod": "ng build --prod  --single-bundle --output-hashing none --vendor-chunk false",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

@@ -62,7 +62,7 @@ jobs:
 
       - echo '***** SETUP Medicine *****'
       - cd ../Medicine
-      - docker-compose build
+      - docker-compose build --build-arg MODE=dev
       - docker-compose up -d
       - docker ps -a
 
@@ -87,7 +87,7 @@ jobs:
 
       - echo '***** PUSH Medicine *****'
       - cd ../Medicine
-      - docker-compose build
+      - docker-compose build --build-arg MODE=prod
       - docker-compose push
 
 stages:

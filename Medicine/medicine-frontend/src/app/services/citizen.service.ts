@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { Citizen } from '../models/citizen.model';
 
 @Injectable({
@@ -11,7 +12,7 @@ export class CitizenService {
   readonly MEDICIN_PORT: string = '7200';
   readonly PORT_PARAM: string = 'citizenId';
 
-  readonly BASE_URL: string = `http://localhost:${this.PORT_PARAM}/api/citizens`;
+  readonly BASE_URL: string = `http://${environment.host}:${this.PORT_PARAM}/api/citizens`;
 
   constructor(private http: HttpClient) {}
 
