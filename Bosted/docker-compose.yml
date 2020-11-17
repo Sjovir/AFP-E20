@@ -10,13 +10,15 @@ services:
     ports:
       - "8100:80"
       - "7100:7100"
-    depends_on: 
+    depends_on:
       - service
       - database
   service:
     build: ./bosted-service
     image: bosted_service
     container_name: BostedService
+    volumes:
+      - /var/log/afpe20:/var/log/afpe20
     environment:
       - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - DB_USER=${DB_USER}
@@ -26,6 +28,8 @@ services:
       - KAFKA_HOST=${KAFKA_HOST}
       - YARN-VERSION=${YARN_VERSION}
       - JWT_SECRET=${JWT_SECRET}
+      - AUTH_SERVICE=${AUTH_SERVICE}
+      - AUTH_PORT=${AUTH_PORT}
     depends_on:
       - database
   database:
@@ -39,7 +43,7 @@ services:
       - MYSQL_DATABASE=${DB_DATABASE}
       - MYSQL_PORT=${DB_PORT}
 
-networks: 
+networks:
   default:
-    external: 
+    external:
       name: kafka_apache-net

@@ -1,13 +1,14 @@
 import { Next, Context } from 'koa';
 import { Service } from 'typedi';
-import axios from 'axios';
 
 import AbstractController from './abstract-controller';
 import InstallationService from '../services/installation-service';
 import installationSchema from '../schemas/installation-schema';
 import ExistsError from '../errors/exists-error';
 
-const AUTH_URL = 'http://localhost:7000/api/installations/';
+const AUTH_URL = `http://${process.env.AUTH_SERVICE || 'localhost'}:${
+  process.env.AUTH_PORT || 7000
+}/api/installations/`;
 
 @Service()
 export default class InstallationController extends AbstractController {
@@ -50,12 +51,16 @@ export default class InstallationController extends AbstractController {
     if (!this.validSchema(ctx, installationSchema, ctx.request.body)) return;
 
     try {
-      const result = await axios.post(AUTH_URL, installation);
+      const result = await ctx.axios.post(AUTH_URL, installation);
       ctx.response.status = result.status;
       ctx.response.body = result.data;
       await next();
     } catch (err) {
-      ctx.throw(500, err);
+      if (err.response.status < 500) {
+        ctx.throw(err.response.status, err);
+      } else {
+        ctx.throw(500, err);
+      }
     }
   }
 
@@ -71,12 +76,16 @@ export default class InstallationController extends AbstractController {
     };
 
     try {
-      const result = await axios.put(AUTH_URL, installation);
+      const result = await ctx.axios.put(AUTH_URL, installation);
       ctx.response.status = result.status;
       ctx.response.body = result.data;
       await next();
     } catch (err) {
-      ctx.throw(500, err);
+      if (err.response.status < 500) {
+        ctx.throw(err.response.status, err);
+      } else {
+        ctx.throw(500, err);
+      }
     }
   }
 
@@ -86,14 +95,18 @@ export default class InstallationController extends AbstractController {
     if (!this.validIdentifiers(ctx, id)) return;
 
     try {
-      const result = await axios.delete(AUTH_URL, {
+      const result = await ctx.axios.delete(AUTH_URL, {
         params: ctx.params,
       });
       ctx.response.status = result.status;
       ctx.response.body = result.data;
       await next();
     } catch (err) {
-      ctx.throw(500, err);
+      if (err.response.status < 500) {
+        ctx.throw(err.response.status, err);
+      } else {
+        ctx.throw(500, err);
+      }
     }
   }
 
@@ -122,8 +135,7 @@ export default class InstallationController extends AbstractController {
     try {
       await this.installationService.addCitizen(citizenUUID, installationUUID);
 
-      ctx.response.status = 201;
-      ctx.response.body = '';
+      ctx.response.status = 204;
 
       await next();
     } catch (err) {
@@ -146,8 +158,7 @@ export default class InstallationController extends AbstractController {
         installationUUID
       );
 
-      ctx.response.status = 201;
-      ctx.response.body = '';
+      ctx.response.status = 204;
 
       await next();
     } catch (err) {

@@ -11,6 +11,8 @@ declare namespace NodeJS {
     DB_DATABASE: string;
     DB_PORT: string;
     KAFKA_HOST?: string;
+    AUTH_SERVICE: string;
+    AUTH_PORT: string;
   }
 }
 

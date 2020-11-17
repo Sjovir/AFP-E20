@@ -17,6 +17,8 @@ services:
     build: ./auth-service
     image: auth_service
     container_name: AuthService
+    volumes:
+      - /var/log/afpe20:/var/log/afpe20
     environment:
       - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - DB_USER=${DB_USER}
@@ -37,9 +39,9 @@ services:
       - MYSQL_USER=${DB_USER}
       - MYSQL_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=${DB_DATABASE}
-
 networks:
   default:
-    external: 
+    external:
       name: kafka_apache-net
-
+volumes:
+  afpe20logs:

@@ -5,7 +5,7 @@ import citizenSchema from '../schemas/citizen-schema';
 import CitizenService from '../services/citizen-service';
 import AbstractController from './abstract-controller';
 
-const BOSTED_URL = 'http://localhost:7100/api/citizens/';
+const BOSTED_URL = `http://${process.env.BOSTED_SERVICE}:${process.env.BOSTED_PORT}/api/citizens/`;
 
 @Service()
 export default class CitizenController extends AbstractController {
@@ -55,7 +55,11 @@ export default class CitizenController extends AbstractController {
 
       await next();
     } catch (err) {
-      ctx.throw(500, err);
+      if (err.response.status < 500) {
+        ctx.throw(err.response.status, err);
+      } else {
+        ctx.throw(500, err);
+      }
     }
   }
 
@@ -74,7 +78,11 @@ export default class CitizenController extends AbstractController {
 
       await next();
     } catch (err) {
-      ctx.throw(500, err);
+      if (err.response.status < 500) {
+        ctx.throw(err.response.status, err);
+      } else {
+        ctx.throw(500, err);
+      }
     }
   }
 
@@ -92,7 +100,11 @@ export default class CitizenController extends AbstractController {
 
       await next();
     } catch (err) {
-      ctx.throw(500, err);
+      if (err.response.status < 500) {
+        ctx.throw(err.response.status, err);
+      } else {
+        ctx.throw(500, err);
+      }
     }
   }
 }
