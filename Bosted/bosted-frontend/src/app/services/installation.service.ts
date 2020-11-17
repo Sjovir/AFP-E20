@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { Citizen } from '../models/citizen.model';
 import { Installation } from '../models/installation.model';
 
@@ -8,7 +9,7 @@ import { Installation } from '../models/installation.model';
   providedIn: 'root',
 })
 export class InstallationService {
-  readonly BASE_URL: string = 'http://localhost:3010/api/installations';
+  readonly BASE_URL: string = `http://${environment.host}:7100/api/installations`;
 
   constructor(private http: HttpClient) {}
 

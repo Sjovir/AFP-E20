@@ -1,37 +1,49 @@
 version: "3"
 
 services:
-  app:
-    build: ./auth-frontend
-    image: auth_frontend
+  frontend:
+    build:
+      context: ./auth-frontend
+      args:
+        MODE: ${MODE}
+    image: erikbn/afp20_auth_frontend
     container_name: AuthFrontend
     environment:
       - YARN-VERSION=${YARN_VERSION}
+    ports:
+      - "8000:80"
+      - "7000:7000"
     depends_on:
       - service
-      - db
-    ports:
-      - "4200:80"
-      - "3000:3000"
+      - database
   service:
     build: ./auth-service
-    image: auth_service
+    image: erikbn/afp20_auth_service
     container_name: AuthService
+    volumes:
+      - /var/log/afpe20:/var/log/afpe20
     environment:
       - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
-      - DB_DATABASE=${DB_DATABASE}
-      - DB_HOST=db
+      - DB_DATABASE=${DB_DATABASE_AUTH}
+      - DB_HOST=database
+      - KAFKA_HOST=${KAFKA_HOST}
       - YARN-VERSION=${YARN_VERSION}
+      - JWT_SECRET=${JWT_SECRET}
     depends_on:
-      - db
-  db:
-    build: ./auth-db
-    image: auth_database
+      - database
+  database:
+    build: ./auth-database
+    image: erikbn/afp20_auth_database
     container_name: AuthDatabase
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - MYSQL_USER=${DB_USER}
       - MYSQL_PASSWORD=${DB_PASSWORD}
-      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_DATABASE=${DB_DATABASE_AUTH}
+
+networks:
+  default:
+    external:
+      name: kafka_apache-net

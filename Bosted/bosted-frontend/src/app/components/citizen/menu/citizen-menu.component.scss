@@ -1,3 +1,8 @@
+.menu-panel {
+  height: 100%;
+  text-align: center;
+}
+
 .nav-menu {
   width: 100%;
 
@@ -6,4 +11,12 @@
   button:focus:active {
     box-shadow: none;
   }
+}
+
+.name-label {
+  display: block;
+  background-color: #004085;
+  padding: .375rem;
+  user-select: none;
+  color: #fff;
 }

@@ -1,6 +1,6 @@
 <div class="content-page">
-  <div class="container jumbotron submit-form text-center">
-    <p class="h1">Login</p>
+  <div class="container jumbotron text-center">
+    <p class="h1">Log ind</p>
     <hr class="my-4" />
     <br />
     <form [formGroup]="loginForm" (ngSubmit)="login()">
@@ -8,26 +8,26 @@
         <input
           class="form-control text-center"
           type="text"
-          placeholder="Username or CPR"
+          placeholder="Brugernavn eller CPR"
           formControlName="username"
         />
         <small
           *ngIf="usernameControl.touched && usernameControl.errors?.required"
           class="form-text text-danger"
-          >Missing username or CPR</small
+          >Mangler brugernavn eller CPR</small
         >
       </div>
       <div class="field">
         <input
           class="form-control text-center"
           type="password"
-          placeholder="Password"
+          placeholder="Kodeord"
           formControlName="password"
         />
         <small
           *ngIf="passwordControl.touched && passwordControl.errors?.required"
           class="form-text text-danger"
-          >Missing password</small
+          >Mangler kodeord</small
         >
         <small
           *ngIf="
@@ -36,22 +36,16 @@
             passwordControl.errors?.minlength !== null
           "
           class="form-text text-danger"
-          >Password must be at least 8 characters</small
+          >Kodeordet skal mindst indeholde 8 tegn</small
         >
       </div>
-      <div
-        [disableTooltip]="!anyErrors"
-        [ngbTooltip]="'There is one or more errors'"
-        [placement]="'bottom'"
+      <button
+        class="btn btn-primary"
+        type="submit"
+        [disabled]="!loginForm.valid"
       >
-        <button
-          class="btn btn-primary"
-          type="submit"
-          [disabled]="!loginForm.valid"
-        >
-          Login
-        </button>
-      </div>
+        Log ind
+      </button>
     </form>
     <small
       class="form-text"
@@ -62,5 +56,11 @@
       }"
       >{{ onLoginMessage }}</small
     >
+    <hr class="my-4" />
+    <div>
+      <button class="btn btn-primary" (click)="gotoRegisterPage()">
+        Opret bruger
+      </button>
+    </div>
   </div>
 </div>

@@ -1,128 +1,83 @@
 import { Next, Context } from 'koa';
+import { Service } from 'typedi';
 
+import AbstractController from './abstract-controller';
 import UserService from '../services/user-service';
-import UserDatabase from '../database/user-database';
-import RoleDatabase from '../database/role-database';
-
-import ajv from '../schemas/schema-validator';
 import registerSchema from '../schemas/register-schema';
 import loginSchema from '../schemas/login-schema';
 import refreshSchema from '../schemas/refresh-schema';
+import ExistsError from '../errors/exists-error';
+import { JsonWebTokenError } from 'jsonwebtoken';
 
-class AuthController {
-    private userService: UserService;
+@Service()
+export default class AuthController extends AbstractController {
+  constructor(private userService: UserService) {
+    super();
+  }
 
-    constructor() {
-        this.userService = new UserService(
-            new UserDatabase(),
-            new RoleDatabase()
-        );
+  async postRegister(ctx: Context, next: Next) {
+    if (!this.validSchema(ctx, registerSchema, ctx.request.body)) return;
+
+    const body: IRegister = ctx.request.body;
+
+    try {
+      await this.userService.createUser(body);
+      ctx.response.status = 201;
+      ctx.response.body = { username: body.username };
+    } catch (err) {
+      if (err instanceof ExistsError) {
+        ctx.throw(400, 'CPR or Username is already in use.');
+      } else {
+        ctx.throw(500, err);
+      }
     }
 
-    async postRegister(ctx: Context, next: Next) {
-        const compiled = ajv.compile(registerSchema);
-        const valid = compiled(ctx.request.body);
+    await next();
+  }
 
-        if (!valid) {
-            ctx.response.body = compiled.errors;
-            ctx.response.status = 400;
-            return;
-        }
+  async postLogin(ctx: Context, next: Next) {
+    if (!this.validSchema(ctx, loginSchema, ctx.request.body)) return;
 
-        const body: IRegister = ctx.request.body;
+    const { cpr, username, password }: ILogin = ctx.request.body;
 
-        try {
-            await this.userService.createUser(body);
-
-            ctx.response.status = 200;
-        } catch (err) {
-            ctx.response.status = 400;
-
-            if (err.errno === 1062) {
-                ctx.response.body = {
-                    name: 'CPR or Username is already in use.',
-                    code: 'CPR_OR_USERNAME_IN_USE',
-                };
-            } else {
-                ctx.response.body = {
-                    name: 'Something went wrong in the server.',
-                    code: 'INTERNAL_SERVER_ERROR',
-                };
-            }
-        }
-
-        next();
+    let token: ITokens;
+    try {
+      token = await this.userService.login({ password, username, cpr });
+    } catch (err) {
+      ctx.throw(500, err);
     }
 
-    async postLogin(ctx: Context, next: Next) {
-        const compiled = ajv.compile(loginSchema);
-        const valid = compiled(ctx.request.body);
-
-        if (!valid) {
-            ctx.response.body = compiled.errors;
-            ctx.response.status = 400;
-            return;
-        }
-
-        const { cpr, username, password }: ILogin = ctx.request.body;
-
-        ctx.response.status = 400;
-
-        if (cpr && username) {
-            ctx.response.body = {
-                message: 'Use either CPR or Username to log in.',
-                code: 'CPR_XOR_USERNAME_LOGIN',
-            };
-
-            return;
-        }
-
-        const token = await this.userService.login({ password, username, cpr });
-
-        if (token) {
-            ctx.response.body = token;
-            ctx.response.status = 200;
-        } else {
-            ctx.response.body = {
-                message: 'Account with given credentials do not exist.',
-                code: 'ACCOUNT_NOT_EXISTS',
-            };
-        }
-
-        next();
+    if (token) {
+      ctx.response.status = 200;
+      ctx.response.body = token;
+    } else {
+      ctx.throw(400, 'Account with given credentials do not exist.');
     }
 
-    async postRefresh(ctx: Context, next: Next) {
-        const compiled = ajv.compile(refreshSchema);
-        const valid = compiled(ctx.request.body);
+    await next();
+  }
 
-        if (!valid) {
-            ctx.response.body = compiled.errors;
-            ctx.response.status = 400;
-            return;
-        }
+  async postRefresh(ctx: Context, next: Next) {
+    if (!this.validSchema(ctx, refreshSchema, ctx.request.body)) return;
 
-        const tokens: IRefresh = ctx.request.body;
+    const tokens: IRefresh = ctx.request.body;
 
-        try {
-            const newAccessToken = await this.userService.refresh(tokens);
-
-            if (newAccessToken) {
-                ctx.response.status = 200;
-
-                ctx.response.body = {
-                    accessToken: newAccessToken,
-                };
-            } else {
-                ctx.response.status = 401;
-            }
-        } catch (err) {
-            ctx.response.body = err;
-            ctx.response.status = 401;
-        }
-
-        next();
+    let newAccessToken: string;
+    try {
+      newAccessToken = await this.userService.refresh(tokens);
+    } catch (err) {
+      if (err instanceof JsonWebTokenError) {
+        ctx.throw(401, err);
+      } else {
+        ctx.throw(500, err);
+      }
     }
+
+    ctx.response.status = 200;
+    ctx.response.body = {
+      accessToken: newAccessToken,
+    };
+
+    await next();
+  }
 }
-
-export default AuthController;

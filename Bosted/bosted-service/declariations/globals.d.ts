@@ -1,3 +1,5 @@
+import { AxiosInstance } from 'axios';
+
 declare namespace NodeJS {
   export interface ProcessEnv {
     NODE_ENV: 'development' | 'production';
@@ -8,5 +10,16 @@ declare namespace NodeJS {
     DB_PASSWORD: string;
     DB_DATABASE: string;
     DB_PORT: string;
+    KAFKA_HOST?: string;
+    AUTH_SERVICE: string;
+    AUTH_PORT: string;
+  }
+}
+
+// https://stackoverflow.com/questions/43160598/adding-properties-to-koa2s-context-in-typescript
+// module augmentation
+declare module 'koa' {
+  interface BaseContext {
+    axios: AxiosInstance;
   }
 }

@@ -1,0 +1,51 @@
+version: "3"
+
+services:
+  frontend:
+    build:
+      context: ./medicine-frontend
+      args:
+        MODE: ${MODE}
+    image: erikbn/afp20_medicine_frontend
+    container_name: MedicineFrontend
+    environment:
+      - YARN-VERSION=${YARN_VERSION}
+    ports:
+      - "8200:80"
+      - "7200:7200"
+    depends_on:
+      - service
+      - database
+  service:
+    build: ./medicine-service
+    image: erikbn/afp20_medicine_service
+    container_name: MedicineService
+    volumes:
+      - /var/log/afpe20:/var/log/afpe20
+    environment:
+      - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE_MEDICINE}
+      - DB_HOST=database
+      - KAFKA_HOST=${KAFKA_HOST}
+      - YARN-VERSION=${YARN_VERSION}
+      - JWT_SECRET=${JWT_SECRET}
+      - BOSTED_SERVICE=${BOSTED_SERVICE}
+      - BOSTED_PORT=${BOSTED_PORT}
+    depends_on:
+      - database
+  database:
+    build: ./medicine-database
+    image: erikbn/afp20_medicine_database
+    container_name: MedicineDatabase
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_DATABASE_MEDICINE}
+
+networks:
+  default:
+    external:
+      name: kafka_apache-net

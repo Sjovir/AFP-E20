@@ -1,85 +1,100 @@
 import bcrypt from 'bcryptjs';
-import { TokenExpiredError } from 'jsonwebtoken';
+import { Service } from 'typedi';
+import RoleRepository from '../database/role-repository';
+import UserRepository from '../database/user-repository';
+import { signAccessToken, signRefreshToken, verify } from '../utils/token';
+import ExistsError from '../errors/exists-error';
 
-import UserDatabase from '../database/user-database';
-import RoleDatabase from '../database/role-database';
-import {
-    verify,
-    signAccessToken,
-    signRefreshToken,
-    decode,
-} from '../utils/token';
+@Service()
+export default class UserService {
+  constructor(
+    private userRepository: UserRepository,
+    private roleRepository: RoleRepository
+  ) {}
 
-class UserService {
-    constructor(
-        private userDatabase: UserDatabase,
-        private roleDatabase: RoleDatabase
-    ) {}
+  async createUser(body: IRegister) {
+    const password_hashed = bcrypt.hashSync(
+      body.password,
+      bcrypt.genSaltSync(10)
+    );
 
-    async createUser(body: IRegister) {
-        const password_hashed = bcrypt.hashSync(
-            body.password,
-            bcrypt.genSaltSync(10)
-        );
+    body.password = password_hashed;
 
-        body.password = password_hashed;
+    try {
+      await this.userRepository.create(body);
+    } catch (err) {
+      if (err.errno === 1062) {
+        throw new ExistsError('User already exists.');
+      } else {
+        throw err;
+      }
+    }
+  }
 
-        await this.userDatabase.create(body);
+  async login(info: ILogin): Promise<ITokens | null> {
+    const user = await this.userRepository.find(info.username, info.cpr);
+
+    if (user && bcrypt.compareSync(info.password, user.password_hash)) {
+      return {
+        accessToken: signAccessToken({
+          firstName: user.firstName,
+          lastName: user.lastName,
+          username: user.username,
+        }),
+        refreshToken: signRefreshToken({ userId: user.id }),
+      };
     }
 
-    async login(info: ILogin): Promise<IRefresh | null> {
-        const user = await this.userDatabase.find(info.username, info.cpr);
+    return null;
+  }
 
-        if (user && bcrypt.compareSync(info.password, user.password_hash)) {
-            const accessRights = await this.roleDatabase.getAccessRights(
-                user.id
-            );
+  async refresh(tokens: IRefresh): Promise<string | null> {
+    const refreshToken = <IDecodedRefreshToken>verify(tokens.refreshToken);
 
-            return {
-                accessToken: signAccessToken({
-                    firstName: user.first_name,
-                    lastName: user.last_name,
-                    username: user.username,
-                    permissions: accessRights,
-                }),
-                refreshToken: signRefreshToken({}),
-            };
-        }
+    const user = await this.userRepository.get(refreshToken.userId);
+    const accessRights = await this.roleRepository.getAccessRightsByUsername(
+      refreshToken.installationId,
+      user.username
+    );
 
-        return null;
-    }
+    return signAccessToken({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username,
+      permissions: accessRights,
+    });
+  }
 
-    async refresh(tokens: IRefresh): Promise<string> {
-        let newAccessToken = null;
+  async updateTokensWithInstallation(
+    tokens: ITokens,
+    installationUUID: string
+  ): Promise<ITokens> {
+    const refreshTokenDecode = <IDecodedRefreshToken>(
+      verify(tokens.refreshToken)
+    );
+    const accessTokenDecode = <IDecodedAccessToken>verify(tokens.accessToken);
 
-        // TODO: access token should be expired for refresh to function
-        let accessTokenDecode: Record<string, unknown>;
-        try {
-            accessTokenDecode = <Record<string, unknown>>(
-                verify(tokens.accessToken)
-            );
-        } catch (err) {
-            if (err instanceof TokenExpiredError) {
-                accessTokenDecode = <Record<string, unknown>>(
-                    decode(tokens.accessToken)
-                );
-            } else {
-                throw err;
-            }
-        }
+    const accessRights = await this.roleRepository.getAccessRightsByUsername(
+      installationUUID,
+      accessTokenDecode.username
+    );
 
-        verify(tokens.refreshToken);
+    const newAccessToken = signAccessToken({
+      firstname: accessTokenDecode.firstName,
+      lastname: accessTokenDecode.lastName,
+      username: accessTokenDecode.username,
+      permissions: accessRights,
+    });
 
-        if (accessTokenDecode) {
-            newAccessToken = signAccessToken({
-                firstName: accessTokenDecode.firstName,
-                lastName: accessTokenDecode.lastName,
-                username: accessTokenDecode.username,
-            });
-        }
+    const newRefreshToken = signRefreshToken({
+      userId: refreshTokenDecode.userId,
+      installationId: installationUUID,
+    });
 
-        return newAccessToken;
-    }
+    return { accessToken: newAccessToken, refreshToken: newRefreshToken };
+  }
+
+  async getOnUsername(username: string): Promise<IUser> {
+    return this.userRepository.find(username);
+  }
 }
-
-export default UserService;

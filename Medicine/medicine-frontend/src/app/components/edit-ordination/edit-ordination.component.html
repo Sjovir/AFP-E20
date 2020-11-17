@@ -1,0 +1,86 @@
+<div *ngIf="ordination" class="micro-panel">
+  <ng-container *ngIf="permMedicineEdit; else medicineEditRestricted">
+    <div class="form-content px-4 py-2">
+      <p class="h2">Rediger ordination</p>
+      <form [formGroup]="editOrdinationForm">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Præparat:</span>
+          </div>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="drug"
+            readonly
+          />
+        </div>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Mængde:</span>
+          </div>
+          <input
+            type="number"
+            class="form-control"
+            formControlName="drugAmount"
+          />
+        </div>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Enhed:</span>
+          </div>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="drugUnit"
+            readonly
+          />
+        </div>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Startdato:</span>
+          </div>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="startDate"
+            readonly
+          />
+        </div>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Slutdato:</span>
+          </div>
+          <input
+            class="form-control"
+            placeholder="yyyy-mm-dd"
+            formControlName="endDate"
+            ngbDatepicker
+            #endDatePicker="ngbDatepicker"
+          />
+          <div class="input-group-append">
+            <button
+              class="btn btn-outline-secondary"
+              (click)="endDatePicker.toggle()"
+              type="button"
+            >
+              Dato
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="submit-bar">
+      <button class="btn btn-outline-danger" (click)="cancel()">Annuller</button>
+      <button
+        class="btn btn-success"
+        (click)="editOrdination()"
+        [disabled]="!editOrdinationForm.valid"
+      >
+        Ok
+      </button>
+    </div>
+  </ng-container>
+  <ng-template #medicineEditRestricted>
+    <div class="px-4 py-2"><p>Du har ikke adgang til indholdet på denne side</p></div>    
+  </ng-template>
+</div>

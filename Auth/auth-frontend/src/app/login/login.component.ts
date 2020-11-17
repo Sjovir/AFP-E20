@@ -5,6 +5,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -18,8 +19,9 @@ export class LoginComponent implements OnInit {
   public onLoginStatus: number;
 
   constructor(
+    private authService: AuthService,
     private formBuilder: FormBuilder,
-    private authService: AuthService
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -29,21 +31,36 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  async login(): Promise<void> {
-    try {
-      await this.authService
-        .login(this.usernameControl.value, this.passwordControl.value)
-        .then((_data: { accessToken: string; refreshToken: string }) => {
-          this.onLoginMessage = `Logged in to account ${this.usernameControl.value}. Redirecting in a moment...`;
-          this.onLoginStatus = 0;
+  public login(): void {
+    const username: string = this.usernameControl.value;
 
-          localStorage.setItem('access-token', _data.accessToken);
-          localStorage.setItem('refresh-token', _data.refreshToken);
-        });
-    } catch (err) {
-      this.onLoginMessage = err.message;
-      this.onLoginStatus = 1;
-    }
+    this.authService.login(username, this.passwordControl.value).subscribe(
+      (response) => {
+        this.onLoginMessage = `Logged in to account ${username}. Redirecting in a moment...`;
+        this.onLoginStatus = 0;
+
+        localStorage.setItem('access-token', response.accessToken);
+        localStorage.setItem('refresh-token', response.refreshToken);
+
+        window.location.replace('select-installation');
+      },
+      (error) => {
+        const errorCode: string = error.error.code;
+        if (errorCode === 'CPR_XOR_USERNAME_LOGIN') {
+          this.onLoginMessage = 'Server fejl. Kontakt personale!';
+        } else if (errorCode === 'ACCOUNT_NOT_EXISTS') {
+          this.onLoginMessage =
+            'Der findes ingen bruger med de angivne indtastede oplysningner';
+        } else {
+          this.onLoginMessage = 'Intern fejl. Kontakt personale!';
+        }
+        this.onLoginStatus = 1;
+      }
+    );
+  }
+
+  public gotoRegisterPage() {
+    window.location.replace('register');
   }
 
   public get usernameControl(): AbstractControl {
@@ -52,12 +69,5 @@ export class LoginComponent implements OnInit {
 
   public get passwordControl(): AbstractControl {
     return this.loginForm.get('password') as AbstractControl;
-  }
-
-  public get anyErrors(): boolean {
-    return (
-      this.usernameControl.errors !== null ||
-      this.passwordControl.errors !== null
-    );
   }
 }

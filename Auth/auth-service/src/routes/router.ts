@@ -1,20 +1,13 @@
 import Router from 'koa-router';
 
-import AuthController from '../controllers/auth-controller';
+import authRouter from './auth-router';
+import installationRouter from './installation-router';
+import userRouter from './user-router';
 
 const router = new Router({ prefix: '/api' });
-const authController = new AuthController();
 
-router.post('/register', async (ctx, next) => {
-    await authController.postRegister(ctx, next);
-});
-
-router.post('/login', async (ctx, next) => {
-    await authController.postLogin(ctx, next);
-});
-
-router.post('/refresh', async (ctx, next) => {
-    await authController.postRefresh(ctx, next);
-});
+router.use(installationRouter.routes(), installationRouter.allowedMethods());
+router.use(authRouter.routes(), authRouter.allowedMethods());
+router.use(userRouter.routes(), userRouter.allowedMethods());
 
 export default router;

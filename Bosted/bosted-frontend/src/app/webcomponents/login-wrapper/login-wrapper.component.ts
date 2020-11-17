@@ -1,4 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 // https://medium.com/@rohitsaxena_97625/angular-angular-micro-frontend-part-of-adventures-in-micro-frontend-series-part-2-9e3c3f0bfc0c
 
@@ -8,7 +9,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: [],
 })
 export class LoginWrapperComponent implements OnInit {
-  link: string = 'http://localhost:7000/main.js';
+  link: string = `http://${environment.host}:8000/main.js`;
 
   @Input() dataToChild: string;
   @Output() dataFromChild = new EventEmitter<string>();

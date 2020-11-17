@@ -6,11 +6,9 @@ import { CitizenService } from 'src/app/services/citizen.service';
 @Component({
   selector: 'citizen-journal',
   templateUrl: './citizen-journal.component.html',
-  styleUrls: ['./citizen-journal.component.scss'],
 })
 export class CitizenJournalComponent implements OnInit {
   public citizen: Citizen;
-  public loading: boolean = true;
 
   constructor(
     private activeRoute: ActivatedRoute,
@@ -22,7 +20,6 @@ export class CitizenJournalComponent implements OnInit {
       const citizenId = this.activeRoute.parent.snapshot.params['id'];
       this.citizenService.get(citizenId).subscribe((citizen: Citizen) => {
         this.citizen = citizen;
-        this.loading = false;
       });
     });
   }

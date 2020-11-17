@@ -1,66 +1,40 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import axios, { AxiosResponse } from 'axios';
+import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  constructor() {}
+  readonly BASE_URL: string = `http://${environment.host}:7000/api`;
 
-  async register(
+  constructor(private http: HttpClient) {}
+
+  public register(
     username: string,
     password: string,
     cpr: string,
     firstName: string,
     lastName: string
-  ): Promise<void> {
-    try {
-      await axios.post('http://localhost:3000/api/register', {
-        username,
-        password,
-        cpr,
-        firstName,
-        lastName,
-      });
-    } catch (err) {
-      const request = err.response;
-
-      if (request.status === 400) {
-        if (request.data.code === 'CPR_OR_USERNAME_IN_USE') {
-          throw new Error('User already exists.');
-        } else {
-          throw new Error('Server-side error. Contact staff!');
-        }
-      }
-    }
+  ): Observable<any> {
+    const body = {
+      username,
+      password,
+      cpr,
+      firstName,
+      lastName,
+    };
+    return this.http.post<any>(`${this.BASE_URL}/register`, body);
   }
 
-  async login(username: string, password: string): Promise<Object> {
-    try {
-      let body = { username, password };
-      if (username.match(/^\d{10}$/)) {
-        body['cpr'] = username;
-        delete body.username;
-      }
-      let data: { accessToken: string; refreshToken: string };
-      await axios
-        .post('http://localhost:3000/api/login', body)
-        .then((response) => {
-          data = response.data;
-        });
-      return data;
-    } catch (err) {
-      const request = err.response;
-
-      if (request.status === 400) {
-        if (request.data.code === 'CPR_XOR_USERNAME_LOGIN') {
-          throw new Error('Server-side error. Contact staff!');
-        } else if (request.data.code === 'ACCOUNT_NOT_EXISTS') {
-          throw new Error('Account with given credentials do not exist.');
-        } else {
-          throw new Error('Server-side error. Contact staff!');
-        }
-      }
+  public login(username: string, password: string): Observable<any> {
+    let body = { username, password };
+    if (username.match(/^\d{10}$/)) {
+      body['cpr'] = username;
+      delete body.username;
     }
+
+    return this.http.post<any>(`${this.BASE_URL}/login`, body);
   }
 }

@@ -3,12 +3,8 @@ const schema = {
     $id: 'refresh',
     type: 'object',
     title: 'refresh schema',
-    required: ['accessToken', 'refreshToken'],
+    required: ['refreshToken'],
     properties: {
-        accessToken: {
-            type: 'string',
-            minLength: 2,
-        },
         refreshToken: {
             type: 'string',
             minLength: 2,

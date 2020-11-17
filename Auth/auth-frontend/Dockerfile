@@ -1,14 +1,13 @@
 #######################
 ## STEP 1 Base image ##
 #######################
-FROM node:12.18.3-alpine3.12 as builder
+FROM node:14.15.0-alpine3.12 as builder
 
 # Working directory in base container
 WORKDIR /app
 
 # The dependencies to the project
-COPY package.json .
-COPY yarn.lock .
+COPY package.json yarn.lock* ./
 
 # Add curl
 RUN apk --no-cache add curl
@@ -26,8 +25,12 @@ RUN yarn
 # Copy the application
 COPY . .
 
+# Get mode from docker-compose
+ARG MODE
+RUN echo "MODE: $MODE"
+
 # Build the application
-RUN yarn run build --prod
+RUN yarn run build-$MODE
 
 #############################
 ## STEP 2 Production image ##
