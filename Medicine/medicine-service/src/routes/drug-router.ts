@@ -19,4 +19,4 @@ router.get(
   }
 );
 
-export { router as drugRouter };
+export default router;
