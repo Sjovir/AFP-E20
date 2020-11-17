@@ -1,8 +1,8 @@
 import Router from 'koa-router';
 import { isAuthenticated } from '../middleware/authentication';
-import { citizenRouter } from './citizen-router';
-import { drugRouter } from './drug-router';
-import { ordinationRouter } from './ordination-router';
+import citizenRouter from './citizen-router';
+import drugRouter from './drug-router';
+import ordinationRouter from './ordination-router';
 
 const router = new Router({ prefix: '/api' });
 

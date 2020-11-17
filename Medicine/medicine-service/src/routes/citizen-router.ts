@@ -4,7 +4,6 @@ import CitizenController from '../controllers/citizen-controller';
 import { isAuthorized } from '../middleware/authorization';
 
 const router = new Router({ prefix: '/citizens' });
-
 const controller = Container.get(CitizenController);
 
 router.get('/', isAuthorized(Permission.CITIZEN_VIEW), async (ctx, next) => {
@@ -39,4 +38,4 @@ router.delete(
   }
 );
 
-export { router as citizenRouter };
+export default router;
