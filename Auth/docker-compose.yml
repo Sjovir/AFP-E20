@@ -2,7 +2,10 @@ version: "3"
 
 services:
   frontend:
-    build: ./auth-frontend
+    build:
+      context: ./auth-frontend
+      args:
+        MODE: ${MODE}
     image: erikbn/afp20_auth_frontend
     container_name: AuthFrontend
     environment:
