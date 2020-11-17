@@ -1,3 +1,5 @@
+import { AxiosInstance } from 'axios';
+
 declare namespace NodeJS {
   export interface ProcessEnv {
     NODE_ENV: 'development' | 'production';
@@ -10,5 +12,13 @@ declare namespace NodeJS {
     DB_PORT: string;
     KAFKA_ENABLED: string;
     KAFKA_HOST?: string;
+    BOSTED_SERVICE: string;
+    BOSTED_PORT: string;
+  }
+}
+
+declare module 'koa' {
+  interface BaseContext {
+    axios: AxiosInstance;
   }
 }

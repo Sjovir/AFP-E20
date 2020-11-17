@@ -4,6 +4,12 @@ export const hasPermissions = (
   current: Array<string>,
   compare: string | Array<string>
 ): boolean => {
+  for (const currPerm of current) {
+    if (currPerm === 'ADMIN') {
+      return true;
+    }
+  }
+
   if (Array.isArray(compare)) {
     for (const comparePerm of compare) {
       let found = false;

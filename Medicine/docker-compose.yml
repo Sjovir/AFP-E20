@@ -20,6 +20,8 @@ services:
     build: ./medicine-service
     image: erikbn/afp20_medicine_service
     container_name: MedicineService
+    volumes:
+      - /var/log/afpe20:/var/log/afpe20
     environment:
       - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - DB_USER=${DB_USER}
@@ -29,6 +31,8 @@ services:
       - KAFKA_HOST=${KAFKA_HOST}
       - YARN-VERSION=${YARN_VERSION}
       - JWT_SECRET=${JWT_SECRET}
+      - BOSTED_SERVICE=${BOSTED_SERVICE}
+      - BOSTED_PORT=${BOSTED_PORT}
     depends_on:
       - database
   database:
@@ -43,5 +47,5 @@ services:
 
 networks:
   default:
-    external: 
+    external:
       name: kafka_apache-net

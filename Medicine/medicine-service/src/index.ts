@@ -7,13 +7,14 @@ import cors from '@koa/cors';
 import bodyparser from 'koa-bodyparser';
 import gracefulShutdown from 'http-graceful-shutdown';
 import { v4 as uuid } from 'uuid';
+import axios from 'axios';
 
 import logger from './logger';
 import client from './database/mariadb-client';
 import './kafka/citizen-consumer';
 import router from './routes/router';
 
-const CORRELATION_HEADER = 'X-Correlation-Id';
+const CORRELATION_HEADER = 'x-correlation-id';
 const PORT = process.env.PORT || 7200;
 
 const app = new Koa();
@@ -29,9 +30,15 @@ app.on('error', (err: Error, ctx: Context) => {
   };
 
   if (ctx.status >= 500) {
-    logger.error(`error on request: ${ctx.request.url}`, errObj);
+    logger.error(
+      `error on request: ${ctx.request.method} ${ctx.request.url}`,
+      errObj
+    );
   } else {
-    logger.warn(`warning on request: ${ctx.request.url}`, errObj);
+    logger.warn(
+      `warning on request: ${ctx.request.method} ${ctx.request.url}`,
+      errObj
+    );
   }
 });
 
@@ -40,6 +47,15 @@ app.use(bodyparser());
 
 app.use(async (ctx, next) => {
   if (!ctx.header[CORRELATION_HEADER]) ctx.header[CORRELATION_HEADER] = uuid();
+
+  const axiosHeaders = {};
+  axiosHeaders['authorization'] = ctx.request.header['authorization'];
+  axiosHeaders[CORRELATION_HEADER] = ctx.request.header[CORRELATION_HEADER];
+
+  ctx.axios = axios.create({
+    headers: axiosHeaders,
+  });
+
   await next();
 });
 
@@ -58,7 +74,7 @@ app.use(async (ctx, next) => {
       : {}),
   };
 
-  logger.info(`request: ${ctx.request.url}`, requestMetadata);
+  logger.info(`request: ${request.method} ${ctx.request.url}`, requestMetadata);
 
   try {
     await next();
@@ -72,6 +88,7 @@ app.use(async (ctx, next) => {
   }
 
   const responseMetadata = {
+    correlationId: ctx.request.header[CORRELATION_HEADER],
     header: response.headers,
     status: response.status,
     body: response.body,
@@ -79,7 +96,10 @@ app.use(async (ctx, next) => {
     type: response.type,
   };
 
-  logger.info(`response: ${ctx.request.url}`, responseMetadata);
+  logger.info(
+    `response: ${request.method} ${ctx.request.url}`,
+    responseMetadata
+  );
 });
 
 app.use(router.routes());

@@ -41,6 +41,8 @@ RUN [ "yarn", "test" ]
 # Starts the server
 FROM node:14.15.0-alpine3.12 as serve
 WORKDIR /usr/app
+RUN mkdir /var/log/afpe20
+VOLUME /var/log/afpe20
 # ENV SERVER-FILE index.js
 # COPY --from=builder /usr/app/dist .
 COPY --from=builder /usr/app/ .
