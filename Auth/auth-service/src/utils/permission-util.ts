@@ -1,30 +1,36 @@
 // Converting them to hashmaps and then compare might be a faster solution.
 // Use more RAM and less CPU.
 export const hasPermissions = (
-    current: Array<string>,
-    compare: string | Array<string>
+  current: Array<string>,
+  compare: string | Array<string>
 ): boolean => {
-    if (Array.isArray(compare)) {
-        for (const comparePerm of compare) {
-            let found = false;
-            for (const currPerm of current) {
-                if (currPerm === comparePerm) {
-                    found = true;
-                    break;
-                }
-            }
+  for (const currPerm of current) {
+    if (currPerm === 'ADMIN') {
+      return true;
+    }
+  }
 
-            if (!found) return false;
+  if (Array.isArray(compare)) {
+    for (const comparePerm of compare) {
+      let found = false;
+      for (const currPerm of current) {
+        if (currPerm === comparePerm) {
+          found = true;
+          break;
         }
+      }
 
-        return true;
+      if (!found) return false;
     }
 
-    for (const currPerm of current) {
-        if (currPerm === compare) {
-            return true;
-        }
-    }
+    return true;
+  }
 
-    return false;
+  for (const currPerm of current) {
+    if (currPerm === compare) {
+      return true;
+    }
+  }
+
+  return false;
 };

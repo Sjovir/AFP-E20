@@ -9,30 +9,29 @@ dotenv.config();
 chai.use(chaiAsPromise);
 
 const userPermissions = [
-  'ADMIN',
   'MEDICINE_PROFILE:WRITE',
-  'CITIZEN:WRITE',
   'MEDICINE_RECIPIENTS:READ',
+  'CITIZEN:WRITE',
 ];
 
 describe('Permission Utility', function () {
   describe('has permissions', function () {
     it('with valid array', function () {
       const result = hasPermissions(userPermissions, [
-        'ADMIN',
         'MEDICINE_RECIPIENTS:READ',
+        'CITIZEN:WRITE',
       ]);
       chai.expect(result).to.be.true;
     });
 
     it('with valid string', function () {
-      const result = hasPermissions(userPermissions, 'ADMIN');
+      const result = hasPermissions(['ADMIN', ...userPermissions], 'ADMIN');
       chai.expect(result).to.be.true;
     });
 
     it('with invalid array', function () {
       const result = hasPermissions(userPermissions, [
-        'ADMIN',
+        'CITIZEN:READ',
         'MEDICINE_RECIPIENTS:WRITE',
       ]);
       chai.expect(result).to.be.false;

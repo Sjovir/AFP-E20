@@ -2,6 +2,8 @@ import { Kafka } from 'kafkajs';
 import { Container } from 'typedi';
 
 import logger from '../logger';
+import ExistsError from '../errors/exists-error';
+import ForeignKeyError from '../errors/foreignkey-error';
 import CitizenService from '../services/citizen-service';
 
 const brokers = process.env.KAFKA_HOST || 'localhost';
@@ -71,7 +73,19 @@ const citizenService = Container.get(CitizenService);
               );
           }
         } catch (err) {
-          logger.error(`error consuming kafka event on topic ${TOPIC}`, err);
+          if (err instanceof ExistsError) {
+            logger.error(
+              `exists error consuming kafka event on topic ${TOPIC}`,
+              err
+            );
+          } else if (err instanceof ForeignKeyError) {
+            logger.error(
+              `foreign key error consuming kafka event on topic ${TOPIC}`,
+              err
+            );
+          } else {
+            logger.error(`error consuming kafka event on topic ${TOPIC}`, err);
+          }
         }
       }
     },
