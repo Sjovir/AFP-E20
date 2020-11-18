@@ -8,13 +8,13 @@ import {
   deleteCitizenEvent,
   updateCitizenEvent,
 } from '../kafka/citizen-producer';
-import SseService from './sse-service';
+import CitizenSseService from './citizen-sse-service';
 
 @Service()
 export default class CitizenService {
   constructor(
     private citizenRepository: CitizenRepository,
-    private sseService: SseService
+    private citizenSseService: CitizenSseService
   ) {}
 
   async getCitizen(citizenUUID: string) {
@@ -48,9 +48,11 @@ export default class CitizenService {
     await this.citizenRepository.update(citizen);
     await updateCitizenEvent(citizen);
 
-    this.sseService.emitCitizenEvent('update', {
-      id: citizen.id,
-      data: citizen,
+    this.citizenSseService.emitEvent(citizen.id, {
+      event: 'CITIZEN_UPDATE',
+      data: {
+        citizen: citizen,
+      },
     });
   }
 

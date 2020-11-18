@@ -5,12 +5,12 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class SseService {
-  readonly BASE_URL: string = 'http://localhost:3010/api/sse';
+  readonly BASE_URL: string = 'http://localhost:7100/sse';
 
   constructor(private zone: NgZone) {}
 
   public getCitizenEvents(citizenid: string): Observable<any> {
-    return this.getServerSentEvents(`${this.BASE_URL}/citizens/${citizenid}`)
+    return this.getServerSentEvents(`${this.BASE_URL}/citizens/${citizenid}`);
   }
 
   private getServerSentEvents(url: string): Observable<any> {

@@ -97,10 +97,12 @@ app.use(async (ctx, next) => {
     type: response.type,
   };
 
-  logger.info(
-    `response: ${request.method} ${ctx.request.url}`,
-    responseMetadata
-  );
+  if (!ctx.path.startsWith('/sse')) {
+    logger.info(
+      `response: ${request.method} ${ctx.request.url}`,
+      responseMetadata
+    );
+  }
 });
 
 app.use(router.routes());

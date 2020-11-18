@@ -7,6 +7,10 @@
   >
     Rediger borger
   </button>
+  <p *ngIf="totalEditing > 1">{{ totalEditing }}</p>
+  <div *ngIf="updated" class="alert alert-primary" role="alert">
+    Denne borger er blevet opdateret!
+  </div>
   <div class="row">
     <div class="col-3 title-column">
       <p>Navn:</p>

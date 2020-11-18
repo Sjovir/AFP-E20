@@ -12,7 +12,7 @@ export const isAuthenticated = async (ctx: Koa.Context, next: Koa.Next) => {
   const token = getAuthorizationToken(ctx.headers.authorization);
 
   try {
-    verify(token);
+    ctx.user = <IDecodedAccessToken>verify(token);
     await next();
   } catch (err) {
     ctx.throw(401, err);

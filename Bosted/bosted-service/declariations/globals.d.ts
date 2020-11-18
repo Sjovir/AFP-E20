@@ -8,7 +8,7 @@ declare namespace NodeJS {
     DB_HOST: string;
     DB_USER: string;
     DB_PASSWORD: string;
-    DB_DATABASE: string;
+    DB_DATABASE_BOSTED: string;
     DB_PORT: string;
     KAFKA_HOST?: string;
     AUTH_SERVICE: string;
@@ -21,5 +21,6 @@ declare namespace NodeJS {
 declare module 'koa' {
   interface BaseContext {
     axios: AxiosInstance;
+    user?: IDecodedAccessToken;
   }
 }

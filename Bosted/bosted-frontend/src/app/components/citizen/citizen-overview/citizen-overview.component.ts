@@ -16,8 +16,9 @@ import { CitizenModalComponent } from '../modals/citizen-modal/citizen-modal.com
 })
 export class CitizenOverviewComponent implements OnInit {
   public permCitizenEdit: boolean;
-
   public citizen: Citizen;
+  private totalEditing: number = 1;
+  private updated: boolean = false;
 
   constructor(
     private activeRoute: ActivatedRoute,
@@ -38,8 +39,20 @@ export class CitizenOverviewComponent implements OnInit {
         this.citizen = citizen;
 
         this.sseService.getCitizenEvents(this.citizen.id).subscribe(
-          (data) => {
-            console.log(data);
+          (event) => {
+            const json = JSON.parse(event.data);
+
+            console.log('Incoming data:');
+            console.log(json.data);
+            switch (json.event) {
+              case 'USER_CHANGE':
+                this.totalEditing = json.data.total;
+                break;
+              case 'CITIZEN_UPDATE':
+                this.updated = true;
+                console.log('CITIZEN UPDATE!');
+                break;
+            }
           },
           (error) => {
             console.log(error);

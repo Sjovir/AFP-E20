@@ -42,7 +42,7 @@ services:
       - MYSQL_USER=${DB_USER}
       - MYSQL_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=${DB_DATABASE_AUTH}
-
+      - MYSQL_PORT=${DB_PORT}
 networks:
   default:
     external:

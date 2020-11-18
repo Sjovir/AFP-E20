@@ -1,16 +1,11 @@
 import Router from 'koa-router';
 
-import { isAuthenticated } from '../middleware/authentication';
-import citizenRouter from './citizen-router';
-import installationRouter from './installation-router';
+import apiRouter from './api-router';
 import sseRouter from './sse-router';
 
-const router = new Router({ prefix: '/api' });
+const router = new Router();
 
-router.use(isAuthenticated);
-
-router.use(citizenRouter.routes(), citizenRouter.allowedMethods());
-router.use(installationRouter.routes(), installationRouter.allowedMethods());
+router.use(apiRouter.routes(), apiRouter.allowedMethods());
 router.use(sseRouter.routes(), sseRouter.allowedMethods());
 
 export default router;
