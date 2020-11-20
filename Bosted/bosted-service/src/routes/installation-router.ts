@@ -7,33 +7,53 @@ const router = new Router({ prefix: '/installations' });
 const controller = Container.get(InstallationController);
 
 router
-  .get('/', isAuthorized(Permission.INSTALLATION_VIEW), controller.getAll)
+  .get('/', isAuthorized(Permission.INSTALLATION_VIEW), async (ctx, next) => {
+    await controller.getAll(ctx, next);
+  })
   .get(
     '/:installationUUID',
     isAuthorized(Permission.INSTALLATION_VIEW),
-    controller.get
+    async (ctx, next) => {
+      await controller.get(ctx, next);
+    }
   )
-  .post('/', isAuthorized(Permission.INSTALLATION_EDIT), controller.create)
+  .post('/', isAuthorized(Permission.INSTALLATION_EDIT), async (ctx, next) => {
+    await controller.create(ctx, next);
+  })
   .put(
     '/:installationUUID',
     isAuthorized(Permission.INSTALLATION_EDIT),
-    controller.update
+    async (ctx, next) => {
+      await controller.update(ctx, next);
+    }
   )
-  .delete('/', isAuthorized(Permission.INSTALLATION_EDIT), controller.delete)
+  .delete(
+    '/',
+    isAuthorized(Permission.INSTALLATION_EDIT),
+    async (ctx, next) => {
+      await controller.delete(ctx, next);
+    }
+  )
   .get(
     '/:installationUUID/citizens',
     isAuthorized([Permission.INSTALLATION_VIEW, Permission.CITIZEN_VIEW]),
-    controller.getCitizens
+    async (ctx, next) => {
+      await controller.getCitizens(ctx, next);
+    }
   )
   .post(
     '/:installationUUID/citizens/:citizenUUID',
     isAuthorized([Permission.INSTALLATION_VIEW, Permission.CITIZEN_EDIT]),
-    controller.addCitizen
+    async (ctx, next) => {
+      await controller.addCitizen(ctx, next);
+    }
   )
   .delete(
     '/:installationUUID/citizens/:citizenUUID',
     isAuthorized([Permission.INSTALLATION_VIEW, Permission.CITIZEN_EDIT]),
-    controller.removeCitizen
+    async (ctx, next) => {
+      await controller.removeCitizen(ctx, next);
+    }
   );
 
 export default router;

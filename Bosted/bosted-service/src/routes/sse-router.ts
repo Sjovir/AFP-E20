@@ -5,6 +5,8 @@ import CitizenSseController from '../controllers/citizen-sse-controller';
 const router = new Router({ prefix: '/sse' });
 const controller = Container.get(CitizenSseController);
 
-router.get('/citizens/:citizenUUID', controller.getCitizenEvents);
+router.get('/citizens/:citizenUUID', async (ctx, next) => {
+  await controller.getCitizenEvents(ctx, next);
+});
 
 export default router;

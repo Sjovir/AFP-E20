@@ -8,48 +8,71 @@ const router = new Router({ prefix: '/installations' });
 router.use(isAuthenticated);
 
 router
-  .get('/', controller.getAll)
-  .get('/:installationUUID', controller.get)
-  .get('/users/:userUUID', controller.getInstallationsOnUser)
-  .post('/select', controller.select)
-  .post('/', controller.create)
-  .put('/:installationUUID', controller.update)
-  .delete('/', controller.delete);
+  .get('/', async (ctx, next) => {
+    await controller.getAll(ctx, next);
+  })
+  .get('/:installationUUID', async (ctx, next) => {
+    await controller.get(ctx, next);
+  })
+  .get('/users/:userUUID', async (ctx, next) => {
+    await controller.getInstallationsOnUser(ctx, next);
+  })
+  .post('/select', async (ctx, next) => {
+    await controller.select(ctx, next);
+  })
+  .post('/', async (ctx, next) => {
+    await controller.create(ctx, next);
+  })
+  .put('/:installationUUID', async (ctx, next) => {
+    await controller.update(ctx, next);
+  })
+  .delete('/', async (ctx, next) => {
+    await controller.delete(ctx, next);
+  });
 
 /* USERS */
 
 router
-  .get('/:installationUUID/users', controller.getAllUsersFromInstallation)
-  .post('/:installationUUID/users/:userUUID', controller.addUserToInstallation)
-  .delete(
-    '/:installationUUID/users/:userUUID',
-    controller.removeUserFromInstallation
-  );
+  .get('/:installationUUID/users', async (ctx, next) => {
+    await controller.getAllUsersFromInstallation(ctx, next);
+  })
+  .post('/:installationUUID/users/:userUUID', async (ctx, next) => {
+    await controller.addUserToInstallation(ctx, next);
+  })
+  .delete('/:installationUUID/users/:userUUID', async (ctx, next) => {
+    await controller.removeUserFromInstallation(ctx, next);
+  });
 
 /* USER ROLES */
 
 router
-  .get(
-    '/:installationUUID/users/:userUUID/roles',
-    controller.getUserRolesFromInstallation
-  )
+  .get('/:installationUUID/users/:userUUID/roles', async (ctx, next) => {
+    await controller.getUserRolesFromInstallation(ctx, next);
+  })
   .post(
     '/:installationUUID/users/:userUUID/roles/:roleUUID',
-    controller.addUserRolesToInstallation
+    async (ctx, next) => {
+      await controller.addUserRolesToInstallation(ctx, next);
+    }
   )
   .delete(
     '/:installationUUID/users/:userUUID/roles/:roleUUID',
-    controller.removeUserRolesFromInstallation
+    async (ctx, next) => {
+      await controller.removeUserRolesFromInstallation(ctx, next);
+    }
   );
 
 /* ROLES */
 
 router
-  .get('/:installationUUID/roles', controller.getAllRolesFromInstallation)
-  .post('/:installationUUID/roles/', controller.addRoleToInstallation)
-  .delete(
-    '/:installationUUID/roles/:roleUUID',
-    controller.removeRoleFromInstallation
-  );
+  .get('/:installationUUID/roles', async (ctx, next) => {
+    await controller.getAllRolesFromInstallation(ctx, next);
+  })
+  .post('/:installationUUID/roles/', async (ctx, next) => {
+    await controller.addRoleToInstallation(ctx, next);
+  })
+  .delete('/:installationUUID/roles/:roleUUID', async (ctx, next) => {
+    await controller.removeRoleFromInstallation(ctx, next);
+  });
 
 export default router;
