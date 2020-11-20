@@ -1,4 +1,4 @@
-import { Context } from 'koa';
+import { Context, Next } from 'koa';
 import { PassThrough } from 'stream';
 import { Service } from 'typedi';
 import CitizenSseService from '../services/citizen-sse-service';
@@ -9,7 +9,7 @@ import { isUUID } from '../utils/uuid-util';
 export default class CitizenSseController {
   constructor(private citizenSseService: CitizenSseService) {}
 
-  getCitizenEvents(ctx: Context) {
+  async getCitizenEvents(ctx: Context, next: Next) {
     const id = ctx.params.citizenUUID;
 
     try {
@@ -41,6 +41,8 @@ export default class CitizenSseController {
 
       this.citizenSseService.addListener(id, listener);
       this.citizenSseService.emitTotalEvent(id);
+
+      await next();
     } catch (err) {
       ctx.throw(500, err);
     }

@@ -6,68 +6,35 @@ import { isAuthorized } from '../middleware/authorization';
 const router = new Router({ prefix: '/installations' });
 const controller = Container.get(InstallationController);
 
-router.get(
-  '/',
-  isAuthorized(Permission.INSTALLATION_VIEW),
-  async (ctx, next) => {
-    await controller.getAll(ctx, next);
-  }
-);
+router.get('/', isAuthorized(Permission.INSTALLATION_VIEW), controller.getAll);
 
-router.get(
-  '/:installationUUID',
-  isAuthorized(Permission.INSTALLATION_VIEW),
-  async (ctx, next) => {
-    await controller.get(ctx, next);
-  }
-);
-
-router.post(
-  '/',
-  isAuthorized(Permission.INSTALLATION_EDIT),
-  async (ctx, next) => {
-    await controller.create(ctx, next);
-  }
-);
-
-router.put(
-  '/:installationUUID',
-  isAuthorized(Permission.INSTALLATION_EDIT),
-  async (ctx, next) => {
-    await controller.update(ctx, next);
-  }
-);
-
-router.delete(
-  '/',
-  isAuthorized(Permission.INSTALLATION_EDIT),
-  async (ctx, next) => {
-    await controller.delete(ctx, next);
-  }
-);
-
-router.get(
-  '/:installationUUID/citizens',
-  isAuthorized([Permission.INSTALLATION_VIEW, Permission.CITIZEN_VIEW]),
-  async (ctx, next) => {
-    await controller.getCitizens(ctx, next);
-  }
-);
-
-router.post(
-  '/:installationUUID/citizens/:citizenUUID',
-  isAuthorized([Permission.INSTALLATION_VIEW, Permission.CITIZEN_EDIT]),
-  async (ctx, next) => {
-    await controller.addCitizen(ctx, next);
-  }
-);
-
-router.delete(
-  '/:installationUUID/citizens/:citizenUUID',
-  isAuthorized([Permission.INSTALLATION_VIEW, Permission.CITIZEN_EDIT]),
-  async (ctx, next) => {
-    await controller.removeCitizen(ctx, next);
-  }
-);
+router
+  .get(
+    '/:installationUUID',
+    isAuthorized(Permission.INSTALLATION_VIEW),
+    controller.get
+  )
+  .post('/', isAuthorized(Permission.INSTALLATION_EDIT), controller.create)
+  .put(
+    '/:installationUUID',
+    isAuthorized(Permission.INSTALLATION_EDIT),
+    controller.update
+  )
+  .delete('/', isAuthorized(Permission.INSTALLATION_EDIT), controller.delete)
+  .get(
+    '/:installationUUID/citizens',
+    isAuthorized([Permission.INSTALLATION_VIEW, Permission.CITIZEN_VIEW]),
+    controller.getCitizens
+  )
+  .post(
+    '/:installationUUID/citizens/:citizenUUID',
+    isAuthorized([Permission.INSTALLATION_VIEW, Permission.CITIZEN_EDIT]),
+    controller.addCitizen
+  )
+  .delete(
+    '/:installationUUID/citizens/:citizenUUID',
+    isAuthorized([Permission.INSTALLATION_VIEW, Permission.CITIZEN_EDIT]),
+    controller.removeCitizen
+  );
 
 export default router;
