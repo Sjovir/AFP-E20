@@ -6,9 +6,8 @@ import { isAuthorized } from '../middleware/authorization';
 const router = new Router({ prefix: '/citizens' });
 const controller = Container.get(CitizenController);
 
-router.get('/', isAuthorized(Permission.CITIZEN_VIEW), controller.getAll);
-
 router
+  .get('/', isAuthorized(Permission.CITIZEN_VIEW), controller.getAll)
   .get('/:citizenUUID', isAuthorized(Permission.CITIZEN_VIEW), controller.get)
   .post('/', isAuthorized(Permission.CITIZEN_EDIT), controller.create)
   .put(
