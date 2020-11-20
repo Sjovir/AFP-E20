@@ -6,9 +6,8 @@ import { isAuthorized } from '../middleware/authorization';
 const router = new Router({ prefix: '/installations' });
 const controller = Container.get(InstallationController);
 
-router.get('/', isAuthorized(Permission.INSTALLATION_VIEW), controller.getAll);
-
 router
+  .get('/', isAuthorized(Permission.INSTALLATION_VIEW), controller.getAll)
   .get(
     '/:installationUUID',
     isAuthorized(Permission.INSTALLATION_VIEW),

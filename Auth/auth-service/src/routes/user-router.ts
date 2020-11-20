@@ -5,8 +5,6 @@ import UserController from '../controllers/user-controller';
 const controller = Container.get(UserController);
 const router = new Router({ prefix: '/users' });
 
-router.get('/username/:username', async (ctx, next) => {
-    await controller.getOnUsername(ctx, next);
-});
+router.get('/username/:username', controller.getOnUsername);
 
 export default router;
