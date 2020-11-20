@@ -8,7 +8,7 @@ declare namespace NodeJS {
     DB_HOST: string;
     DB_USER: string;
     DB_PASSWORD: string;
-    DB_DATABASE_MEDICINE: string;
+    DB_DATABASE: string;
     DB_PORT: string;
     KAFKA_ENABLED: string;
     KAFKA_HOST?: string;

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { filter } from 'rxjs/operators';
 import { Citizen } from 'src/app/models/citizen.model';
 import { CitizenService } from 'src/app/services/citizen.service';
 import {
@@ -25,6 +26,7 @@ export class CitizenOverviewComponent implements OnInit {
     private citizenService: CitizenService,
     private modalService: NgbModal,
     private permissionService: PermissionService,
+    private router: Router,
     private sseService: SseService
   ) {}
 
@@ -38,26 +40,35 @@ export class CitizenOverviewComponent implements OnInit {
       this.citizenService.get(citizenId).subscribe((citizen: Citizen) => {
         this.citizen = citizen;
 
-        this.sseService.getCitizenEvents(this.citizen.id).subscribe(
-          (event) => {
-            const json = JSON.parse(event.data);
+        let citizenEvent: { unsubscribe(): void };
+        citizenEvent = this.sseService
+          .getCitizenEvents(this.citizen.id)
+          .subscribe(
+            (event) => {
+              const json = JSON.parse(event.data);
 
-            console.log('Incoming data:');
-            console.log(json.data);
-            switch (json.event) {
-              case 'USER_CHANGE':
-                this.totalEditing = json.data.total;
-                break;
-              case 'CITIZEN_UPDATE':
-                this.updated = true;
-                console.log('CITIZEN UPDATE!');
-                break;
+              console.log('Incoming data:');
+              console.log(json.data);
+              switch (json.event) {
+                case 'USER_CHANGE':
+                  this.totalEditing = json.data.total;
+                  break;
+                case 'CITIZEN_UPDATE':
+                  this.updated = true;
+                  console.log('CITIZEN UPDATE!');
+                  break;
+              }
+            },
+            (error) => {
+              console.log(error);
             }
-          },
-          (error) => {
-            console.log(error);
-          }
-        );
+          );
+
+        this.router.events
+          .pipe(filter((event) => event instanceof NavigationEnd))
+          .subscribe((event: NavigationEnd) => {
+            citizenEvent.unsubscribe();
+          });
       });
     });
   }

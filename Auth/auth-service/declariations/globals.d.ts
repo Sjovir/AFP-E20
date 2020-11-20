@@ -6,7 +6,7 @@ declare namespace NodeJS {
     DB_HOST: string;
     DB_USER: string;
     DB_PASSWORD: string;
-    DB_DATABASE_AUTH: string;
+    DB_DATABASE: string;
     KAFKA_HOST?: string;
   }
 }

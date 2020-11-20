@@ -28,6 +28,12 @@ export class SseService {
           observer.error(error);
         });
       };
+
+      return {
+        unsubscribe() {
+          eventSource.close();
+        },
+      };
     });
   }
 

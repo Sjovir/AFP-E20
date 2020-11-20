@@ -2,20 +2,24 @@ import { Context, Next } from 'koa';
 import { PassThrough } from 'stream';
 import { Service } from 'typedi';
 import CitizenSseService from '../services/citizen-sse-service';
-import { isUUID } from '../utils/uuid-util';
+import AbstractController from './abstract-controller';
 
 // https://medium.com/trabe/server-sent-events-sse-streams-with-node-and-koa-d9330677f0bf
 @Service()
-export default class CitizenSseController {
-  constructor(private citizenSseService: CitizenSseService) {}
+export default class CitizenSseController extends AbstractController {
+  constructor(private citizenSseService: CitizenSseService) {
+    super();
+  }
 
   async getCitizenEvents(ctx: Context, next: Next) {
     const id = ctx.params.citizenUUID;
+    console.log(ctx.header);
 
     try {
-      if (!isUUID(id)) {
-        ctx.throw(400, 'The inserted identifier is not an UUID.');
-      }
+      // if (!isUUID(id)) {
+      //   ctx.throw(400, 'The inserted identifier is not an UUID.');
+      // }
+      if (!this.validIdentifiers(ctx, id)) return;
 
       ctx.set({
         'Content-Type': 'text/event-stream',
