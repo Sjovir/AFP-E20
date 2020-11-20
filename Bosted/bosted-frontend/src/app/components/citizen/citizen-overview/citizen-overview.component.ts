@@ -17,8 +17,8 @@ import { CitizenModalComponent } from '../modals/citizen-modal/citizen-modal.com
 export class CitizenOverviewComponent implements OnInit {
   public permCitizenEdit: boolean;
   public citizen: Citizen;
-  private totalEditing: number = 1;
-  private updated: boolean = false;
+  public totalEditing: number = 1;
+  public updated: boolean = false;
 
   constructor(
     private activeRoute: ActivatedRoute,
