@@ -5,17 +5,18 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root',
 })
-export class AliveService {
+export class HeartbeatService {
   constructor(public http: HttpClient) {}
 
-  public isAlive(serviceAddress: ServiceAddress) {
+  public pingAuth() {
     return this.http.get<string>(
-      `http://${environment.host}:${serviceAddress}/main.js`
+      `http://${environment.host}:7100/heartbeats/auth/frontend`
     );
   }
-}
 
-export enum ServiceAddress {
-  AUTH = '8000',
-  MEDICINE = '8200',
+  public pingMedicine() {
+    return this.http.get<string>(
+      `http://${environment.host}:7100/heartbeats/medicine/frontend`
+    );
+  }
 }

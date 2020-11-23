@@ -5,7 +5,8 @@ import citizenSchema from '../schemas/citizen-schema';
 import CitizenService from '../services/citizen-service';
 import AbstractController from './abstract-controller';
 
-const BOSTED_URL = `http://${process.env.BOSTED_SERVICE}:${process.env.BOSTED_PORT}/api/citizens/`;
+const { BOSTED_SERVICE, BOSTED_PORT } = process.env;
+const BOSTED_URL = `http://${BOSTED_SERVICE}:${BOSTED_PORT}/api/citizens`;
 
 @Service()
 export default class CitizenController extends AbstractController {
@@ -72,9 +73,11 @@ export default class CitizenController extends AbstractController {
     const citizen: ICitizen = { id, ...ctx.request.body };
 
     try {
-      const result = await ctx.axios.put(BOSTED_URL, citizen);
+      const result = await ctx.axios.put(`${BOSTED_URL}/${id}`, citizen);
       ctx.response.status = result.status;
       ctx.response.body = result.data;
+
+      // ctx.response.status = 200;
 
       await next();
     } catch (err) {
@@ -92,7 +95,7 @@ export default class CitizenController extends AbstractController {
     if (!this.validIdentifiers(ctx, id)) return;
 
     try {
-      const result = await ctx.axios.delete(BOSTED_URL, {
+      const result = await ctx.axios.delete(`${BOSTED_URL}/${id}`, {
         params: ctx.params,
       });
       ctx.response.status = result.status;

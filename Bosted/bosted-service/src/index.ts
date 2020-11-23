@@ -50,8 +50,9 @@ app.use(async (ctx, next) => {
   if (!ctx.header[CORRELATION_HEADER]) ctx.header[CORRELATION_HEADER] = uuid();
 
   const axiosHeaders = {};
-  axiosHeaders['authorization'] = ctx.request.header['authorization'];
   axiosHeaders[CORRELATION_HEADER] = ctx.request.header[CORRELATION_HEADER];
+  if (ctx.request.header['authorization'])
+    axiosHeaders['authorization'] = ctx.request.header['authorization'];
 
   ctx.axios = axios.create({
     headers: axiosHeaders,
