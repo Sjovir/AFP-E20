@@ -2,10 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { Citizen } from 'src/app/models/citizen.model';
-import { AliveService, ServiceAddress } from 'src/app/services/alive.service';
+import { HeartbeatService } from 'src/app/services/heartbeat.service';
 import {
   Permission,
-  PermissionService
+  PermissionService,
 } from 'src/app/services/permission.service';
 
 @Component({
@@ -24,7 +24,7 @@ export class CitizenMenuComponent implements OnInit {
   public medicineAlive: boolean = false;
 
   constructor(
-    private aliveService: AliveService,
+    private heartbeatService: HeartbeatService,
     private permissionService: PermissionService,
     private router: Router
   ) {
@@ -46,7 +46,7 @@ export class CitizenMenuComponent implements OnInit {
     this.permMedicineView = this.permissionService.hasPermissions(
       Permission.MEDICINE_VIEW
     );
-    this.aliveService.isAlive(ServiceAddress.MEDICINE).subscribe(
+    this.heartbeatService.pingMedicine().subscribe(
       () => {
         this.medicineAlive = true;
       },

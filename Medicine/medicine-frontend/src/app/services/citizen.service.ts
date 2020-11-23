@@ -8,29 +8,17 @@ import { Citizen } from '../models/citizen.model';
   providedIn: 'root',
 })
 export class CitizenService {
-  readonly BOSTED_PORT: string = '7100';
-  readonly MEDICIN_PORT: string = '7200';
-  readonly PORT_PARAM: string = 'citizenId';
-
-  readonly BASE_URL: string = `http://${environment.host}:${this.PORT_PARAM}/api/citizens`;
+  readonly BASE_URL: string = `http://${environment.host}:7200/api/citizens`;
 
   constructor(private http: HttpClient) {}
 
   public get(citizenId: string): Observable<Citizen> {
-    return this.http.get<Citizen>(
-      this.BASE_URL.replace(this.PORT_PARAM, this.MEDICIN_PORT).concat(
-        `/${citizenId}`
-      )
-    );
+    return this.http.get<Citizen>(this.BASE_URL);
   }
 
   public update(citizen: Citizen) {
-    return this.http.put(
-      this.BASE_URL.replace(this.PORT_PARAM, this.BOSTED_PORT).concat(
-        `/${citizen.id}`
-      ),
-      citizen,
-      { responseType: 'text' }
-    );
+    return this.http.put(this.BASE_URL, citizen, {
+      responseType: 'text',
+    });
   }
 }
