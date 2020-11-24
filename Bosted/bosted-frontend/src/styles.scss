@@ -31,6 +31,39 @@ body {
   }
 }
 
+.button-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  height: 50px;
+
+  & span {
+    margin-bottom: 0;
+  }
+}
+
+.info-circle {
+  display: inline-block;
+  background-color: #FF8400;
+  border-radius: 50%;
+  height: 30px;
+  width: 30px;
+  text-align: center;
+  line-height: 30px;
+
+  & span {
+    user-select: none;
+  }
+}
+
+.alert-container {
+  display: inline-block;
+
+  & .alert {
+    margin-bottom: 0;
+  }
+}
+
 /* From Medicine */
 .micro-panel {
   display: flex;

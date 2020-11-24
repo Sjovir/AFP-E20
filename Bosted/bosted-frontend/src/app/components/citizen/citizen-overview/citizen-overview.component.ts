@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbAlert, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { Alert } from 'src/app/models/alert.model';
 import { Citizen } from 'src/app/models/citizen.model';
 import { CitizenService } from 'src/app/services/citizen.service';
 import {
@@ -18,8 +20,8 @@ import { CitizenModalComponent } from '../modals/citizen-modal/citizen-modal.com
 export class CitizenOverviewComponent implements OnInit {
   public permCitizenEdit: boolean;
   public citizen: Citizen;
-  public totalEditing: number = 1;
-  public updated: boolean = false;
+
+  public alert: Alert;
 
   constructor(
     private activeRoute: ActivatedRoute,
@@ -50,12 +52,14 @@ export class CitizenOverviewComponent implements OnInit {
               console.log('Incoming data:');
               console.log(json.data);
               switch (json.event) {
-                case 'USER_CHANGE':
-                  this.totalEditing = json.data.total;
-                  break;
                 case 'CITIZEN_UPDATE':
-                  this.updated = true;
                   console.log('CITIZEN UPDATE!');
+                  this.updateCitizen(json.data.citizen);
+                  this.alert = {
+                    type: 'warning',
+                    message: 'Denne borger er blevet opdateret',
+                  };
+                  setTimeout(() => (this.alert = null), 5000);
                   break;
               }
             },

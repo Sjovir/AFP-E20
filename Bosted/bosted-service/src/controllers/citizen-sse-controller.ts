@@ -16,9 +16,6 @@ export default class CitizenSseController extends AbstractController {
     console.log(ctx.header);
 
     try {
-      // if (!isUUID(id)) {
-      //   ctx.throw(400, 'The inserted identifier is not an UUID.');
-      // }
       if (!this.validIdentifiers(ctx, id)) return;
 
       ctx.set({
@@ -39,12 +36,48 @@ export default class CitizenSseController extends AbstractController {
         stream.write(`data: ${data}\n\n`);
       };
       stream.on('close', () => {
-        this.citizenSseService.removeListener(id, listener);
-        this.citizenSseService.emitTotalEvent(id);
+        this.citizenSseService.removeViewListener(id, listener);
       });
 
-      this.citizenSseService.addListener(id, listener);
-      this.citizenSseService.emitTotalEvent(id);
+      this.citizenSseService.addViewListener(id, listener);
+      
+      await next();
+    } catch (err) {
+      ctx.throw(500, err);
+    }
+  }
+
+  async editCitizenEvents(ctx: Context, next: Next) {
+    const id = ctx.params.citizenUUID;
+    console.log(ctx.header);
+
+    try {
+      if (!this.validIdentifiers(ctx, id)) return;
+
+      ctx.set({
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        Connection: 'keep-alive',
+      });
+
+      ctx.req.socket.setTimeout(0);
+      ctx.req.socket.setNoDelay(true);
+      ctx.req.socket.setKeepAlive(true);
+
+      const stream = new PassThrough();
+      ctx.status = 200;
+      ctx.body = stream;
+
+      const listener = (data: string): void => {
+        stream.write(`data: ${data}\n\n`);
+      };
+      stream.on('close', () => {
+        this.citizenSseService.removeEditListener(id, listener);
+        this.citizenSseService.emitEditTotalEvent(id);
+      });
+
+      this.citizenSseService.addEditListener(id, listener);
+      this.citizenSseService.emitEditTotalEvent(id);
 
       await next();
     } catch (err) {

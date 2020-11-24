@@ -10,7 +10,11 @@ export class SseService {
   constructor(private zone: NgZone) {}
 
   public getCitizenEvents(citizenid: string): Observable<any> {
-    return this.getServerSentEvents(`${this.BASE_URL}/citizens/${citizenid}`);
+    return this.getServerSentEvents(`${this.BASE_URL}/citizens/${citizenid}/view`);
+  }
+
+  public editCitizenEvents(citizenid: string): Observable<any> {
+    return this.getServerSentEvents(`${this.BASE_URL}/citizens/${citizenid}/edit`);
   }
 
   private getServerSentEvents(url: string): Observable<any> {

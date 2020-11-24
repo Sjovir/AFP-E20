@@ -48,12 +48,15 @@ export default class CitizenService {
     await this.citizenRepository.update(citizen);
     await updateCitizenEvent(citizen);
 
-    this.citizenSseService.emitEvent(citizen.id, {
+    const citizenEvent = {
       event: 'CITIZEN_UPDATE',
       data: {
         citizen: citizen,
       },
-    });
+    };
+
+    this.citizenSseService.emitViewEvent(citizen.id, citizenEvent);
+    this.citizenSseService.emitEditEvent(citizen.id, citizenEvent);
   }
 
   async deleteCitizen(citizenUUID: string) {

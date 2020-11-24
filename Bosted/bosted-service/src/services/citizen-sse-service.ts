@@ -3,30 +3,43 @@ import { Service } from 'typedi';
 
 @Service()
 export default class CitizenSseService {
-  private citizenEvents = new EventEmitter();
+  private citizenViewEvents = new EventEmitter();
+  private citizenEditEvents = new EventEmitter();
 
   constructor() {
-    this.citizenEvents.setMaxListeners(0);
+    this.citizenEditEvents.setMaxListeners(0);
   }
 
-  addListener(citizenUUID: string, listener: (data: string) => void): void {
-    this.citizenEvents.on(citizenUUID, listener);
+  addViewListener(citizenUUID: string, listener: (data: string) => void): void {
+    this.citizenViewEvents.on(citizenUUID, listener);
   }
 
-  removeListener(citizenUUID: string, listener: (data: string) => void): void {
-    this.citizenEvents.off(citizenUUID, listener);
+  removeViewListener(citizenUUID: string, listener: (data: string) => void): void {
+    this.citizenViewEvents.off(citizenUUID, listener);
   }
 
-  emitTotalEvent(citizenUUID: string) {
-    this.emitEvent(citizenUUID, {
+  addEditListener(citizenUUID: string, listener: (data: string) => void): void {
+    this.citizenEditEvents.on(citizenUUID, listener);
+  }
+
+  removeEditListener(citizenUUID: string, listener: (data: string) => void): void {
+    this.citizenEditEvents.off(citizenUUID, listener);
+  }
+
+  emitEditTotalEvent(citizenUUID: string) {
+    this.emitEditEvent(citizenUUID, {
       event: 'USER_CHANGE',
       data: {
-        total: this.citizenEvents.listenerCount(citizenUUID),
+        total: this.citizenEditEvents.listenerCount(citizenUUID),
       },
     });
   }
 
-  emitEvent(citizenUUID: string, data: Record<string, unknown>) {
-    this.citizenEvents.emit(citizenUUID, JSON.stringify(data));
+  emitViewEvent(citizenUUID: string, data: Record<string, unknown>) {
+    this.citizenViewEvents.emit(citizenUUID, JSON.stringify(data));
+  }
+
+  emitEditEvent(citizenUUID: string, data: Record<string, unknown>) {
+    this.citizenEditEvents.emit(citizenUUID, JSON.stringify(data));
   }
 }

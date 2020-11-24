@@ -1,15 +1,14 @@
 <div class="content-panel px-4 py-2">
-  <p class="h2">Borger information</p>
-  <button
-    *ngIf="permCitizenEdit"
-    class="btn btn-primary mb-3"
-    (click)="editCitizen()"
-  >
-    Rediger borger
-  </button>
-  <p *ngIf="totalEditing > 1">{{ totalEditing }}</p>
-  <div *ngIf="updated" class="alert alert-primary" role="alert">
-    Denne borger er blevet opdateret!
+  <p *ngIf="permCitizenEdit" class="h2">Borger information</p>
+  <div class="button-bar">
+    <button class="btn btn-primary mr-3" (click)="editCitizen()">
+      Rediger borger
+    </button>
+    <div *ngIf="alert" class="alert-container">
+      <ngb-alert [type]="alert.type" [dismissible]="false">
+        {{ alert.message }}
+      </ngb-alert>
+    </div>
   </div>
   <div class="row">
     <div class="col-3 title-column">
