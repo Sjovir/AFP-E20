@@ -1,13 +1,11 @@
 import Router from 'koa-router';
 
-import authRouter from './auth-router';
-import installationRouter from './installation-router';
-import userRouter from './user-router';
+import apiRouter from './api-router';
+import heartbeatRouter from './heartbeat-router';
 
-const router = new Router({ prefix: '/api' });
+const router = new Router();
 
-router.use(installationRouter.routes(), installationRouter.allowedMethods());
-router.use(authRouter.routes(), authRouter.allowedMethods());
-router.use(userRouter.routes(), userRouter.allowedMethods());
+router.use(apiRouter.routes(), apiRouter.allowedMethods());
+router.use(heartbeatRouter.routes(), heartbeatRouter.allowedMethods());
 
 export default router;

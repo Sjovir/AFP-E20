@@ -1,18 +1,26 @@
 import { AxiosInstance } from 'axios';
 
-declare namespace NodeJS {
-  export interface ProcessEnv {
-    NODE_ENV: 'development' | 'production';
-    JWT_SECRET: string;
-    DB_ROOT_PASSWORD: string;
-    DB_HOST: string;
-    DB_USER: string;
-    DB_PASSWORD: string;
-    DB_DATABASE: string;
-    DB_PORT: string;
-    KAFKA_HOST?: string;
-    AUTH_SERVICE: string;
-    AUTH_PORT: string;
+declare global {
+  namespace NodeJS {
+    interface ProcessEnv {
+      NODE_ENV: 'development' | 'production';
+
+      DB_HOST: string;
+      DB_DATABASE: string;
+      DB_ROOT_PASSWORD: string;
+      DB_USER: string;
+      DB_PASSWORD: string;
+      DB_PORT: string;
+
+      KAFKA_HOST: string;
+      JWT_SECRET: string;
+
+      AUTH_SERVICE: string;
+      AUTH_PORT: string;
+
+      MEDICINE_SERVICE: string;
+      MEDICINE_PORT: string;
+    }
   }
 }
 

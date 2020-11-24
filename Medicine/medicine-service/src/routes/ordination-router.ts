@@ -35,4 +35,4 @@ router
     }
   );
 
-export { router as ordinationRouter };
+export default router;

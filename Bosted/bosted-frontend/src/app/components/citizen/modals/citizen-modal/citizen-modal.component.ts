@@ -15,7 +15,6 @@ import { SseService } from 'src/app/services/sse.service';
 @Component({
   selector: 'citizen-modal',
   templateUrl: './citizen-modal.component.html',
-  styleUrls: ['./citizen-modal.component.scss'],
 })
 export class CitizenModalComponent implements OnInit {
   @Input() modalType: 'create' | 'edit';

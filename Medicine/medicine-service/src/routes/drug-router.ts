@@ -18,4 +18,4 @@ router
     }
   );
 
-export { router as drugRouter };
+export default router;

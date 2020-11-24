@@ -7,6 +7,7 @@ import cors from '@koa/cors';
 import bodyparser from 'koa-bodyparser';
 import gracefulShutdown from 'http-graceful-shutdown';
 import { v4 as uuid } from 'uuid';
+import axios from 'axios';
 
 import logger from './logger';
 import client from './database/mariadb-client';
@@ -46,6 +47,16 @@ app.use(bodyparser());
 
 app.use(async (ctx, next) => {
   if (!ctx.header[CORRELATION_HEADER]) ctx.header[CORRELATION_HEADER] = uuid();
+
+  const axiosHeaders = {};
+  axiosHeaders[CORRELATION_HEADER] = ctx.request.header[CORRELATION_HEADER];
+  if (ctx.request.header['authorization'])
+    axiosHeaders['authorization'] = ctx.request.header['authorization'];
+
+  ctx.axios = axios.create({
+    headers: axiosHeaders,
+  });
+
   await next();
 });
 

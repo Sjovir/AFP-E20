@@ -35,4 +35,4 @@ router
     }
   );
 
-export { router as citizenRouter };
+export default router;
