@@ -1,5 +1,13 @@
 <div class="modal-header">
-  <p class="h3">{{ titleByType[modalType] }}</p>
+  <span class="h3 mr-3">{{ titleByType[modalType] }}</span>
+  <div
+    *ngIf="totalEditing > 1"
+    class="info-circle"
+    [ngbTooltip]="totalEditingTooltip"
+    [placement]="'bottom'"
+  >
+    <span>{{ totalEditing - 1 }}</span>
+  </div>
 </div>
 <div class="modal-body">
   <form [formGroup]="editCitizenForm">
@@ -56,6 +64,11 @@
       </small>
     </div>
   </form>
+  <div *ngIf="alert" class="alert-container">
+    <ngb-alert [type]="alert.type" (close)="closeAlert()">
+      {{ alert.message }}
+    </ngb-alert>
+  </div>
 </div>
 <div class="modal-footer">
   <button class="btn btn-outline-danger" (click)="dismiss()" ngbAutoFocus>

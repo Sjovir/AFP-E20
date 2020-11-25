@@ -29,5 +29,6 @@ declare global {
 declare module 'koa' {
   interface BaseContext {
     axios: AxiosInstance;
+    user?: IDecodedAccessToken;
   }
 }

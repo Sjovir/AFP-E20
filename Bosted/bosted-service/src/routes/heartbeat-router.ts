@@ -13,7 +13,6 @@ router.get('/auth/frontend', async (ctx, next) => {
     ctx.response.status = 200;
     await next();
   } catch (err) {
-    console.log(err);
     ctx.throw(503);
   }
 });
@@ -27,7 +26,6 @@ router.get('/medicine/frontend', async (ctx, next) => {
     ctx.response.status = 200;
     await next();
   } catch (err) {
-    console.log(err);
     ctx.throw(503);
   }
 });

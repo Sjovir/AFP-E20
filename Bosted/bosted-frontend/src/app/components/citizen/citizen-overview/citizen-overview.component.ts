@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { filter } from 'rxjs/operators';
+import { Alert } from 'src/app/models/alert.model';
 import { Citizen } from 'src/app/models/citizen.model';
 import { CitizenService } from 'src/app/services/citizen.service';
 import {
   Permission,
   PermissionService,
 } from 'src/app/services/permission.service';
+import { SseService } from 'src/app/services/sse.service';
 import { CitizenModalComponent } from '../modals/citizen-modal/citizen-modal.component';
 
 @Component({
@@ -15,14 +18,17 @@ import { CitizenModalComponent } from '../modals/citizen-modal/citizen-modal.com
 })
 export class CitizenOverviewComponent implements OnInit {
   public permCitizenEdit: boolean;
-
   public citizen: Citizen;
+
+  public alert: Alert;
 
   constructor(
     private activeRoute: ActivatedRoute,
     private citizenService: CitizenService,
     private modalService: NgbModal,
-    private permissionService: PermissionService
+    private permissionService: PermissionService,
+    private router: Router,
+    private sseService: SseService
   ) {}
 
   ngOnInit(): void {
@@ -34,6 +40,32 @@ export class CitizenOverviewComponent implements OnInit {
       const citizenId = this.activeRoute.parent.snapshot.params['id'];
       this.citizenService.get(citizenId).subscribe((citizen: Citizen) => {
         this.citizen = citizen;
+
+        let citizenEvent: { unsubscribe(): void };
+        citizenEvent = this.sseService
+          .getCitizenEvents(this.citizen.id)
+          .subscribe(
+            (event) => {
+              const json = JSON.parse(event.data);
+
+              switch (json.event) {
+                case 'CITIZEN_UPDATE':
+                  this.updateCitizen(json.data.citizen);
+                  this.alert = {
+                    type: 'warning',
+                    message: 'Denne borger er blevet opdateret',
+                  };
+                  setTimeout(() => (this.alert = null), 5000);
+                  break;
+              }
+            }
+          );
+
+        this.router.events
+          .pipe(filter((event) => event instanceof NavigationEnd))
+          .subscribe((event: NavigationEnd) => {
+            citizenEvent.unsubscribe();
+          });
       });
     });
   }
