@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  frontend:
+  bosted_frontend:
     build:
       context: ./bosted-frontend
       args:
@@ -14,9 +14,9 @@ services:
       - "8100:80"
       - "7100:7100"
     depends_on:
-      - service
-      - database
-  service:
+      - bosted_service
+      - bosted_database
+  bosted_service:
     build: ./bosted-service
     image: erikbn/afp20_bosted_service
     container_name: BostedService
@@ -27,15 +27,17 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_DATABASE=${DB_DATABASE_BOSTED}
-      - DB_HOST=database
+      - DB_HOST=bosted_database
       - KAFKA_HOST=${KAFKA_HOST}
       - YARN-VERSION=${YARN_VERSION}
       - JWT_SECRET=${JWT_SECRET}
       - AUTH_SERVICE=${AUTH_SERVICE}
       - AUTH_PORT=${AUTH_PORT}
+      - MEDICINE_SERVICE=${MEDICINE_SERVICE}
+      - MEDICINE_PORT=${MEDICINE_PORT}
     depends_on:
-      - database
-  database:
+      - bosted_database
+  bosted_database:
     build: ./bosted-database
     image: erikbn/afp20_bosted_database
     container_name: BostedDatabase

@@ -48,7 +48,6 @@ export class CitizenModalComponent implements OnInit {
     });
 
     if (this.citizen) this.editCitizenForm.patchValue(this.citizen);
-    console.log('Subscribing');
 
     this.citizenEvent = this.sseService
       .editCitizenEvents(this.citizen.id)
@@ -56,15 +55,12 @@ export class CitizenModalComponent implements OnInit {
         (event) => {
           const json = JSON.parse(event.data);
 
-          console.log('Incoming data:');
-          console.log(json.data);
           switch (json.event) {
             case 'USER_CHANGE':
               this.totalEditing = json.data.total;
               this.updateTooltip();
               break;
             case 'CITIZEN_UPDATE':
-              console.log('CITIZEN UPDATE!');
               this.alert = {
                 type: 'warning',
                 message: 'Denne borger er blevet opdateret',
@@ -112,9 +108,13 @@ export class CitizenModalComponent implements OnInit {
 
   private updateTooltip(): void {
     if (this.totalEditing === 2) {
-      this.totalEditingTooltip = `${this.totalEditing - 1} anden bruger redigerer denne borger`
+      this.totalEditingTooltip = `
+        ${this.totalEditing - 1} anden bruger redigerer denne borger
+      `;
     } else if (this.totalEditing > 2) {
-      this.totalEditingTooltip = `${this.totalEditing - 1} andre brugere redigerer denne borger`
+      this.totalEditingTooltip = `
+        ${this.totalEditing - 1} andre brugere redigerer denne borger
+      `;
     }
   }
 }

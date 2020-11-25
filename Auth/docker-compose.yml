@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  frontend:
+  auth_frontend:
     build:
       context: ./auth-frontend
       args:
@@ -14,9 +14,9 @@ services:
       - "8000:80"
       - "7000:7000"
     depends_on:
-      - service
-      - database
-  service:
+      - auth_service
+      - auth_database
+  auth_service:
     build: ./auth-service
     image: erikbn/afp20_auth_service
     container_name: AuthService
@@ -27,13 +27,15 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_DATABASE=${DB_DATABASE_AUTH}
-      - DB_HOST=database
+      - DB_HOST=auth_database
       - KAFKA_HOST=${KAFKA_HOST}
       - YARN-VERSION=${YARN_VERSION}
       - JWT_SECRET=${JWT_SECRET}
+      - FRONTEND_ADDRESS=${FRONTEND_ADDRESS}
+      - FRONTEND_PORT=${FRONTEND_PORT}
     depends_on:
-      - database
-  database:
+      - auth_database
+  auth_database:
     build: ./auth-database
     image: erikbn/afp20_auth_database
     container_name: AuthDatabase
@@ -43,6 +45,7 @@ services:
       - MYSQL_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=${DB_DATABASE_AUTH}
       - MYSQL_PORT=${DB_PORT}
+
 networks:
   default:
     external:

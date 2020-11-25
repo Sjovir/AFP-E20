@@ -1,7 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { NgbAlert, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { BehaviorSubject } from 'rxjs';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { filter } from 'rxjs/operators';
 import { Alert } from 'src/app/models/alert.model';
 import { Citizen } from 'src/app/models/citizen.model';
@@ -49,11 +48,8 @@ export class CitizenOverviewComponent implements OnInit {
             (event) => {
               const json = JSON.parse(event.data);
 
-              console.log('Incoming data:');
-              console.log(json.data);
               switch (json.event) {
                 case 'CITIZEN_UPDATE':
-                  console.log('CITIZEN UPDATE!');
                   this.updateCitizen(json.data.citizen);
                   this.alert = {
                     type: 'warning',

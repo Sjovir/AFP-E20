@@ -13,11 +13,11 @@ export class CitizenService {
   constructor(private http: HttpClient) {}
 
   public get(citizenId: string): Observable<Citizen> {
-    return this.http.get<Citizen>(this.BASE_URL);
+    return this.http.get<Citizen>(`${this.BASE_URL}/${citizenId}`);
   }
 
   public update(citizen: Citizen) {
-    return this.http.put(this.BASE_URL, citizen, {
+    return this.http.put(`${this.BASE_URL}/${citizen.id}`, citizen, {
       responseType: 'text',
     });
   }

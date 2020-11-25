@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  frontend:
+  medicine_frontend:
     build:
       context: ./medicine-frontend
       args:
@@ -14,9 +14,9 @@ services:
       - "8200:80"
       - "7200:7200"
     depends_on:
-      - service
-      - database
-  service:
+      - medicine_service
+      - medicine_database
+  medicine_service:
     build: ./medicine-service
     image: erikbn/afp20_medicine_service
     container_name: MedicineService
@@ -27,15 +27,17 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_DATABASE=${DB_DATABASE_MEDICINE}
-      - DB_HOST=database
+      - DB_HOST=medicine_database
       - KAFKA_HOST=${KAFKA_HOST}
       - YARN-VERSION=${YARN_VERSION}
       - JWT_SECRET=${JWT_SECRET}
+      - FRONTEND_ADDRESS=${FRONTEND_ADDRESS}
+      - FRONTEND_PORT=${FRONTEND_PORT}
       - BOSTED_SERVICE=${BOSTED_SERVICE}
       - BOSTED_PORT=${BOSTED_PORT}
     depends_on:
-      - database
-  database:
+      - medicine_database
+  medicine_database:
     build: ./medicine-database
     image: erikbn/afp20_medicine_database
     container_name: MedicineDatabase

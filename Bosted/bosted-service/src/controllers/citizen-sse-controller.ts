@@ -13,7 +13,6 @@ export default class CitizenSseController extends AbstractController {
 
   async getCitizenEvents(ctx: Context, next: Next) {
     const id = ctx.params.citizenUUID;
-    console.log(ctx.header);
 
     try {
       if (!this.validIdentifiers(ctx, id)) return;
@@ -49,7 +48,6 @@ export default class CitizenSseController extends AbstractController {
 
   async editCitizenEvents(ctx: Context, next: Next) {
     const id = ctx.params.citizenUUID;
-    console.log(ctx.header);
 
     try {
       if (!this.validIdentifiers(ctx, id)) return;
