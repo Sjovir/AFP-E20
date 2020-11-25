@@ -11,7 +11,6 @@ router.get('/frontend', async (ctx, next) => {
     ctx.response.status = 200;
     await next();
   } catch (err) {
-    console.log(err);
     ctx.throw(503);
   }
 });

@@ -1,18 +1,21 @@
 import { Service } from 'typedi';
 import { v4 as uuid } from 'uuid';
-
 import CitizenRepository from '../database/citizen-repository';
-import {
-  createCitizenEvent,
-  updateCitizenEvent,
-  deleteCitizenEvent,
-} from '../kafka/citizen-producer';
 import ExistsError from '../errors/exists-error';
 import ForeignKeyError from '../errors/foreignkey-error';
+import {
+  createCitizenEvent,
+  deleteCitizenEvent,
+  updateCitizenEvent,
+} from '../kafka/citizen-producer';
+import CitizenSseService from './citizen-sse-service';
 
 @Service()
 export default class CitizenService {
-  constructor(private citizenRepository: CitizenRepository) {}
+  constructor(
+    private citizenRepository: CitizenRepository,
+    private citizenSseService: CitizenSseService
+  ) {}
 
   async getCitizen(citizenUUID: string) {
     return this.citizenRepository.get(citizenUUID);
@@ -44,6 +47,16 @@ export default class CitizenService {
 
     await this.citizenRepository.update(citizen);
     await updateCitizenEvent(citizen);
+
+    const citizenEvent = {
+      event: 'CITIZEN_UPDATE',
+      data: {
+        citizen: citizen,
+      },
+    };
+
+    this.citizenSseService.emitViewEvent(citizen.id, citizenEvent);
+    this.citizenSseService.emitEditEvent(citizen.id, citizenEvent);
   }
 
   async deleteCitizen(citizenUUID: string) {

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { filter } from 'rxjs/operators';
 import { EditCitizenModalComponent } from 'src/app/modals/edit-citizen-modal/edit-citizen-modal.component';
 import { Citizen } from 'src/app/models/citizen.model';
 import { Ordination } from 'src/app/models/ordination.model';
@@ -10,6 +12,7 @@ import {
   Permission,
   PermissionService,
 } from 'src/app/services/permission.service';
+import { SseService } from 'src/app/services/sse.service';
 
 @Component({
   selector: 'app-overview',
@@ -29,7 +32,9 @@ export class OverviewComponent implements OnInit {
     private locationService: LocationService,
     private modalService: NgbModal,
     private permissionService: PermissionService,
-    private ordinationService: OrdinationService
+    private ordinationService: OrdinationService,
+    private router: Router,
+    private sseService: SseService
   ) {}
 
   ngOnInit(): void {
@@ -60,6 +65,27 @@ export class OverviewComponent implements OnInit {
     if (this.permCitizenEdit) {
       this.citizenService.get(citizenId).subscribe((citizen: Citizen) => {
         this.citizen = citizen;
+
+        let citizenEvent: { unsubscribe(): void };
+        citizenEvent = this.sseService
+          .getCitizenEvents(this.citizen.id)
+          .subscribe(
+            (event) => {
+              const json = JSON.parse(event.data);
+
+              switch (json.event) {
+                case 'CITIZEN_UPDATE':
+                  this.updateCitizen(json.data.citizen);
+                  break;
+              }
+            }
+          );
+
+        this.router.events
+          .pipe(filter((event) => event instanceof NavigationEnd))
+          .subscribe((event: NavigationEnd) => {
+            citizenEvent.unsubscribe();
+          });
       });
     }
   }
@@ -83,5 +109,11 @@ export class OverviewComponent implements OnInit {
 
   public editOrdination(ordinationId: string) {
     this.locationService.redirect(`edit-ordination/${ordinationId}`);
+  }
+
+  private updateCitizen(partialCitizen: Partial<Citizen>): void {
+    Object.keys(partialCitizen).forEach((name) => {
+      this.citizen[name] = partialCitizen[name];
+    });
   }
 }

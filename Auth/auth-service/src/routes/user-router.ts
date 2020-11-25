@@ -6,7 +6,7 @@ const controller = Container.get(UserController);
 const router = new Router({ prefix: '/users' });
 
 router.get('/username/:username', async (ctx, next) => {
-    await controller.getOnUsername(ctx, next);
+  await controller.getOnUsername(ctx, next);
 });
 
 export default router;
