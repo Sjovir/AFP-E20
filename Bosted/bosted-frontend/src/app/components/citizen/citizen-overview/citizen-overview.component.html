@@ -1,6 +1,6 @@
 <div class="content-panel px-4 py-2">
-  <p *ngIf="permCitizenEdit" class="h2">Borger information</p>
-  <div class="button-bar">
+  <p class="h2">Borger information</p>
+  <div *ngIf="permCitizenEdit" class="button-bar">
     <button class="btn btn-primary mr-3" (click)="editCitizen()">
       Rediger borger
     </button>

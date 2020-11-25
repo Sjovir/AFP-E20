@@ -81,8 +81,6 @@ export default class CitizenController extends AbstractController {
 
       await next();
     } catch (err) {
-      console.log(err);
-      
       if (err.response.status < 500) {
         ctx.throw(err.response.status, err);
       } else {

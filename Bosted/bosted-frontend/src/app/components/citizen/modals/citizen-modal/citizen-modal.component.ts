@@ -67,9 +67,6 @@ export class CitizenModalComponent implements OnInit {
               };
               break;
           }
-        },
-        (error) => {
-          console.log(error);
         }
       );
 

@@ -58,9 +58,6 @@ export class CitizenOverviewComponent implements OnInit {
                   setTimeout(() => (this.alert = null), 5000);
                   break;
               }
-            },
-            (error) => {
-              console.log(error);
             }
           );
 

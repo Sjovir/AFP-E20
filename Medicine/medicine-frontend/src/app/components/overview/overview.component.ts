@@ -78,9 +78,6 @@ export class OverviewComponent implements OnInit {
                   this.updateCitizen(json.data.citizen);
                   break;
               }
-            },
-            (error) => {
-              console.log(error);
             }
           );
 

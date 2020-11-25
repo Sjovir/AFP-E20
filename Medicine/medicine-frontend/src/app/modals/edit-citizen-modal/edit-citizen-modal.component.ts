@@ -62,9 +62,6 @@ export class EditCitizenModalComponent implements OnInit {
               };
               break;
           }
-        },
-        (error) => {
-          console.log(error);
         }
       );
 
