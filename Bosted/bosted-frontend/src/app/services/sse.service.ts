@@ -1,20 +1,25 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SseService {
-  readonly BASE_URL: string = 'http://localhost:7100/sse';
+  readonly BASE_URL: string = `http://${environment.host}:7100/sse`;
 
   constructor(private zone: NgZone) {}
 
   public getCitizenEvents(citizenid: string): Observable<any> {
-    return this.getServerSentEvents(`${this.BASE_URL}/citizens/${citizenid}/view`);
+    return this.getServerSentEvents(
+      `${this.BASE_URL}/citizens/${citizenid}/view`
+    );
   }
 
   public editCitizenEvents(citizenid: string): Observable<any> {
-    return this.getServerSentEvents(`${this.BASE_URL}/citizens/${citizenid}/edit`);
+    return this.getServerSentEvents(
+      `${this.BASE_URL}/citizens/${citizenid}/edit`
+    );
   }
 
   private getServerSentEvents(url: string): Observable<any> {
