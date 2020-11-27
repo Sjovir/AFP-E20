@@ -50,8 +50,7 @@ export class OrdinationService {
       this.BASE_URL.replace(this.CITIZEN_PARAM, citizenId).concat(
         `/${ordination.id}`
       ),
-      ordination,
-      { responseType: 'text' }
+      ordination
     );
   }
 }
