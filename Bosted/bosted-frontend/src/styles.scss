@@ -16,6 +16,10 @@ body {
 
 .top-bar {
   height: 60px;
+
+  & span {
+    vertical-align: middle;
+  }
 }
 
 .content-panel {
