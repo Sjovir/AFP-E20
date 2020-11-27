@@ -47,12 +47,12 @@ export class CitizenModalComponent implements OnInit {
       cpr: ['', [Validators.required, Validators.pattern('^\\d{10}$')]],
     });
 
-    if (this.citizen) this.editCitizenForm.patchValue(this.citizen);
+    if (this.modalType === 'edit' && this.citizen) {
+      this.editCitizenForm.patchValue(this.citizen);
 
-    this.citizenEvent = this.sseService
-      .editCitizenEvents(this.citizen.id)
-      .subscribe(
-        (event) => {
+      this.citizenEvent = this.sseService
+        .editCitizenEvents(this.citizen.id)
+        .subscribe((event) => {
           const json = JSON.parse(event.data);
 
           switch (json.event) {
@@ -67,23 +67,23 @@ export class CitizenModalComponent implements OnInit {
               };
               break;
           }
-        }
-      );
+        });
 
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => {
-        this.citizenEvent.unsubscribe();
-      });
+      this.router.events
+        .pipe(filter((event) => event instanceof NavigationEnd))
+        .subscribe((event: NavigationEnd) => {
+          this.citizenEvent.unsubscribe();
+        });
+    }
   }
 
   public dismiss() {
-    this.citizenEvent.unsubscribe();
+    this.unsubscribeCitizenEvent();
     this.activeModal.dismiss('Cancel click');
   }
 
   public close() {
-    this.citizenEvent.unsubscribe();
+    this.unsubscribeCitizenEvent();
     this.activeModal.close(this.editCitizenForm.value);
   }
 
@@ -101,6 +101,10 @@ export class CitizenModalComponent implements OnInit {
 
   public get cprControl(): AbstractControl {
     return this.editCitizenForm.get('cpr');
+  }
+
+  private unsubscribeCitizenEvent(): void {
+    if (this.modalType === 'edit') this.citizenEvent.unsubscribe();
   }
 
   private updateTooltip(): void {
