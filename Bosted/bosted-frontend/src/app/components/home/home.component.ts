@@ -14,7 +14,6 @@ import { CitizenModalComponent } from '../citizen/modals/citizen-modal/citizen-m
 @Component({
   selector: 'components-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
   public permCitizenView: boolean;
