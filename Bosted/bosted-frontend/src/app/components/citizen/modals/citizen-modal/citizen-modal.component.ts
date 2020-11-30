@@ -1,13 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { NavigationEnd, Router } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { filter } from 'rxjs/operators';
 import { Alert } from 'src/app/models/alert.model';
 import { Citizen } from 'src/app/models/citizen.model';
 import { SseService } from 'src/app/services/sse.service';
@@ -16,7 +14,7 @@ import { SseService } from 'src/app/services/sse.service';
   selector: 'citizen-modal',
   templateUrl: './citizen-modal.component.html',
 })
-export class CitizenModalComponent implements OnInit {
+export class CitizenModalComponent implements OnInit, OnDestroy {
   @Input() modalType: 'create' | 'edit';
   @Input() citizen?: Citizen;
 
@@ -36,7 +34,6 @@ export class CitizenModalComponent implements OnInit {
   constructor(
     private activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
-    private router: Router,
     private sseService: SseService
   ) {}
 
@@ -68,22 +65,18 @@ export class CitizenModalComponent implements OnInit {
               break;
           }
         });
-
-      this.router.events
-        .pipe(filter((event) => event instanceof NavigationEnd))
-        .subscribe((event: NavigationEnd) => {
-          this.citizenEvent.unsubscribe();
-        });
     }
   }
 
+  ngOnDestroy(): void {
+    if (this.modalType === 'edit') this.citizenEvent.unsubscribe();
+  }
+
   public dismiss() {
-    this.unsubscribeCitizenEvent();
     this.activeModal.dismiss('Cancel click');
   }
 
   public close() {
-    this.unsubscribeCitizenEvent();
     this.activeModal.close(this.editCitizenForm.value);
   }
 
@@ -101,10 +94,6 @@ export class CitizenModalComponent implements OnInit {
 
   public get cprControl(): AbstractControl {
     return this.editCitizenForm.get('cpr');
-  }
-
-  private unsubscribeCitizenEvent(): void {
-    if (this.modalType === 'edit') this.citizenEvent.unsubscribe();
   }
 
   private updateTooltip(): void {

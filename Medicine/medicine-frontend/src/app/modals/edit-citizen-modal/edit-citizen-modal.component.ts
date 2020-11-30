@@ -1,13 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { NavigationEnd, Router } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { filter } from 'rxjs/operators';
 import { Alert } from 'src/app/models/alert.model';
 import { Citizen } from 'src/app/models/citizen.model';
 import { SseService } from 'src/app/services/sse.service';
@@ -16,7 +14,7 @@ import { SseService } from 'src/app/services/sse.service';
   selector: 'app-edit-citizen-modal',
   templateUrl: './edit-citizen-modal.component.html',
 })
-export class EditCitizenModalComponent implements OnInit {
+export class EditCitizenModalComponent implements OnInit, OnDestroy {
   @Input() citizen: Citizen;
 
   public editCitizenForm: FormGroup;
@@ -31,7 +29,6 @@ export class EditCitizenModalComponent implements OnInit {
   constructor(
     private activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
-    private router: Router,
     private sseService: SseService
   ) {}
 
@@ -46,39 +43,33 @@ export class EditCitizenModalComponent implements OnInit {
 
     this.citizenEvent = this.sseService
       .editCitizenEvents(this.citizen.id)
-      .subscribe(
-        (event) => {
-          const json = JSON.parse(event.data);
+      .subscribe((event) => {
+        const json = JSON.parse(event.data);
 
-          switch (json.event) {
-            case 'USER_CHANGE':
-              this.totalEditing = json.data.total;
-              this.updateTooltip();
-              break;
-            case 'CITIZEN_UPDATE':
-              this.alert = {
-                type: 'warning',
-                message: 'Denne borger er blevet opdateret',
-              };
-              break;
-          }
+        switch (json.event) {
+          case 'USER_CHANGE':
+            this.totalEditing = json.data.total;
+            this.updateTooltip();
+            break;
+          case 'CITIZEN_UPDATE':
+            this.alert = {
+              type: 'warning',
+              message: 'Denne borger er blevet opdateret',
+            };
+            break;
         }
-      );
-
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => {
-        this.citizenEvent.unsubscribe();
       });
   }
 
-  public dismiss() {
+  ngOnDestroy(): void {
     this.citizenEvent.unsubscribe();
+  }
+
+  public dismiss() {
     this.activeModal.dismiss('Cancel click');
   }
 
   public close() {
-    this.citizenEvent.unsubscribe();
     let citizen: Citizen = this.editCitizenForm.value;
     citizen.id = this.citizen.id;
     this.activeModal.close(citizen);

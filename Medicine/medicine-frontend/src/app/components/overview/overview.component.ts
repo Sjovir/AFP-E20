@@ -1,7 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { filter } from 'rxjs/operators';
 import { EditCitizenModalComponent } from 'src/app/modals/edit-citizen-modal/edit-citizen-modal.component';
 import { Citizen } from 'src/app/models/citizen.model';
 import { Ordination } from 'src/app/models/ordination.model';
@@ -19,7 +17,7 @@ import { SseService } from 'src/app/services/sse.service';
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.scss'],
 })
-export class OverviewComponent implements OnInit {
+export class OverviewComponent implements OnInit, OnDestroy {
   public permCitizenEdit: boolean;
   public permMedicineView: boolean;
   public permMedicineEdit: boolean;
@@ -27,13 +25,14 @@ export class OverviewComponent implements OnInit {
   public citizen: Citizen;
   public ordinations: Ordination[];
 
+  private citizenEvent: { unsubscribe(): void };
+
   constructor(
     private citizenService: CitizenService,
     private locationService: LocationService,
     private modalService: NgbModal,
     private permissionService: PermissionService,
     private ordinationService: OrdinationService,
-    private router: Router,
     private sseService: SseService
   ) {}
 
@@ -66,28 +65,23 @@ export class OverviewComponent implements OnInit {
       this.citizenService.get(citizenId).subscribe((citizen: Citizen) => {
         this.citizen = citizen;
 
-        let citizenEvent: { unsubscribe(): void };
-        citizenEvent = this.sseService
+        this.citizenEvent = this.sseService
           .getCitizenEvents(this.citizen.id)
-          .subscribe(
-            (event) => {
-              const json = JSON.parse(event.data);
+          .subscribe((event) => {
+            const json = JSON.parse(event.data);
 
-              switch (json.event) {
-                case 'CITIZEN_UPDATE':
-                  this.updateCitizen(json.data.citizen);
-                  break;
-              }
+            switch (json.event) {
+              case 'CITIZEN_UPDATE':
+                this.updateCitizen(json.data.citizen);
+                break;
             }
-          );
-
-        this.router.events
-          .pipe(filter((event) => event instanceof NavigationEnd))
-          .subscribe((event: NavigationEnd) => {
-            citizenEvent.unsubscribe();
           });
       });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.citizenEvent.unsubscribe();
   }
 
   public editCitizen() {
