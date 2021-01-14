@@ -13,11 +13,12 @@ echo $auth_url
 login_payload=integration/login.json
 register_payload=integration/register.json
 
+echo "\n\n** Get User **"
+curl -X GET ${auth_url}/users/username/rey
 echo "\n\n** Register **"
 curl -X POST -H "Content-Type: application/json" -d @$register_payload ${auth_url}/register
-
+echo "\n\n** Get User **"
+curl -X GET ${auth_url}/users/username/rey
 echo "\n\n** Login **"
 curl -X POST -H "Content-Type: application/json" -d @$login_payload ${auth_url}/login
-echo "\n\n** Get User **"
-curl -X GET ${auth_url}/users/username/kk
 
