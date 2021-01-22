@@ -85,7 +85,7 @@ echo "\n\nInstallation ID: "
 echo $installation_id
 
 echo "\n\n***** Add InstallationUser *****"
-curl -X POST -H "Content-Type: application/json" -H "$authorization_header" -d @$installation_user_payload ${auth_url}/installations/${installation_id}/users/${user_id}
+curl -X POST -H "Content-Type: application/json" -H "$authorization_header" ${auth_url}/installations/${installation_id}/users/${user_id}
 
 
 echo
