@@ -46,7 +46,7 @@ export default class CitizenService {
     if (!citizen.id) throw new Error('No ID found.');
 
     await this.citizenRepository.update(citizen);
-    await updateCitizenEvent(citizen);
+    updateCitizenEvent(citizen);
 
     const citizenEvent = {
       event: 'CITIZEN_UPDATE',
