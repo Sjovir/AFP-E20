@@ -75,7 +75,7 @@ jobs:
       - sh test_integration.sh
       - cd ..
 
-      after_success: ../merge_to_master.sh
+      after_success: merge_to_master.sh
 
     - stage: push_docker_images
       script:
